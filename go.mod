@@ -1,4 +1,4 @@
-module cost-report
+module platform-cost-report
 
 go 1.17
 

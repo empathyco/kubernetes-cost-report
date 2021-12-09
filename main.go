@@ -8,7 +8,7 @@ import (
 	"time"
 	"github.com/gin-gonic/gin"
 
-	"cost-report/controller"
+	"platform-cost-report/controller"
 	
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
