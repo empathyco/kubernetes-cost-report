@@ -86,6 +86,10 @@ func main() {
 		{
 			getProducts.GET("", c.GetProducts)
 		}
+		describeSpotPriceHistory := v1.Group("/describeSpotPriceHistory")
+		{
+			describeSpotPriceHistory.GET("", c.DescribeSpotPriceHistory)
+		}
 	}
 
 	cpuTemp.Set(65.3)
