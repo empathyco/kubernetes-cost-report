@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"time"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/aws/aws-sdk-go/aws"
@@ -11,25 +12,22 @@ import (
 	"github.com/aws/aws-sdk-go/service/ec2"
 )
 
-func parseTime(layout, value string) *time.Time {
-	t, err := time.Parse(layout, value)
-	if err != nil {
-		panic(err)
-	}
-	return &t
+// Struct so that we can aggregate list of prices per instance type and AZ
+type Key struct {
+	InstanceType string
+    AvailabilityZone string
 }
 
 func (c *Controller) DescribeSpotPriceHistory (ctx *gin.Context){
-	svc := ec2.New(session.New(), aws.NewConfig().WithRegion("us-east-1"))
+	svc := ec2.New(session.New(), aws.NewConfig().WithRegion("eu-west-1"))
+	endTime := time.Now()
+	startTime := endTime.AddDate(0, 0, -1)
 	input := &ec2.DescribeSpotPriceHistoryInput{
-		EndTime: parseTime("2006-01-02T15:04:05.999999999Z", "2021-12-13T00:00:00Z"),
-		InstanceTypes: []*string{
-			aws.String("m1.xlarge"),
-		},
+		EndTime: &endTime,
 		ProductDescriptions: []*string{
 			aws.String("Linux/UNIX (Amazon VPC)"),
 		},
-		StartTime: parseTime("2006-01-02T15:04:05.999999999Z", "2021-12-12T00:00:00Z"),
+		StartTime: &startTime,
 	}
 
 	result, err := svc.DescribeSpotPriceHistory(input)
@@ -47,5 +45,26 @@ func (c *Controller) DescribeSpotPriceHistory (ctx *gin.Context){
 		return
 	}
 
-	fmt.Println(result)
+	// Var for sum of prices per instance type and AZ
+	aggregatedPrices := map[Key]float64{}
+	// Var to count the number of price variations per instance type and AZ
+	totalPrices := map[Key]int{}
+	for _, value := range result.SpotPriceHistory {
+		if s, err := strconv.ParseFloat(*value.SpotPrice, 8); err == nil {
+			aggregatedPrices[Key{InstanceType: *value.InstanceType, AvailabilityZone: *value.AvailabilityZone}] += s
+			totalPrices[Key{InstanceType: *value.InstanceType, AvailabilityZone: *value.AvailabilityZone}] += 1
+		}
+    }
+
+    // Var with "average" price per instance type and AZ
+    averages := map[Key]float64{}
+	for key, value := range aggregatedPrices {
+		averages[key] = value / float64(totalPrices[key])
+    }
+
+    // Just print to check results
+	for key, value := range averages {
+		fmt.Println("-", key, value)
+    }
+
 }
