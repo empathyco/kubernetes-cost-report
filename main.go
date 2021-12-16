@@ -7,12 +7,13 @@ import (
 	"runtime"
 	"time"
 	"github.com/gin-gonic/gin"
-
+	"fmt"
 	"platform-cost-report/controller"
 	
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/robfig/cron/v3"
 )
 
 
@@ -42,22 +43,35 @@ func init() {
 func main() {
 	log.Printf("OS: %s\nArchitecture: %s\n", runtime.GOOS, runtime.GOARCH)
 
-
+	scheduler := cron.New()
+	
+	
 	r := gin.Default()
 
 	c := controller.NewController()
+
+	reg := controller.ExposeMetrics()
+	
+	scheduler.AddFunc("@every 12h", func() {
+		reg = controller.ExposeMetrics()
+		fmt.Println("Scheduler exposing metrics")
+		})
+	scheduler.Start()
 
 	v1 := r.Group("/api/v1")
 	{
 		getProducts := v1.Group("/getProducts")
 		{
+
+			reg = controller.ExposeMetrics()
 			getProducts.GET("", c.GetProducts)
+			
 		}
 	}
 
     // Metrics handler
     r.GET("/metrics", func(c *gin.Context) {
-        handler := promhttp.Handler()
+        handler := promhttp.HandlerFor(reg,promhttp.HandlerOpts{})
         handler.ServeHTTP(c.Writer, c.Request)
     })
 
@@ -74,4 +88,6 @@ func main() {
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+
+	
 }

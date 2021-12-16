@@ -2,7 +2,8 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
-	//"log"
+	"fmt"
+	"time"
 	api "platform-cost-report/api"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
@@ -17,19 +18,19 @@ const (
 	Description 	= "description"
 	AZ 				= "label_topology_kubernetes_io_zone"
 	Region 			= "region"
+	Timestamp 		= "timestamp"
 )
 
-func (c *Controller) GetProducts (ctx *gin.Context){
-
-
+func ExposeMetrics() prometheus.Gatherer{
 	// Gauge Vec registration 
 	// https://github.com/prometheus/client_golang/issues/716#issuecomment-590282553
 	// https://github.com/deathowl/go-metrics-prometheus/issues/14#issuecomment-570029311
 	
-    lastRequestReceivedTime := promauto.NewGaugeVec(prometheus.GaugeOpts{
+	reg := prometheus.NewRegistry()
+    lastRequestReceivedTime := promauto.With(reg).NewGaugeVec(prometheus.GaugeOpts{
         Name: "instance_cost",
 		Help: "Cost Instance Type",
-    }, []string{InstanceType,Description, InstanceOption, CPU, Memory, Unit, AZ, Region })
+    }, []string{InstanceType,Description, InstanceOption, CPU, Memory, Unit, AZ, Region, Timestamp })
 
 
 	var OnDemandPricing []api.Price
@@ -48,6 +49,7 @@ func (c *Controller) GetProducts (ctx *gin.Context){
 			Unit: OnDemandPricing[i].Unit,
 			AZ: "NA",
 			Region: "eu-west-1",
+			Timestamp: time.Now().String(),
 
 		}).Set(OnDemandPricing[i].Price)
 	}
@@ -71,7 +73,7 @@ func (c *Controller) GetProducts (ctx *gin.Context){
 					Unit: "Hrs",
 					AZ: SpotPricing[i].AZ,
 					Region: "eu-west-1",
-		
+					Timestamp: time.Now().String(),
 				}).Set(SpotPricing[i].Price)
 			}
 		}
@@ -79,6 +81,17 @@ func (c *Controller) GetProducts (ctx *gin.Context){
 		
 	}
 
-	
+	fmt.Println("Exposing metrics")
+
+	return reg
+
+}
+
+func (c *Controller) GetProducts (ctx *gin.Context){
+
+
+	ExposeMetrics()
+
+
 
 }
