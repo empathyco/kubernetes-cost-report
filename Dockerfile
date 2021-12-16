@@ -1,6 +1,6 @@
 ARG ARCH=
 
-FROM ${ARCH}golang:1.15-alpine
+FROM ${ARCH}golang:1.16.12-alpine3.15
 
 # Set necessary environmet variables needed for our image
 ENV GO111MODULE=on \
@@ -12,7 +12,6 @@ COPY go.sum .
 RUN go mod download
 COPY . .
 RUN go build -o main main.go
-RUN ls -ltr
 WORKDIR /dist 
 
 RUN cp /build/main .
