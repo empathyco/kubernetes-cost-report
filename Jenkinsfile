@@ -10,7 +10,7 @@
     - Push helm chart to Harbor
     - Deploy to test (This depends on ARGODEPLOY variable too)
 */
-FORCE_DEPLOY_INTEGRATION = false
+FORCE_DEPLOY_INTEGRATION = true
 
 /*
 # ---------------------------------------------------------------------------------
@@ -68,7 +68,7 @@ ARGOREPO_STAGE = 'platform-eks-staging-workloads'
 ARGOREPO_PROD = 'platform-eks-production-workloads'
 
 ARGOBRANCH = 'main'
-ARGODEPLOY = true
+ARGODEPLOY = false
 ARGOFOLDERS = './applications/platform/monitoring/cost-report'
 
 /*
@@ -90,7 +90,6 @@ ARGOFOLDERS = './applications/platform/monitoring/cost-report'
 */
 CHART_PATH = 'helm'
 HELM_REPO = 'https://harbor.internal.shared.empathy.co/chartrepo/empathyco'
-HELM_PUSH = false
 
 pipeline {
     agent { label 'docker' }
