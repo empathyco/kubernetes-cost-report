@@ -2,7 +2,6 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
-	"fmt"
 	"time"
 	api "platform-cost-report/api"
 	"github.com/prometheus/client_golang/prometheus"
@@ -81,17 +80,11 @@ func ExposeMetrics() prometheus.Gatherer{
 		
 	}
 
-	fmt.Println("Exposing metrics")
 
 	return reg
 
 }
 
 func (c *Controller) GetProducts (ctx *gin.Context){
-
-
 	ExposeMetrics()
-
-
-
 }

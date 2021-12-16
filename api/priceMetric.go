@@ -99,7 +99,37 @@ func SpotMetric() []Spot {
 		StartTime: &startTime,
 	}
 
-	result, err := svc.DescribeSpotPriceHistory(input)
+
+	// https://docs.aws.amazon.com/sdk-for-go/api/service/ec2/#EC2.DescribeSpotPriceHistoryPages
+
+	// Example iterating over at most 3 pages of a DescribeSpotPriceHistory operation.
+	pageNum := 0
+	var PricesArray PricesSpot
+	// Var with "average" price per instance type and AZ
+	averages := map[Spot]float64{}
+	err := svc.DescribeSpotPriceHistoryPages(input,
+		func(page *ec2.DescribeSpotPriceHistoryOutput, lastPage bool) bool {
+			pageNum++
+
+			// Var for sum of prices per instance type and AZ
+			aggregatedPrices := map[Spot]float64{}
+			// Var to count the number of price variations per instance type and AZ
+			totalPrices := map[Spot]int{}
+			for _, value := range page.SpotPriceHistory {
+				if s, err := strconv.ParseFloat(*value.SpotPrice, 8); err == nil {
+					aggregatedPrices[Spot{InstanceType: *value.InstanceType, AZ: *value.AvailabilityZone}] += s
+					totalPrices[Spot{InstanceType: *value.InstanceType, AZ: *value.AvailabilityZone}] += 1
+				}
+			}
+
+			for key, value := range aggregatedPrices {
+				averages[key] = value / float64(totalPrices[key])
+			}
+				
+			return pageNum <= 3
+		})
+
+	//result, err := svc.DescribeSpotPriceHistory(input)
 	if err != nil {
 		if aerr, ok := err.(awserr.Error); ok {
 			switch aerr.Code() {
@@ -116,37 +146,16 @@ func SpotMetric() []Spot {
 
 	//fmt.Println(result)
 
-	// Var for sum of prices per instance type and AZ
-	aggregatedPrices := map[Spot]float64{}
-	// Var to count the number of price variations per instance type and AZ
-	totalPrices := map[Spot]int{}
-	for _, value := range result.SpotPriceHistory {
-		if s, err := strconv.ParseFloat(*value.SpotPrice, 8); err == nil {
-			aggregatedPrices[Spot{InstanceType: *value.InstanceType, AZ: *value.AvailabilityZone}] += s
-			totalPrices[Spot{InstanceType: *value.InstanceType, AZ: *value.AvailabilityZone}] += 1
-		}
-    }
-
-    // Var with "average" price per instance type and AZ
-    averages := map[Spot]float64{}
-
-	
-	for key, value := range aggregatedPrices {
-		averages[key] = value / float64(totalPrices[key])
-    }
-	
-	var PricesArray PricesSpot
-    // Just print to check results
+	// Just print to check results
 	for key, value := range averages {
 		var SpotOne Spot
-		//fmt.Println("-", key, value)
 		SpotOne.InstanceType = key.InstanceType
 		SpotOne.AZ = key.AZ 
 		SpotOne.Price = value
 
 		PricesArray = append(PricesArray, SpotOne)
-    }
-	//fmt.Println(PricesArray)
+	}
+
 	return PricesArray
 }
 

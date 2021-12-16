@@ -52,7 +52,7 @@ func main() {
 
 	reg := controller.ExposeMetrics()
 	
-	scheduler.AddFunc("@every 12h", func() {
+	scheduler.AddFunc("@every 1m", func() {
 		reg = controller.ExposeMetrics()
 		fmt.Println("Scheduler exposing metrics")
 		})
@@ -62,10 +62,8 @@ func main() {
 	{
 		getProducts := v1.Group("/getProducts")
 		{
-
-			reg = controller.ExposeMetrics()
 			getProducts.GET("", c.GetProducts)
-			
+			reg = controller.ExposeMetrics()
 		}
 	}
 

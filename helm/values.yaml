@@ -8,7 +8,7 @@ image:
   repository: 500449725748.dkr.ecr.eu-west-1.amazonaws.com/platform/cost-report
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "6cff571"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -38,7 +38,7 @@ securityContext: {}
 
 service:
   type: ClusterIP
-  port: 80
+  port: 8080
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
