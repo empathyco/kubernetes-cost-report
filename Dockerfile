@@ -7,10 +7,10 @@ ENV GO111MODULE=on \
     CGO_ENABLED=0 
     
 WORKDIR /build
+COPY . .
 COPY go.mod .
 COPY go.sum . 
 RUN go mod download
-COPY . .
 RUN go build -o main main.go
 WORKDIR /dist 
 
