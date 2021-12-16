@@ -31,12 +31,9 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          env: 
-            - name: COST_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: cost-report-credentials
-                  key: password
+          envFrom:
+          - secretRef:
+              name: {{ .Values.awsCredentialsSecret }}
           ports:
             - name: metrics
               containerPort: {{ .Values.service.port }}

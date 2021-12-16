@@ -62,3 +62,15 @@ serviceMonitor:
   enabled: true
   additionalLabels: 
     release: prometheus
+
+awsCredentialsSecret: cost-report
+# Secret to get AWS credential from. It must be of the form
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: mysecret
+# type: Opaque
+# data:
+#   AWS_ACCESS_KEY_ID: YWRtaW4=
+#   AWS_SECRET_ACCESS_KEY: MWYyZDFlMmU2N2Rm
+
