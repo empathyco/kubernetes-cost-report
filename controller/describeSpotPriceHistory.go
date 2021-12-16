@@ -54,17 +54,17 @@ func (c *Controller) DescribeSpotPriceHistory (ctx *gin.Context){
 			aggregatedPrices[Key{InstanceType: *value.InstanceType, AvailabilityZone: *value.AvailabilityZone}] += s
 			totalPrices[Key{InstanceType: *value.InstanceType, AvailabilityZone: *value.AvailabilityZone}] += 1
 		}
-    }
+	}
 
-    // Var with "average" price per instance type and AZ
-    averages := map[Key]float64{}
+	// Var with "average" price per instance type and AZ
+	averages := map[Key]float64{}
 	for key, value := range aggregatedPrices {
 		averages[key] = value / float64(totalPrices[key])
-    }
+	}
 
-    // Just print to check results
+	// Just print to check results
 	for key, value := range averages {
 		fmt.Println("-", key, value)
-    }
+	}
 
 }
