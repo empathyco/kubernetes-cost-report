@@ -8,6 +8,16 @@ type Price struct {
 	Memory string 
 	Price float64 
 	Unit string 
+	AZ string
+	Region string
 }
 
 type Prices []Price
+
+type Spot struct {
+	InstanceType string
+    AZ string
+	Price float64
+}
+
+type PricesSpot []Spot

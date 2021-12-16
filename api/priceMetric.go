@@ -6,6 +6,9 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
+	"github.com/aws/aws-sdk-go/service/ec2"
+	"time"
+	"strconv"
 	"fmt"
 	"encoding/json"
 	"github.com/tidwall/gjson"
@@ -80,6 +83,72 @@ func ParsingPrice(PriceData aws.JSONValue) Price {
 	return Pricing
 }
 
+// Struct so that we can aggregate list of prices per instance type and AZ
+
+
+func SpotMetric() []Spot {
+	// https://docs.aws.amazon.com/sdk-for-go/api/service/ec2/#EC2.DescribeSpotPriceHistory
+	svc := ec2.New(session.New(), aws.NewConfig().WithRegion("eu-west-1"))
+	endTime := time.Now()
+	startTime := endTime.AddDate(0, 0, -1)
+	input := &ec2.DescribeSpotPriceHistoryInput{
+		EndTime: &endTime,
+		ProductDescriptions: []*string{
+			aws.String("Linux/UNIX (Amazon VPC)"),
+		},
+		StartTime: &startTime,
+	}
+
+	result, err := svc.DescribeSpotPriceHistory(input)
+	if err != nil {
+		if aerr, ok := err.(awserr.Error); ok {
+			switch aerr.Code() {
+			default:
+				fmt.Println(aerr.Error())
+			}
+		} else {
+			// Print the error, cast err to awserr.Error to get the Code and
+			// Message from an error.
+			fmt.Println(err.Error())
+		}
+		return nil
+	}
+
+	//fmt.Println(result)
+
+	// Var for sum of prices per instance type and AZ
+	aggregatedPrices := map[Spot]float64{}
+	// Var to count the number of price variations per instance type and AZ
+	totalPrices := map[Spot]int{}
+	for _, value := range result.SpotPriceHistory {
+		if s, err := strconv.ParseFloat(*value.SpotPrice, 8); err == nil {
+			aggregatedPrices[Spot{InstanceType: *value.InstanceType, AZ: *value.AvailabilityZone}] += s
+			totalPrices[Spot{InstanceType: *value.InstanceType, AZ: *value.AvailabilityZone}] += 1
+		}
+    }
+
+    // Var with "average" price per instance type and AZ
+    averages := map[Spot]float64{}
+
+	
+	for key, value := range aggregatedPrices {
+		averages[key] = value / float64(totalPrices[key])
+    }
+	
+	var PricesArray PricesSpot
+    // Just print to check results
+	for key, value := range averages {
+		var SpotOne Spot
+		//fmt.Println("-", key, value)
+		SpotOne.InstanceType = key.InstanceType
+		SpotOne.AZ = key.AZ 
+		SpotOne.Price = value
+
+		PricesArray = append(PricesArray, SpotOne)
+    }
+	//fmt.Println(PricesArray)
+	return PricesArray
+}
 
 func PriceMetric() []Price{
 	svc := pricing.New(session.New(), aws.NewConfig().WithRegion("us-east-1"))
