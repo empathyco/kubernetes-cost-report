@@ -8,7 +8,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promauto"
 )
 
-var (
+const (
     InstanceType	= "instance_type"
 	InstanceOption 	= "instance_option"
 	CPU 			= "vcpu"
