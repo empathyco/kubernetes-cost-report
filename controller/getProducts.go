@@ -2,46 +2,50 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/aws/aws-sdk-go/service/pricing"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/awserr"
-	"fmt"
+	//"log"
+	api "platform-cost-report/api"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 )
 
+var (
+    InstanceType	= "instance_type"
+	InstanceOption 	= "instance_option"
+	CPU 			= "vcpu"
+	Memory 			= "memory"
+	Unit 			= "unit"
+	Description 	= "description"
+)
 
 func (c *Controller) GetProducts (ctx *gin.Context){
-	svc := pricing.New(session.New(), aws.NewConfig().WithRegion("us-east-1"))
-	input := &pricing.GetAttributeValuesInput{
-		AttributeName: aws.String("volumeType"),
-		MaxResults:    aws.Int64(2),
-		ServiceCode:   aws.String("AmazonEC2"),
+
+
+	// Gauge Vec registration 
+	// https://github.com/prometheus/client_golang/issues/716#issuecomment-590282553
+	// https://github.com/deathowl/go-metrics-prometheus/issues/14#issuecomment-570029311
+	
+    lastRequestReceivedTime := promauto.NewGaugeVec(prometheus.GaugeOpts{
+        Name: "instance_cost",
+		Help: "Cost Instance Type",
+    }, []string{InstanceType,Description, InstanceOption, CPU, Memory, Unit })
+
+
+	var OnDemandPricing []api.Price
+
+	OnDemandPricing = api.PriceMetric()
+
+	// Exposing custom metrics 
+
+	for i:=0; i<len(OnDemandPricing); i++ {
+		lastRequestReceivedTime.With(prometheus.Labels{
+			InstanceType: OnDemandPricing[i].InstanceType,
+			Description: OnDemandPricing[i].Description,
+			InstanceOption: "on_demand",
+			CPU: OnDemandPricing[i].CPU,
+			Memory: OnDemandPricing[i].Memory,
+			Unit: OnDemandPricing[i].Unit,
+
+		}).Set(OnDemandPricing[i].Price)
 	}
 
-	result, err := svc.GetAttributeValues(input)
-	if err != nil {
-		if aerr, ok := err.(awserr.Error); ok {
-			switch aerr.Code() {
-			case pricing.ErrCodeInternalErrorException:
-				fmt.Println(pricing.ErrCodeInternalErrorException, aerr.Error())
-			case pricing.ErrCodeInvalidParameterException:
-				fmt.Println(pricing.ErrCodeInvalidParameterException, aerr.Error())
-			case pricing.ErrCodeNotFoundException:
-				fmt.Println(pricing.ErrCodeNotFoundException, aerr.Error())
-			case pricing.ErrCodeInvalidNextTokenException:
-				fmt.Println(pricing.ErrCodeInvalidNextTokenException, aerr.Error())
-			case pricing.ErrCodeExpiredNextTokenException:
-				fmt.Println(pricing.ErrCodeExpiredNextTokenException, aerr.Error())
-			default:
-				fmt.Println(aerr.Error())
-			}
-		} else {
-			// Print the error, cast err to awserr.Error to get the Code and
-			// Message from an error.
-			fmt.Println(err.Error())
-		}
-		return
-	}
-
-	fmt.Println(result)
 }
