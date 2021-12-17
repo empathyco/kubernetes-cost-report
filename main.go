@@ -7,47 +7,20 @@ import (
 	"runtime"
 	"time"
 	"github.com/gin-gonic/gin"
-
+	"fmt"
 	"platform-cost-report/controller"
 	
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-
-	
+	"github.com/robfig/cron/v3"
 )
 
-var (
-	indexName  string
-	numWorkers int
-	flushBytes int
-	numItems   int
-)
+
 
 func init() {
-	flag.StringVar(&indexName, "index", "test", "Index name")
-	flag.IntVar(&numWorkers, "workers", runtime.NumCPU(), "Number of indexer workers")
-	flag.IntVar(&flushBytes, "flush", 5e+6, "Flush threshold in bytes")
-	flag.IntVar(&numItems, "count", 10000, "Number of documents to generate")
 	flag.Parse()
-	prometheus.MustRegister(cpuTemp)
 	rand.Seed(time.Now().UnixNano())
-}
-
-
-
-var cpuTemp = prometheus.NewGauge(prometheus.GaugeOpts{
-    Name: "cpu_temperature_celsius",
-    Help: "Current temperature of the CPU.",
-})
-
-func prometheusHandler() gin.HandlerFunc {
-    h := promhttp.Handler()
-
-    return func(c *gin.Context) {
-        h.ServeHTTP(c.Writer, c.Request)
-    }
 }
 
 // @title           Swagger Example API
@@ -70,28 +43,35 @@ func prometheusHandler() gin.HandlerFunc {
 func main() {
 	log.Printf("OS: %s\nArchitecture: %s\n", runtime.GOOS, runtime.GOARCH)
 
-	cpuTemp.Set(65.3)
-
+	scheduler := cron.New()
+	
+	
 	r := gin.Default()
 
 	c := controller.NewController()
 
+	reg := controller.ExposeMetrics()
+	
+	scheduler.AddFunc("@every 1m", func() {
+		reg = controller.ExposeMetrics()
+		fmt.Println("Scheduler exposing metrics")
+		})
+	scheduler.Start()
+
 	v1 := r.Group("/api/v1")
 	{
-		describe := v1.Group("/describe")
-		{
-			describe.GET("", c.DescribeServices)
-		}
 		getProducts := v1.Group("/getProducts")
 		{
 			getProducts.GET("", c.GetProducts)
+			reg = controller.ExposeMetrics()
 		}
 	}
 
-	cpuTemp.Set(65.3)
-
-
-	r.GET("/metrics", prometheusHandler())
+    // Metrics handler
+    r.GET("/metrics", func(c *gin.Context) {
+        handler := promhttp.HandlerFor(reg,promhttp.HandlerOpts{})
+        handler.ServeHTTP(c.Writer, c.Request)
+    })
 
 	health := r.Group("/health")
 	{
@@ -106,4 +86,6 @@ func main() {
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+
+	
 }

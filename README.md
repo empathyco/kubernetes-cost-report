@@ -13,8 +13,8 @@ API based in Go
 For those who wants keep it simple and avoid install a lot of things:
 
 ```sh
-docker-compose up -d
-
+docker build . -t cost-report
+docker run -p 8080:8080 cost-report
 ```
 
 ### Start using it
