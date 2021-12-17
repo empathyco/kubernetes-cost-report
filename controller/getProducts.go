@@ -1,11 +1,9 @@
 package controller
 
 import (
-	"fmt"
 	api "platform-cost-report/api"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 )
@@ -34,11 +32,13 @@ func ExposeMetrics() (prometheus.Gatherer, error) {
 		Help: "Cost Instance Type",
 	}, labelNames)
 
-	onDemandPricing := api.PriceMetric()
+	onDemandPricing, err := api.PriceMetric()
+	if err != nil {
+		return nil, err
+	}
 
-	// Exposing custom metrics OnDemand
-
-	for _, v := range OnDemandPricing {
+	// Exposing custom metrics OnDemandPricing
+	for _, v := range onDemandPricing {
 		lastRequestReceivedTime.With(prometheus.Labels{
 			InstanceType:   v.InstanceType,
 			Description:    v.Description,
@@ -52,42 +52,28 @@ func ExposeMetrics() (prometheus.Gatherer, error) {
 		}).Set(v.Price)
 	}
 
-	SpotPricing, err := api.SpotMetric()
+	spotPricing, err := api.SpotMetric()
 	if err != nil {
 		return nil, err
 	}
 
-	// Exposing custom metrics Spot
-
-	for i := 0; i < len(SpotPricing); i++ {
-
-		for j := 0; j < len(OnDemandPricing); j++ {
-
-			if SpotPricing[i].InstanceType == OnDemandPricing[j].InstanceType {
+	// Exposing custom metrics SpotPricing
+	for _, valueSpot := range spotPricing {
+		for _, valueOnDemand := range onDemandPricing {
+			if valueSpot.InstanceType == valueOnDemand.InstanceType {
 				lastRequestReceivedTime.With(prometheus.Labels{
-					InstanceType:   SpotPricing[i].InstanceType,
+					InstanceType:   valueSpot.InstanceType,
 					Description:    "-",
 					InstanceOption: "SPOT",
-					CPU:            OnDemandPricing[j].CPU,
-					Memory:         OnDemandPricing[j].Memory,
+					CPU:            valueOnDemand.CPU,
+					Memory:         valueOnDemand.Memory,
 					Unit:           "Hrs",
-					AZ:             SpotPricing[i].AZ,
+					AZ:             valueSpot.AZ,
 					Region:         "eu-west-1",
 					Timestamp:      time.Now().String(),
-				}).Set(SpotPricing[i].Price)
+				}).Set(valueSpot.Price)
 			}
 		}
-
 	}
-
-	fmt.Println("Exposing metrics")
-
 	return reg, nil
-
-}
-
-func (c *Controller) GetProducts(ctx *gin.Context) {
-
-	ExposeMetrics()
-
 }

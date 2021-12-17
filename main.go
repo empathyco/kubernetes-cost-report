@@ -45,8 +45,6 @@ func main() {
 
 	r := gin.Default()
 
-	c := controller.NewController()
-
 	// First exposed metrics on init
 	// TODO: move to separate init method
 	reg, err := controller.ExposeMetrics()
@@ -56,7 +54,7 @@ func main() {
 	scheduler.AddFunc("@every 12h", func() {
 		reg, err = controller.ExposeMetrics()
 		if err != nil {
-			fmt.Errorf("Error: %s", err)
+			fmt.Println("Error: %w", err)
 		}
 	})
 	scheduler.Start()
@@ -64,8 +62,10 @@ func main() {
 	r.GET("/getProducts", func(c *gin.Context) {
 		reg, err = controller.ExposeMetrics()
 		if err != nil {
-			fmt.Errorf("Error: %s", err)
+			fmt.Println("Error: %w", err)
+			c.JSON(500, gin.H{"error": err.Error()})
 		}
+		c.JSON(200, reg)
 	})
 	// Metrics handler
 	r.GET("/metrics", func(c *gin.Context) {

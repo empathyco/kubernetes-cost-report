@@ -86,22 +86,6 @@ func TestParsingPrice(t *testing.T) {
 							"memory":       "1.0",
 						},
 					},
-					"terms": aws.JSONValue{
-						"OnDemand": []aws.JSONValue{
-							{
-								"priceDimensions": aws.JSONValue{
-									"t2.micro": aws.JSONValue{
-									{
-										"description": "Linux/UNIX (Amazon VPC)",
-										"pricePerUnit": aws.JSONValue{
-											"USD": "2.0",
-										},
-										"unit": "Hrs",
-									},
-								},
-							},
-						},
-					},
 				},
 			},
 			want: &Price{
@@ -118,38 +102,6 @@ func TestParsingPrice(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := ParsingPrice(tt.args.PriceData); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("ParsingPrice() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestSpotMetric(t *testing.T) {
-	tests := []struct {
-		name string
-		want []Spot
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := SpotMetric(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("SpotMetric() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestPriceMetric(t *testing.T) {
-	tests := []struct {
-		name string
-		want []Price
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := PriceMetric(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("PriceMetric() = %v, want %v", got, tt.want)
 			}
 		})
 	}
