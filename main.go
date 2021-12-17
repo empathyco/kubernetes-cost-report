@@ -2,21 +2,19 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"math/rand"
+	"platform-cost-report/controller"
 	"runtime"
 	"time"
+
 	"github.com/gin-gonic/gin"
-	"fmt"
-	"platform-cost-report/controller"
-	
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/robfig/cron/v3"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
-
-
 
 func init() {
 	flag.Parse()
@@ -44,50 +42,45 @@ func main() {
 	log.Printf("OS: %s\nArchitecture: %s\n", runtime.GOOS, runtime.GOARCH)
 
 	scheduler := cron.New()
-	
-	
+
 	r := gin.Default()
 
 	c := controller.NewController()
 
-	reg := controller.ExposeMetrics()
-	
+	// First exposed metrics on init
+	// TODO: move to separate init method
+	reg, err := controller.ExposeMetrics()
+	if err != nil {
+		panic(err)
+	}
 	scheduler.AddFunc("@every 12h", func() {
-		reg = controller.ExposeMetrics()
-		fmt.Println("Scheduler exposing metrics")
-		})
+		reg, err = controller.ExposeMetrics()
+		if err != nil {
+			fmt.Errorf("Error: %s", err)
+		}
+	})
 	scheduler.Start()
 
-	v1 := r.Group("/api/v1")
-	{
-		getProducts := v1.Group("/getProducts")
-		{
-
-			reg = controller.ExposeMetrics()
-			getProducts.GET("", c.GetProducts)
-			
+	r.GET("/getProducts", func(c *gin.Context) {
+		reg, err = controller.ExposeMetrics()
+		if err != nil {
+			fmt.Errorf("Error: %s", err)
 		}
-	}
-
-    // Metrics handler
-    r.GET("/metrics", func(c *gin.Context) {
-        handler := promhttp.HandlerFor(reg,promhttp.HandlerOpts{})
-        handler.ServeHTTP(c.Writer, c.Request)
-    })
-
-	health := r.Group("/health")
-	{
-		health.GET("", func(c *gin.Context) {
-			
-			c.JSON(200, gin.H{
-				"status": "health",
-			})
+	})
+	// Metrics handler
+	r.GET("/metrics", func(c *gin.Context) {
+		handler := promhttp.HandlerFor(reg, promhttp.HandlerOpts{})
+		handler.ServeHTTP(c.Writer, c.Request)
+	})
+	// Health check
+	r.GET("/health", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"status": "health",
 		})
-	}
+	})
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 
-	
 }
