@@ -1,0 +1,15 @@
+{{ if .Values.serviceMonitor.enabled }}
+{{ if .Values.serviceMonitor.dashboards.enabled }}
+apiVersion: v1
+data:
+{{ (.Files.Glob "dashboards/*.json").AsConfig | indent 2 }} 
+kind: ConfigMap
+metadata:
+  namespace: monitoring
+  annotations:
+  labels:
+    grafana_dashboard: {{ include "cost-report.fullname" . }}
+    {{- include "cost-report.labels" . | nindent 4 }}
+  name: {{ include "cost-report.fullname" . }}-dashboard
+{{- end }}
+{{- end }}
