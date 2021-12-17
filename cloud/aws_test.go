@@ -204,13 +204,13 @@ func Test_groupPricing(t *testing.T) {
 			want: []Spot{
 				{
 					InstanceType: "t2.micro",
-					AZ:           "us-east-1a",
-					Price:        0.015,
+					AZ:           "us-east-1b",
+					Price:        0.03,
 				},
 				{
 					InstanceType: "t2.micro",
-					AZ:           "us-east-1b",
-					Price:        0.03,
+					AZ:           "us-east-1a",
+					Price:        0.015,
 				},
 			},
 		},
@@ -279,54 +279,8 @@ func TestPriceMetric(t *testing.T) {
 	}
 }
 
-func Test_parsingJsonFloat(t *testing.T) {
-	type args struct {
-		dataByte []byte
-		key      string
-	}
-	tests := []struct {
-		name string
-		args args
-		want float64
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := parsingJsonFloat(tt.args.dataByte, tt.args.key); got != tt.want {
-				t.Errorf("parsingJsonFloat() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func Test_parsingPrice(t *testing.T) {
-	type args struct {
-		PriceData aws.JSONValue
-	}
-	tests := []struct {
-		name    string
-		args    args
-		want    *Price
-		wantErr bool
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := parsingPrice(tt.args.PriceData)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("parsingPrice() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("parsingPrice() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
 func TestAWSMetrics(t *testing.T) {
+	skipCI(t)
 	tests := []struct {
 		name    string
 		want    prometheus.Gatherer
