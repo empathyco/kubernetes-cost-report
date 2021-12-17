@@ -97,7 +97,6 @@ func avg(array []float64) float64 {
 }
 
 func groupPricing(spotPrices []*ec2.SpotPrice) []Spot {
-
 	// Var for sum of prices per instance type and AZ
 	aggregatedPrices := map[Spot][]float64{}
 	// Var to count the number of price variations per instance type and AZ
@@ -144,12 +143,19 @@ func SpotMetric() ([]Spot, error) {
 		},
 		StartTime: &startTime,
 	}
-	result, err := svc.DescribeSpotPriceHistory(input)
+	var spotPrices []Spot
+	pageNum := 0
+	err = svc.DescribeSpotPriceHistoryPages(input,
+		func(page *ec2.DescribeSpotPriceHistoryOutput, b bool) bool {
+			pageNum++
+			spotPrices = groupPricing(page.SpotPriceHistory)
+			return pageNum <= 3
+		})
 	if err != nil {
 		return nil, err
 	}
 
-	return groupPricing(result.SpotPriceHistory), nil
+	return spotPrices, nil
 }
 
 func PriceMetric() ([]*Price, error) {
