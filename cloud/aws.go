@@ -1,4 +1,4 @@
-package api
+package cloud
 
 import (
 	"encoding/json"
@@ -9,6 +9,8 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/aws/aws-sdk-go/service/pricing"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/tidwall/gjson"
 )
 
@@ -28,6 +30,18 @@ type Spot struct {
 	AZ           string
 	Price        float64
 }
+
+const (
+	InstanceType   = "label_beta_kubernetes_io_instance_type"
+	InstanceOption = "label_eks_amazonaws_com_capacity_type"
+	CPU            = "vcpu"
+	Memory         = "memory"
+	Unit           = "unit"
+	Description    = "description"
+	AZ             = "label_topology_kubernetes_io_zone"
+	Region         = "region"
+	Timestamp      = "timestamp"
+)
 
 var filtering []*pricing.Filter = []*pricing.Filter{
 	{
@@ -69,14 +83,14 @@ func ParsingJsonString(dataByte []byte, key string) string {
 	return value
 }
 
-func ParsingJsonFloat(dataByte []byte, key string) float64 {
+func parsingJsonFloat(dataByte []byte, key string) float64 {
 	//https://github.com/tidwall/gjson
 
 	value := gjson.Get(string(dataByte[:]), key).Float()
 	return value
 }
 
-func ParsingPrice(PriceData aws.JSONValue) (*Price, error) {
+func parsingPrice(PriceData aws.JSONValue) (*Price, error) {
 	Pricing := &Price{}
 	data, err := json.Marshal(PriceData)
 	if err != nil {
@@ -91,7 +105,7 @@ func ParsingPrice(PriceData aws.JSONValue) (*Price, error) {
 
 	Pricing.Description = ParsingJsonString(data, "terms.OnDemand.*.priceDimensions.*.description")
 	//Price in USD
-	Pricing.Price = ParsingJsonFloat(data, "terms.OnDemand.*.priceDimensions.*.pricePerUnit.USD")
+	Pricing.Price = parsingJsonFloat(data, "terms.OnDemand.*.priceDimensions.*.pricePerUnit.USD")
 
 	Pricing.Unit = ParsingJsonString(data, "terms.OnDemand.*.priceDimensions.*.unit")
 
@@ -101,8 +115,6 @@ func ParsingPrice(PriceData aws.JSONValue) (*Price, error) {
 // Struct so that we can aggregate list of prices per instance type and AZ
 
 // https://docs.aws.amazon.com/sdk-for-go/api/service/pricing/
-
-// Create a Pricing service client.
 
 func avg(array []float64) float64 {
 	result := 0.0
@@ -142,6 +154,7 @@ func groupPricing(spotPrices []*ec2.SpotPrice) []Spot {
 	return pricesArray
 }
 
+// SpotMetric is the function that returns the average spot price
 func SpotMetric() ([]Spot, error) {
 
 	ses, err := session.NewSession()
@@ -172,6 +185,7 @@ func SpotMetric() ([]Spot, error) {
 	return spotPrices, nil
 }
 
+// PriceMetric is the function that returns the average price
 func PriceMetric() ([]*Price, error) {
 	ses, err := session.NewSession()
 	if err != nil {
@@ -188,26 +202,79 @@ func PriceMetric() ([]*Price, error) {
 		ServiceCode: aws.String("AmazonEC2"),
 	}
 
-	// Example iterating over at most 3 pages of a GetProducts operation.
-	pageNum := 0
 	var prices []*Price
-
 	// GetProductsPages https://docs.aws.amazon.com/sdk-for-go/api/service/pricing/#Pricing.GetProductsPages
 	paginator := func(page *pricing.GetProductsOutput, lastPage bool) bool {
 		for _, v := range page.PriceList {
-			price, err := ParsingPrice(v)
+			price, err := parsingPrice(v)
 			if err != nil {
 				return false
 			}
 			prices = append(prices, price)
 		}
-		// TODO: try to use lastPage
-		pageNum++
-		return pageNum <= 3
+		return lastPage
 	}
 	err = svc.GetProductsPages(input, paginator)
 	if err != nil {
 		return nil, err
 	}
 	return prices, nil
+}
+
+func AWSMetrics() (prometheus.Gatherer, error) {
+	// Gauge Vec registration
+	// https://github.com/prometheus/client_golang/issues/716#issuecomment-590282553
+	// https://github.com/deathowl/go-metrics-prometheus/issues/14#issuecomment-570029311
+
+	reg := prometheus.NewRegistry()
+	labelNames := []string{InstanceType, Description, InstanceOption, CPU, Memory, Unit, AZ, Region, Timestamp}
+	lastRequestReceivedTime := promauto.With(reg).NewGaugeVec(prometheus.GaugeOpts{
+		Name: "instance_cost",
+		Help: "Cost Instance Type",
+	}, labelNames)
+
+	onDemandPricing, err := PriceMetric()
+	if err != nil {
+		return nil, err
+	}
+
+	// Exposing custom metrics OnDemandPricing
+	for _, v := range onDemandPricing {
+		lastRequestReceivedTime.With(prometheus.Labels{
+			InstanceType:   v.InstanceType,
+			Description:    v.Description,
+			InstanceOption: "ON_DEMAND",
+			CPU:            v.CPU,
+			Memory:         v.Memory,
+			Unit:           v.Unit,
+			AZ:             "NA",
+			Region:         "eu-west-1",
+			Timestamp:      time.Now().String(),
+		}).Set(v.Price)
+	}
+
+	spotPricing, err := SpotMetric()
+	if err != nil {
+		return nil, err
+	}
+
+	// Exposing custom metrics SpotPricing
+	for _, valueSpot := range spotPricing {
+		for _, valueOnDemand := range onDemandPricing {
+			if valueSpot.InstanceType == valueOnDemand.InstanceType {
+				lastRequestReceivedTime.With(prometheus.Labels{
+					InstanceType:   valueSpot.InstanceType,
+					Description:    "-",
+					InstanceOption: "SPOT",
+					CPU:            valueOnDemand.CPU,
+					Memory:         valueOnDemand.Memory,
+					Unit:           "Hrs",
+					AZ:             valueSpot.AZ,
+					Region:         "eu-west-1",
+					Timestamp:      time.Now().String(),
+				}).Set(valueSpot.Price)
+			}
+		}
+	}
+	return reg, nil
 }

@@ -1,4 +1,4 @@
-package api
+package cloud
 
 import (
 	"os"
@@ -8,6 +8,7 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/ec2"
+	"github.com/prometheus/client_golang/prometheus"
 )
 
 func skipCI(t *testing.T) {
@@ -67,7 +68,7 @@ func TestParsingJsonFloat(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := ParsingJsonFloat(tt.args.dataByte, tt.args.key); got != tt.want {
+			if got := parsingJsonFloat(tt.args.dataByte, tt.args.key); got != tt.want {
 				t.Errorf("ParsingJsonFloat() = %v, want %v", got, tt.want)
 			}
 		})
@@ -124,7 +125,7 @@ func TestParsingPrice(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := ParsingPrice(tt.args.PriceData)
+			got, err := parsingPrice(tt.args.PriceData)
 			if err != nil {
 				t.Errorf("ParsingPrice() error = %v", err)
 				return
@@ -273,6 +274,75 @@ func TestPriceMetric(t *testing.T) {
 			test := got[0]
 			if !reflect.DeepEqual(len(got) > 0, tt.want) {
 				t.Errorf("PriceMetric() = %v, want %v", test, tt.want)
+			}
+		})
+	}
+}
+
+func Test_parsingJsonFloat(t *testing.T) {
+	type args struct {
+		dataByte []byte
+		key      string
+	}
+	tests := []struct {
+		name string
+		args args
+		want float64
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := parsingJsonFloat(tt.args.dataByte, tt.args.key); got != tt.want {
+				t.Errorf("parsingJsonFloat() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_parsingPrice(t *testing.T) {
+	type args struct {
+		PriceData aws.JSONValue
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *Price
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := parsingPrice(tt.args.PriceData)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("parsingPrice() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("parsingPrice() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestAWSMetrics(t *testing.T) {
+	tests := []struct {
+		name    string
+		want    prometheus.Gatherer
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := AWSMetrics()
+			if (err != nil) != tt.wantErr {
+				t.Errorf("AWSMetrics() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("AWSMetrics() = %v, want %v", got, tt.want)
 			}
 		})
 	}

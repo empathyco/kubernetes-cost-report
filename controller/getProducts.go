@@ -1,7 +1,7 @@
 package controller
 
 import (
-	api "platform-cost-report/api"
+	"platform-cost-report/cloud"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -32,7 +32,7 @@ func ExposeMetrics() (prometheus.Gatherer, error) {
 		Help: "Cost Instance Type",
 	}, labelNames)
 
-	onDemandPricing, err := api.PriceMetric()
+	onDemandPricing, err := cloud.PriceMetric()
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +52,7 @@ func ExposeMetrics() (prometheus.Gatherer, error) {
 		}).Set(v.Price)
 	}
 
-	spotPricing, err := api.SpotMetric()
+	spotPricing, err := cloud.SpotMetric()
 	if err != nil {
 		return nil, err
 	}
