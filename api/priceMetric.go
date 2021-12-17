@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"strconv"
 	"time"
 
@@ -12,6 +11,23 @@ import (
 	"github.com/aws/aws-sdk-go/service/pricing"
 	"github.com/tidwall/gjson"
 )
+
+type Price struct {
+	InstanceType string
+	Description  string
+	CPU          string
+	Memory       string
+	Price        float64
+	Unit         string
+	AZ           string
+	Region       string
+}
+
+type Spot struct {
+	InstanceType string
+	AZ           string
+	Price        float64
+}
 
 var filtering []*pricing.Filter = []*pricing.Filter{
 	{
@@ -60,11 +76,11 @@ func ParsingJsonFloat(dataByte []byte, key string) float64 {
 	return value
 }
 
-func ParsingPrice(PriceData aws.JSONValue) *Price {
+func ParsingPrice(PriceData aws.JSONValue) (*Price, error) {
 	Pricing := &Price{}
 	data, err := json.Marshal(PriceData)
 	if err != nil {
-		fmt.Printf("marshal failed: %s", err)
+		return nil, err
 	}
 
 	Pricing.CPU = ParsingJsonString(data, "product.attributes.vcpu")
@@ -79,7 +95,7 @@ func ParsingPrice(PriceData aws.JSONValue) *Price {
 
 	Pricing.Unit = ParsingJsonString(data, "terms.OnDemand.*.priceDimensions.*.unit")
 
-	return Pricing
+	return Pricing, nil
 }
 
 // Struct so that we can aggregate list of prices per instance type and AZ
@@ -144,13 +160,11 @@ func SpotMetric() ([]Spot, error) {
 		StartTime: &startTime,
 	}
 	var spotPrices []Spot
-	pageNum := 0
-	err = svc.DescribeSpotPriceHistoryPages(input,
-		func(page *ec2.DescribeSpotPriceHistoryOutput, b bool) bool {
-			pageNum++
-			spotPrices = groupPricing(page.SpotPriceHistory)
-			return pageNum <= 3
-		})
+	paginator := func(page *ec2.DescribeSpotPriceHistoryOutput, b bool) bool {
+		spotPrices = groupPricing(page.SpotPriceHistory)
+		return b
+	}
+	err = svc.DescribeSpotPriceHistoryPages(input, paginator)
 	if err != nil {
 		return nil, err
 	}
@@ -181,7 +195,11 @@ func PriceMetric() ([]*Price, error) {
 	// GetProductsPages https://docs.aws.amazon.com/sdk-for-go/api/service/pricing/#Pricing.GetProductsPages
 	paginator := func(page *pricing.GetProductsOutput, lastPage bool) bool {
 		for _, v := range page.PriceList {
-			prices = append(prices, ParsingPrice(v))
+			price, err := ParsingPrice(v)
+			if err != nil {
+				return false
+			}
+			prices = append(prices, price)
 		}
 		// TODO: try to use lastPage
 		pageNum++
@@ -193,28 +211,3 @@ func PriceMetric() ([]*Price, error) {
 	}
 	return prices, nil
 }
-
-/*
-
-if aerr, ok := err.(awserr.Error); ok {
-			switch aerr.Code() {
-			case pricing.ErrCodeInternalErrorException:
-				fmt.Println(pricing.ErrCodeInternalErrorException, aerr.Error())
-			case pricing.ErrCodeInvalidParameterException:
-				fmt.Println(pricing.ErrCodeInvalidParameterException, aerr.Error())
-			case pricing.ErrCodeNotFoundException:
-				fmt.Println(pricing.ErrCodeNotFoundException, aerr.Error())
-			case pricing.ErrCodeInvalidNextTokenException:
-				fmt.Println(pricing.ErrCodeInvalidNextTokenException, aerr.Error())
-			case pricing.ErrCodeExpiredNextTokenException:
-				fmt.Println(pricing.ErrCodeExpiredNextTokenException, aerr.Error())
-			default:
-				fmt.Println(aerr.Error())
-			}
-		} else {
-			// Print the error, cast err to awserr.Error to get the Code and
-			// Message from an error.
-			fmt.Println(err.Error())
-		}
-
-*/

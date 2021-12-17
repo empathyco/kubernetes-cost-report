@@ -1,5 +1,5 @@
 FROM ${ARCH}golang:1.15-alpine AS build_base
-
+ENV CI=docker
 RUN apk add --no-cache git
 
 # Set the Current Working Directory inside the container
