@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
-	"platform-cost-report/controller"
+	"platform-cost-report/cloud"
 	"runtime"
 	"time"
 
@@ -47,20 +47,21 @@ func main() {
 
 	// First exposed metrics on init
 	// TODO: move to separate init method
-	reg, err := controller.ExposeMetrics()
+	reg, err := cloud.AWSMetrics()
 	if err != nil {
 		panic(err)
 	}
-	scheduler.AddFunc("@every 12h", func() {
-		reg, err = controller.ExposeMetrics()
+	scheduler.AddFunc("@every 10s", func() {
+		reg, err = cloud.AWSMetrics()
+		fmt.Println("AWS metrics updated")
 		if err != nil {
 			fmt.Println("Error: %w", err)
 		}
 	})
 	scheduler.Start()
 
-	r.GET("/getProducts", func(c *gin.Context) {
-		reg, err = controller.ExposeMetrics()
+	r.GET("/updatePricing", func(c *gin.Context) {
+		reg, err = cloud.AWSMetrics()
 		if err != nil {
 			fmt.Println("Error: %w", err)
 			c.JSON(500, gin.H{"error": err.Error()})
