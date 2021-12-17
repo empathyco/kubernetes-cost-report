@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/aws/aws-sdk-go/service/pricing"
@@ -153,7 +152,7 @@ func SpotMetric() ([]Spot, error) {
 	return groupPricing(result.SpotPriceHistory), nil
 }
 
-func PriceMetric() ([]Price, error) {
+func PriceMetric() ([]*Price, error) {
 	ses, err := session.NewSession()
 	if err != nil {
 		return nil, err
@@ -171,24 +170,27 @@ func PriceMetric() ([]Price, error) {
 
 	// Example iterating over at most 3 pages of a GetProducts operation.
 	pageNum := 0
-	var PriceArray Prices
+	var prices []*Price
 
 	// GetProductsPages https://docs.aws.amazon.com/sdk-for-go/api/service/pricing/#Pricing.GetProductsPages
-
-	err = svc.GetProductsPages(input,
-		func(page *pricing.GetProductsOutput, lastPage bool) bool {
-			pageNum++
-			for i := 0; i < len(page.PriceList); i++ {
-
-				PriceOne := ParsingPrice(page.PriceList[i])
-
-				PriceArray = append(PriceArray, *PriceOne)
-
-			}
-			return pageNum <= 3
-		})
+	paginator := func(page *pricing.GetProductsOutput, lastPage bool) bool {
+		for _, v := range page.PriceList {
+			prices = append(prices, ParsingPrice(v))
+		}
+		// TODO: try to use lastPage
+		pageNum++
+		return pageNum <= 3
+	}
+	err = svc.GetProductsPages(input, paginator)
 	if err != nil {
-		if aerr, ok := err.(awserr.Error); ok {
+		return nil, err
+	}
+	return prices, nil
+}
+
+/*
+
+if aerr, ok := err.(awserr.Error); ok {
 			switch aerr.Code() {
 			case pricing.ErrCodeInternalErrorException:
 				fmt.Println(pricing.ErrCodeInternalErrorException, aerr.Error())
@@ -208,8 +210,5 @@ func PriceMetric() ([]Price, error) {
 			// Message from an error.
 			fmt.Println(err.Error())
 		}
-		return nil, nil
-	}
 
-	return PriceArray, nil
-}
+*/
