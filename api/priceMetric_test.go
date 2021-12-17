@@ -86,6 +86,21 @@ func TestParsingPrice(t *testing.T) {
 							"memory":       "1.0",
 						},
 					},
+					"terms": aws.JSONValue{
+						"OnDemand": aws.JSONValue{
+							"1.0": aws.JSONValue{
+								"priceDimensions": aws.JSONValue{
+									"t2.micro": aws.JSONValue{
+										"pricePerUnit": aws.JSONValue{
+											"USD": "2.00",
+										},
+										"description": "Linux/UNIX (Amazon VPC)",
+										"unit":        "Hrs",
+									},
+								},
+							},
+						},
+					},
 				},
 			},
 			want: &Price{

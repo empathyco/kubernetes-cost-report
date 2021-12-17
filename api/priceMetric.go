@@ -101,7 +101,7 @@ func groupPricing(spotPrices []*ec2.SpotPrice) []Spot {
 	aggregatedPrices := map[Spot][]float64{}
 	// Var to count the number of price variations per instance type and AZ
 	for _, value := range spotPrices {
-		if s, err := strconv.ParseFloat(*value.SpotPrice, 8); err == nil {
+		if s, err := strconv.ParseFloat(*value.SpotPrice, 64); err == nil {
 			index := Spot{InstanceType: *value.InstanceType, AZ: *value.AvailabilityZone}
 			aggregatedPrices[index] = append(aggregatedPrices[index], s)
 		}
