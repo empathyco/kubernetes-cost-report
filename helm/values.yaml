@@ -62,6 +62,8 @@ serviceMonitor:
   enabled: true
   additionalLabels: 
     release: prometheus
+  dashboards:
+    enabled: true
 
 awsCredentialsSecret: cost-report
 # Secret to get AWS credential from. It must be of the form
