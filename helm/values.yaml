@@ -5,10 +5,10 @@
 replicaCount: 1
 
 image:
-  repository: 500449725748.dkr.ecr.eu-west-1.amazonaws.com/platform/cost-report
+  repository: empathyco/cost-report
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "c7b4414"
+  tag: "0.0.1"
 
 imagePullSecrets: []
 nameOverride: ""
