@@ -181,10 +181,10 @@ func SpotMetric() ([]Spot, error) {
 	pageNum := 0
 	paginator := func(page *ec2.DescribeSpotPriceHistoryOutput, b bool) bool {
 		pageNum++
-		spotPrices = groupPricing(page.SpotPriceHistory)
+		spotPrices = append(spotPrices,groupPricing(page.SpotPriceHistory)...)
 		fmt.Println(spotPrices)
 
-		return pageNum <= 4
+		return pageNum <= 3
 	}
 	err = svc.DescribeSpotPriceHistoryPages(input, paginator)
 	if err != nil {
