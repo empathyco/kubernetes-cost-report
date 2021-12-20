@@ -2,9 +2,10 @@ package cloud
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
 	"time"
-	"fmt"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -94,10 +95,9 @@ func parsingJsonFloat(dataByte []byte, key string) float64 {
 func ParsingJsonStringArray(dataByte []byte, key string) []string {
 	//https://github.com/tidwall/gjson
 	result := []string{}
-	value := gjson.Get(string(dataByte[:]), key).Array() 
+	value := gjson.Get(string(dataByte[:]), key).Array()
 	for _, name := range value {
-		println(name.String())
-		result = append(result,name.String() )
+		result = append(result, name.String())
 	}
 
 	return result
@@ -235,7 +235,7 @@ func PriceMetric() ([]*Price, error) {
 	return prices, nil
 }
 
-func listInstances()[]string{
+func listInstances() []string {
 
 	svc := ec2.New(session.New(&aws.Config{
 		Region: aws.String("eu-west-1"),
@@ -246,10 +246,10 @@ func listInstances()[]string{
 				Name: aws.String("instance-state-name"),
 				Values: []*string{
 					aws.String("pending"),
-					aws.String("running"), 
+					aws.String("running"),
 					aws.String("shutting-down"),
-					aws.String("terminated"), 
-					aws.String("stopping"), 
+					aws.String("terminated"),
+					aws.String("stopping"),
 					aws.String("stopped"),
 				},
 			},
@@ -261,7 +261,7 @@ func listInstances()[]string{
 	err := svc.DescribeInstancesPages(input,
 		func(page *ec2.DescribeInstancesOutput, lastPage bool) bool {
 			data, _ := json.Marshal(page)
-			instanceTypes =  ParsingJsonStringArray(data, "Reservations.#.Instances.0.InstanceType")
+			instanceTypes = ParsingJsonStringArray(data, "Reservations.#.Instances.0.InstanceType")
 			return !lastPage
 		})
 	if err != nil {
@@ -282,15 +282,15 @@ func listInstances()[]string{
 }
 
 func removeDuplicateStr(strSlice []string) []string {
-    allKeys := make(map[string]bool)
-    list := []string{}
-    for _, item := range strSlice {
-        if _, value := allKeys[item]; !value {
-            allKeys[item] = true
-            list = append(list, item)
-        }
-    }
-    return list
+	allKeys := make(map[string]bool)
+	list := []string{}
+	for _, item := range strSlice {
+		if _, value := allKeys[item]; !value {
+			allKeys[item] = true
+			list = append(list, item)
+		}
+	}
+	return list
 }
 
 func AWSMetrics() (prometheus.Gatherer, error) {
@@ -328,9 +328,9 @@ func AWSMetrics() (prometheus.Gatherer, error) {
 					Timestamp:      time.Now().String(),
 				}).Set(v.Price)
 			}
-			
+
 		}
-		
+
 	}
 
 	spotPricing, err := SpotMetric()
@@ -357,9 +357,9 @@ func AWSMetrics() (prometheus.Gatherer, error) {
 						}).Set(valueSpot.Price)
 					}
 
+				}
 			}
-		}
-					
+
 		}
 	}
 	return reg, nil
