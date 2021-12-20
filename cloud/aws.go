@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"strconv"
 	"time"
-
+	"fmt"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
@@ -73,6 +73,11 @@ var filtering []*pricing.Filter = []*pricing.Filter{
 		Type:  aws.String("TERM_MATCH"),
 		Field: aws.String("marketoption"),
 		Value: aws.String("OnDemand"),
+	},
+	{
+		Type:  aws.String("TERM_MATCH"),
+		Field: aws.String("vcpu"),
+		Value: aws.String("4"),
 	},
 }
 
@@ -173,14 +178,20 @@ func SpotMetric() ([]Spot, error) {
 		StartTime: &startTime,
 	}
 	var spotPrices []Spot
+	pageNum := 0
 	paginator := func(page *ec2.DescribeSpotPriceHistoryOutput, b bool) bool {
+		pageNum++
 		spotPrices = groupPricing(page.SpotPriceHistory)
-		return b
+		fmt.Println(spotPrices)
+
+		return pageNum <= 4
 	}
 	err = svc.DescribeSpotPriceHistoryPages(input, paginator)
 	if err != nil {
 		return nil, err
 	}
+
+	fmt.Println(len(spotPrices))
 
 	return spotPrices, nil
 }
@@ -203,8 +214,10 @@ func PriceMetric() ([]*Price, error) {
 	}
 
 	var prices []*Price
+	pageNum := 0
 	// GetProductsPages https://docs.aws.amazon.com/sdk-for-go/api/service/pricing/#Pricing.GetProductsPages
 	paginator := func(page *pricing.GetProductsOutput, lastPage bool) bool {
+		pageNum++
 		for _, v := range page.PriceList {
 			price, err := parsingPrice(v)
 			if err != nil {
@@ -212,12 +225,14 @@ func PriceMetric() ([]*Price, error) {
 			}
 			prices = append(prices, price)
 		}
-		return lastPage
+		return pageNum <= 3
 	}
 	err = svc.GetProductsPages(input, paginator)
 	if err != nil {
 		return nil, err
 	}
+
+
 	return prices, nil
 }
 
