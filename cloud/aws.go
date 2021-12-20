@@ -172,17 +172,17 @@ func SpotMetric() ([]Spot, error) {
 		},
 		StartTime: &startTime,
 	}
-	var spotPrices []Spot
+	var spotPrices []*ec2.SpotPrice
 	paginator := func(page *ec2.DescribeSpotPriceHistoryOutput, b bool) bool {
-		spotPrices = groupPricing(page.SpotPriceHistory)
-		return b
+		spotPrices = append(spotPrices, page.SpotPriceHistory...)
+		return !b
 	}
 	err = svc.DescribeSpotPriceHistoryPages(input, paginator)
+	groupPrice := groupPricing(spotPrices)
 	if err != nil {
 		return nil, err
 	}
-
-	return spotPrices, nil
+	return groupPrice, nil
 }
 
 // PriceMetric is the function that returns the average price
@@ -212,7 +212,7 @@ func PriceMetric() ([]*Price, error) {
 			}
 			prices = append(prices, price)
 		}
-		return lastPage
+		return !lastPage
 	}
 	err = svc.GetProductsPages(input, paginator)
 	if err != nil {
