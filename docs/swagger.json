@@ -16,7 +16,7 @@
         "version": "1.0"
     },
     "host": "localhost:8080",
-    "basePath": "/health",
+    "basePath": "/",
     "paths": {},
     "securityDefinitions": {
         "BasicAuth": {

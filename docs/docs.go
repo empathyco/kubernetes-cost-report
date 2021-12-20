@@ -52,7 +52,7 @@ type swaggerInfo struct {
 var SwaggerInfo = swaggerInfo{
 	Version:     "1.0",
 	Host:        "localhost:8080",
-	BasePath:    "/health",
+	BasePath:    "/",
 	Schemes:     []string{},
 	Title:       "Swagger Example API",
 	Description: "This is a sample server celler server.",
