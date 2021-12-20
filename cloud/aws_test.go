@@ -204,13 +204,13 @@ func Test_groupPricing(t *testing.T) {
 			want: []Spot{
 				{
 					InstanceType: "t2.micro",
-					AZ:           "us-east-1b",
-					Price:        0.03,
+					AZ:           "us-east-1a",
+					Price:        0.015,
 				},
 				{
 					InstanceType: "t2.micro",
-					AZ:           "us-east-1a",
-					Price:        0.015,
+					AZ:           "us-east-1b",
+					Price:        0.03,
 				},
 			},
 		},
