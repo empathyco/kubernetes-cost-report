@@ -9,6 +9,8 @@ import (
 	"runtime"
 	"time"
 
+	docs "platform-cost-report/docs"
+
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/robfig/cron/v3"
@@ -51,7 +53,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	scheduler.AddFunc("@every 10s", func() {
+	scheduler.AddFunc("@every 1h", func() {
 		reg, err = cloud.AWSMetrics()
 		fmt.Println("AWS metrics updated")
 		if err != nil {
@@ -60,13 +62,26 @@ func main() {
 	})
 	scheduler.Start()
 
+	// @BasePath /
+
+	// updatePricing godoc
+	// @Summary update pricing
+	// @Schemes
+	// @Description update pricing
+	// @Tags example
+	// @Accept json
+	// @Produce json
+	// @Success 200 {"message": "Pricing updated"}
+	// @Router /updatePricing [get]
 	r.GET("/updatePricing", func(c *gin.Context) {
 		reg, err = cloud.AWSMetrics()
 		if err != nil {
 			fmt.Println("Error: %w", err)
 			c.JSON(500, gin.H{"error": err.Error()})
 		}
-		c.JSON(200, reg)
+		c.JSON(200, gin.H{
+			"message": "Pricing updated",
+		})
 	})
 	// Metrics handler
 	r.GET("/metrics", func(c *gin.Context) {
@@ -79,8 +94,9 @@ func main() {
 			"status": "health",
 		})
 	})
+	docs.SwaggerInfo.BasePath = "/"
 
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	r.GET("/swagger", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 

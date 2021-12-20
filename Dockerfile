@@ -14,7 +14,7 @@ RUN go mod download
 COPY . .
 
 # Unit tests
-RUN CGO_ENABLED=0 go test -v
+RUN CGO_ENABLED=0 go test -v ./cloud
 
 # Build the Go app
 RUN go build -o ./out/cost-report .
