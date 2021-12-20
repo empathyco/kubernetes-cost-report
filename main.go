@@ -53,7 +53,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	scheduler.AddFunc("@every 1h", func() {
+	scheduler.AddFunc("@every 12h", func() {
 		reg, err = cloud.AWSMetrics()
 		fmt.Println("AWS metrics updated")
 		if err != nil {

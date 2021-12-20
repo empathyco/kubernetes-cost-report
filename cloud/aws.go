@@ -74,6 +74,11 @@ var filtering []*pricing.Filter = []*pricing.Filter{
 		Field: aws.String("marketoption"),
 		Value: aws.String("OnDemand"),
 	},
+	{
+		Type:  aws.String("TERM_MATCH"),
+		Field: aws.String("vcpu"),
+		Value: aws.String("4"),
+	},
 }
 
 func ParsingJsonString(dataByte []byte, key string) string {
@@ -218,6 +223,7 @@ func PriceMetric() ([]*Price, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	return prices, nil
 }
 
