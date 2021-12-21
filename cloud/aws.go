@@ -285,9 +285,6 @@ func removeDuplicateStr(strSlice []string) []string {
 }
 
 func AWSMetrics() (prometheus.Gatherer, error) {
-	// Gauge Vec registration
-	// https://github.com/prometheus/client_golang/issues/716#issuecomment-590282553
-	// https://github.com/deathowl/go-metrics-prometheus/issues/14#issuecomment-570029311
 
 	reg := prometheus.NewRegistry()
 	labelNames := []string{InstanceType, Description, InstanceOption, CPU, Memory, Unit, AZ, Region, Timestamp}
