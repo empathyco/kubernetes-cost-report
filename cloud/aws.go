@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/aws/aws-sdk-go/service/pricing"
@@ -235,11 +234,13 @@ func PriceMetric() ([]*Price, error) {
 	return prices, nil
 }
 
-func listInstances() []string {
+func listInstances() ([]string, error) {
+	ses, err := session.NewSession()
+	if err != nil {
+		return nil, err
+	}
+	svc := ec2.New(ses, aws.NewConfig().WithRegion("eu-west-1"))
 
-	svc := ec2.New(session.New(&aws.Config{
-		Region: aws.String("eu-west-1"),
-	}))
 	input := &ec2.DescribeInstancesInput{
 		Filters: []*ec2.Filter{
 			{
@@ -258,27 +259,17 @@ func listInstances() []string {
 
 	// Example iterating over at most 3 pages of a DescribeInstances operation.
 	var instanceTypes []string
-	err := svc.DescribeInstancesPages(input,
+	err = svc.DescribeInstancesPages(input,
 		func(page *ec2.DescribeInstancesOutput, lastPage bool) bool {
 			data, _ := json.Marshal(page)
 			instanceTypes = ParsingJsonStringArray(data, "Reservations.#.Instances.0.InstanceType")
 			return !lastPage
 		})
 	if err != nil {
-		if aerr, ok := err.(awserr.Error); ok {
-			switch aerr.Code() {
-			default:
-				fmt.Println(aerr.Error())
-			}
-		} else {
-			// Print the error, cast err to awserr.Error to get the Code and
-			// Message from an error.
-			fmt.Println(err.Error())
-		}
-		return nil
+		return nil, err
 	}
-
-	return instanceTypes
+	fmt.Println(instanceTypes)
+	return removeDuplicateStr(instanceTypes), nil
 }
 
 func removeDuplicateStr(strSlice []string) []string {
@@ -300,23 +291,48 @@ func AWSMetrics() (prometheus.Gatherer, error) {
 
 	reg := prometheus.NewRegistry()
 	labelNames := []string{InstanceType, Description, InstanceOption, CPU, Memory, Unit, AZ, Region, Timestamp}
-	lastRequestReceivedTime := promauto.With(reg).NewGaugeVec(prometheus.GaugeOpts{
+	allMachinePricing := promauto.With(reg).NewGaugeVec(prometheus.GaugeOpts{
 		Name: "instance_cost",
 		Help: "Cost Instance Type",
 	}, labelNames)
-
-	instanceTypes := listInstances()
-	instanceTypes = removeDuplicateStr(instanceTypes)
+	inUseMachinePrincing := promauto.With(reg).NewGaugeVec(prometheus.GaugeOpts{
+		Name: "instance_cost_in_use",
+		Help: "Cost Instance Type used in the account",
+	}, labelNames)
+	// vcpuAndMemPricing := promauto.With(reg).NewGaugeVec(prometheus.GaugeOpts{
+	// 	Name: "instance_cost_unit",
+	// 	Help: "Cost Per vcpu and memory",
+	// }, labelNames)
 	onDemandPricing, err := PriceMetric()
 	if err != nil {
 		return nil, err
 	}
-
-	// Exposing custom metrics OnDemandPricing
+	spotPricing, err := SpotMetric()
+	if err != nil {
+		return nil, err
+	}
+	instanceTypes, err := listInstances()
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(instanceTypes)
 	for _, v := range onDemandPricing {
+		// All machine pricing calculation
+		allMachinePricing.With(prometheus.Labels{
+			InstanceType:   v.InstanceType,
+			Description:    v.Description,
+			InstanceOption: "ON_DEMAND",
+			CPU:            v.CPU,
+			Memory:         v.Memory,
+			Unit:           v.Unit,
+			AZ:             "NA",
+			Region:         "eu-west-1",
+			Timestamp:      time.Now().String(),
+		}).Set(v.Price)
+		// In Use machine price calculation
 		for _, w := range instanceTypes {
 			if w == v.InstanceType {
-				lastRequestReceivedTime.With(prometheus.Labels{
+				inUseMachinePrincing.With(prometheus.Labels{
 					InstanceType:   v.InstanceType,
 					Description:    v.Description,
 					InstanceOption: "ON_DEMAND",
@@ -330,21 +346,27 @@ func AWSMetrics() (prometheus.Gatherer, error) {
 			}
 
 		}
-
 	}
-
-	spotPricing, err := SpotMetric()
-	if err != nil {
-		return nil, err
-	}
-
-	// Exposing custom metrics SpotPricing
+	// Spot machine pricing calculation
 	for _, valueSpot := range spotPricing {
+		// All machine pricing calculation
 		for _, valueOnDemand := range onDemandPricing {
-			for _, w := range instanceTypes {
-				if w == valueSpot.InstanceType {
-					if valueSpot.InstanceType == valueOnDemand.InstanceType {
-						lastRequestReceivedTime.With(prometheus.Labels{
+			if valueSpot.InstanceType == valueOnDemand.InstanceType {
+				allMachinePricing.With(prometheus.Labels{
+					InstanceType:   valueSpot.InstanceType,
+					Description:    "-",
+					InstanceOption: "SPOT",
+					CPU:            valueOnDemand.CPU,
+					Memory:         valueOnDemand.Memory,
+					Unit:           "Hrs",
+					AZ:             valueSpot.AZ,
+					Region:         "eu-west-1",
+					Timestamp:      time.Now().String(),
+				}).Set(valueSpot.Price)
+				// In Use machine price calculation
+				for _, w := range instanceTypes {
+					if w == valueSpot.InstanceType {
+						allMachinePricing.With(prometheus.Labels{
 							InstanceType:   valueSpot.InstanceType,
 							Description:    "-",
 							InstanceOption: "SPOT",
@@ -356,10 +378,8 @@ func AWSMetrics() (prometheus.Gatherer, error) {
 							Timestamp:      time.Now().String(),
 						}).Set(valueSpot.Price)
 					}
-
 				}
 			}
-
 		}
 	}
 	return reg, nil
