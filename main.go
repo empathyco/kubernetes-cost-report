@@ -9,13 +9,9 @@ import (
 	"runtime"
 	"time"
 
-	docs "platform-cost-report/docs"
-
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/robfig/cron/v3"
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func init() {
@@ -62,17 +58,6 @@ func main() {
 	})
 	scheduler.Start()
 
-	// @BasePath /
-
-	// updatePricing godoc
-	// @Summary update pricing
-	// @Schemes
-	// @Description update pricing
-	// @Tags example
-	// @Accept json
-	// @Produce json
-	// @Success 200 {"message": "Pricing updated"}
-	// @Router /updatePricing [get]
 	r.GET("/updatePricing", func(c *gin.Context) {
 		reg, err = cloud.AWSMetrics()
 		if err != nil {
@@ -94,10 +79,6 @@ func main() {
 			"status": "health",
 		})
 	})
-	docs.SwaggerInfo.BasePath = "/"
-
-	r.GET("/swagger", ginSwagger.WrapHandler(swaggerFiles.Handler))
-
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 
 }

@@ -27,7 +27,6 @@ func TestParsingJsonString(t *testing.T) {
 		args args
 		want string
 	}{
-		// TODO: Add test cases.
 		{
 			name: "Test Parse Json String",
 			args: args{
@@ -46,6 +45,33 @@ func TestParsingJsonString(t *testing.T) {
 	}
 }
 
+func TestParsingJsonStringArray(t *testing.T) {
+	type args struct {
+		dataByte []byte
+		key      string
+	}
+	tests := []struct {
+		name string
+		args args
+		want []string
+	}{
+		{
+			name: "Test Parse Json Float",
+			args: args{
+				dataByte: []byte(`{"key":["test","test2"]}`),
+				key:      "key",
+			},
+			want: []string{"test", "test2"},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := ParsingJsonStringArray(tt.args.dataByte, tt.args.key); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("ParsingJsonStringArray() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
 func TestParsingJsonFloat(t *testing.T) {
 	type args struct {
 		dataByte []byte
@@ -56,7 +82,6 @@ func TestParsingJsonFloat(t *testing.T) {
 		args args
 		want float64
 	}{
-		// TODO: Add test cases.
 		{
 			name: "Test Parse Json Float",
 			args: args{
@@ -84,7 +109,6 @@ func TestParsingPrice(t *testing.T) {
 		args args
 		want *Price
 	}{
-		// TODO: Add test cases.
 		{
 			name: "Test Parsing Price",
 			args: args{
@@ -146,7 +170,6 @@ func Test_avg(t *testing.T) {
 		args args
 		want float64
 	}{
-		// TODO: Add test cases.
 		{
 			name: "Test Avg",
 			args: args{
@@ -231,7 +254,6 @@ func TestSpotMetric(t *testing.T) {
 		want    bool
 		wantErr bool
 	}{
-		// TODO: Add test cases.
 		{
 			name: "Test Spot Metric",
 			want: true,
@@ -258,7 +280,6 @@ func TestPriceMetric(t *testing.T) {
 		want    bool
 		wantErr bool
 	}{
-		// TODO: Add test cases.
 		{
 			name: "Test Price Metric",
 			want: true,
@@ -299,6 +320,57 @@ func TestAWSMetrics(t *testing.T) {
 				return
 			}
 
+		})
+	}
+}
+
+func Test_listInstances(t *testing.T) {
+	skipCI(t)
+	tests := []struct {
+		name    string
+		want    []string
+		wantErr bool
+	}{
+		{
+			name:    "Test List Instances",
+			want:    []string{"i-0f8f8f8f8f8f8f8f8", "i-0f8f8f8f8f8f8f8f8"},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := listInstances()
+			if (err != nil) != tt.wantErr {
+				t.Errorf("listInstances() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if len(got) > 0 {
+				t.Errorf("listInstances() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_removeDuplicateStr(t *testing.T) {
+	type args struct {
+		strSlice []string
+	}
+	tests := []struct {
+		name string
+		args args
+		want []string
+	}{
+		{
+			name: "Test remove duplicate string",
+			args: args{strSlice: []string{"us-east-1a", "us-east-1b", "us-east-1a"}},
+			want: []string{"us-east-1a", "us-east-1b"},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := removeDuplicateStr(tt.args.strSlice); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("removeDuplicateStr() = %v, want %v", got, tt.want)
+			}
 		})
 	}
 }
