@@ -386,7 +386,7 @@ func AWSMetrics() (prometheus.Gatherer, error) {
 				// In Use machine price calculation
 				for _, w := range instanceTypes {
 					if w == valueSpot.InstanceType {
-						allMachinePricing.With(prometheus.Labels{
+						inUseMachinePricing.With(prometheus.Labels{
 							InstanceType:   valueSpot.InstanceType,
 							Description:    "-",
 							InstanceOption: "SPOT",
