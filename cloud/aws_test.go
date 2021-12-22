@@ -197,9 +197,8 @@ func Test_groupPricing(t *testing.T) {
 		args args
 		want []Spot
 	}{
-		// TODO: Add test cases.
 		{
-			name: "Test Group Pricing",
+			name: "Test Group Pricing 1",
 			args: args{
 				spotPrices: []*ec2.SpotPrice{
 					{
@@ -216,6 +215,20 @@ func Test_groupPricing(t *testing.T) {
 						SpotPrice:          aws.String("0.02"),
 						Timestamp:          aws.Time(time.Now()),
 					},
+				},
+			},
+			want: []Spot{
+				{
+					InstanceType: "t2.micro",
+					AZ:           "us-east-1a",
+					Price:        0.015,
+				},
+			},
+		},
+		{
+			name: "Test Group Pricing 2",
+			args: args{
+				spotPrices: []*ec2.SpotPrice{
 					{
 						AvailabilityZone:   aws.String("us-east-1b"),
 						InstanceType:       aws.String("t2.micro"),
@@ -226,11 +239,6 @@ func Test_groupPricing(t *testing.T) {
 				},
 			},
 			want: []Spot{
-				{
-					InstanceType: "t2.micro",
-					AZ:           "us-east-1a",
-					Price:        0.015,
-				},
 				{
 					InstanceType: "t2.micro",
 					AZ:           "us-east-1b",
