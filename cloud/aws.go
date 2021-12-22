@@ -336,33 +336,39 @@ func AWSMetrics() (prometheus.Gatherer, error) {
 		return nil, err
 	}
 	fmt.Println(instanceTypes)
+	azs := [3]string{"eu-west-1a", "eu-west-1b", "eu-west-1c"}
 	for _, v := range onDemandPricing {
-		// All machine pricing calculation
-		allMachinePricing.With(prometheus.Labels{
-			InstanceType:   v.InstanceType,
-			Description:    v.Description,
-			InstanceOption: "ON_DEMAND",
-			CPU:            v.CPU,
-			Memory:         v.Memory,
-			Unit:           v.Unit,
-			AZ:             "NA",
-			Region:         "eu-west-1",
-			Timestamp:      time.Now().String(),
-		}).Set(v.Price)
+		for _,az := range azs {
+			// All machine pricing calculation
+			allMachinePricing.With(prometheus.Labels{
+				InstanceType:   v.InstanceType,
+				Description:    v.Description,
+				InstanceOption: "ON_DEMAND",
+				CPU:            v.CPU,
+				Memory:         v.Memory,
+				Unit:           v.Unit,
+				AZ:             az,
+				Region:         "eu-west-1",
+				Timestamp:      time.Now().String(),
+			}).Set(v.Price)
+		}
+		
 		// In Use machine price calculation
 		for _, w := range instanceTypes {
 			if w == v.InstanceType {
-				inUseMachinePricing.With(prometheus.Labels{
-					InstanceType:   v.InstanceType,
-					Description:    v.Description,
-					InstanceOption: "ON_DEMAND",
-					CPU:            v.CPU,
-					Memory:         v.Memory,
-					Unit:           v.Unit,
-					AZ:             "NA",
-					Region:         "eu-west-1",
-					Timestamp:      time.Now().String(),
-				}).Set(v.Price)
+				for _,az := range azs {
+					inUseMachinePricing.With(prometheus.Labels{
+						InstanceType:   v.InstanceType,
+						Description:    v.Description,
+						InstanceOption: "ON_DEMAND",
+						CPU:            v.CPU,
+						Memory:         v.Memory,
+						Unit:           v.Unit,
+						AZ:             az,
+						Region:         "eu-west-1",
+						Timestamp:      time.Now().String(),
+					}).Set(v.Price)
+				}
 			}
 
 		}
