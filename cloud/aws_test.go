@@ -188,6 +188,7 @@ func Test_avg(t *testing.T) {
 }
 
 func Test_groupPricing(t *testing.T) {
+	skipCI(t)
 	type args struct {
 		spotPrices []*ec2.SpotPrice
 	}
