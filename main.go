@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
+	"net/http"
 	"platform-cost-report/cloud"
 	"runtime"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/robfig/cron/v3"
 )
@@ -19,32 +19,12 @@ func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
-// @title           Swagger Example API
-// @version         1.0
-// @description     This is a sample server celler server.
-// @termsOfService  http://swagger.io/terms/
-
-// @contact.name   API Support
-// @contact.url    http://www.swagger.io/support
-// @contact.email  support@swagger.io
-
-// @license.name  Apache 2.0
-// @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
-
-// @host      localhost:8080
-// @BasePath  /health
-
-// @securityDefinitions.basic  BasicAuth
-
 func main() {
 	log.Printf("OS: %s\nArchitecture: %s\n", runtime.GOOS, runtime.GOARCH)
 
 	scheduler := cron.New()
 
-	r := gin.Default()
-
 	// First exposed metrics on init
-	// TODO: move to separate init method
 	reg, err := cloud.AWSMetrics()
 	if err != nil {
 		panic(err)
@@ -58,27 +38,28 @@ func main() {
 	})
 	scheduler.Start()
 
-	r.GET("/updatePricing", func(c *gin.Context) {
+	http.HandleFunc("/updatePricing", func(rw http.ResponseWriter, r *http.Request) {
 		reg, err = cloud.AWSMetrics()
 		if err != nil {
 			fmt.Println("Error: %w", err)
-			c.JSON(500, gin.H{"error": err.Error()})
+			rw.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(rw, "{\"error\":\"%v\"}", err)
 		}
-		c.JSON(200, gin.H{
-			"message": "Pricing updated",
-		})
+		rw.WriteHeader(http.StatusOK)
+		fmt.Fprintf(rw, "{\"message\":\"Pricing updated\"}")
 	})
-	// Metrics handler
-	r.GET("/metrics", func(c *gin.Context) {
+
+	http.HandleFunc("/health", func(rw http.ResponseWriter, r *http.Request) {
+		rw.WriteHeader(http.StatusOK)
+		fmt.Fprintf(rw, "{\"message\":\"OK\"}")
+	})
+
+	http.HandleFunc("/metrics", func(rw http.ResponseWriter, r *http.Request) {
 		handler := promhttp.HandlerFor(reg, promhttp.HandlerOpts{})
-		handler.ServeHTTP(c.Writer, c.Request)
+		handler.ServeHTTP(rw, r)
 	})
-	// Health check
-	r.GET("/health", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"status": "health",
-		})
-	})
-	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+
+	http.ListenAndServe(":8080", nil)
+	// listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 
 }

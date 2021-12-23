@@ -305,7 +305,6 @@ func listInstances() ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(instanceTypes)
 	return removeDuplicateStr(instanceTypes), nil
 }
 
