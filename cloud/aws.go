@@ -2,7 +2,6 @@ package cloud
 
 import (
 	"encoding/json"
-	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -61,38 +60,41 @@ const (
 	Timestamp      = "timestamp"
 )
 
-var filtering []*pricing.Filter = []*pricing.Filter{
-	{
-		Type:  aws.String("TERM_MATCH"),
-		Field: aws.String("PurchaseOption"),
-		Value: aws.String("No Upfront"),
-	},
-	{
-		Type:  aws.String("TERM_MATCH"),
-		Field: aws.String("regionCode"),
-		Value: aws.String("eu-west-1"),
-	},
-	{
-		Type:  aws.String("TERM_MATCH"),
-		Field: aws.String("tenancy"),
-		Value: aws.String("Shared"),
-	},
-	{
-		Type:  aws.String("TERM_MATCH"),
-		Field: aws.String("preInstalledSw"),
-		Value: aws.String("NA"),
-	},
-	{
-		Type:  aws.String("TERM_MATCH"),
-		Field: aws.String("operatingSystem"),
-		Value: aws.String("Linux"),
-	},
-	{
-		Type:  aws.String("TERM_MATCH"),
-		Field: aws.String("marketoption"),
-		Value: aws.String("OnDemand"),
-	},
-}
+var (
+	azs                         = [3]string{"eu-west-1a", "eu-west-1b", "eu-west-1c"}
+	filtering []*pricing.Filter = []*pricing.Filter{
+		{
+			Type:  aws.String("TERM_MATCH"),
+			Field: aws.String("PurchaseOption"),
+			Value: aws.String("No Upfront"),
+		},
+		{
+			Type:  aws.String("TERM_MATCH"),
+			Field: aws.String("regionCode"),
+			Value: aws.String("eu-west-1"),
+		},
+		{
+			Type:  aws.String("TERM_MATCH"),
+			Field: aws.String("tenancy"),
+			Value: aws.String("Shared"),
+		},
+		{
+			Type:  aws.String("TERM_MATCH"),
+			Field: aws.String("preInstalledSw"),
+			Value: aws.String("NA"),
+		},
+		{
+			Type:  aws.String("TERM_MATCH"),
+			Field: aws.String("operatingSystem"),
+			Value: aws.String("Linux"),
+		},
+		{
+			Type:  aws.String("TERM_MATCH"),
+			Field: aws.String("marketoption"),
+			Value: aws.String("OnDemand"),
+		},
+	}
+)
 
 func ParsingJsonString(dataByte []byte, key string) string {
 	value := gjson.Get(string(dataByte[:]), key).String()
@@ -305,7 +307,6 @@ func listInstances() ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(instanceTypes)
 	return removeDuplicateStr(instanceTypes), nil
 }
 
@@ -359,8 +360,6 @@ func AWSMetrics() (prometheus.Gatherer, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(instanceTypes)
-	azs := [3]string{"eu-west-1a", "eu-west-1b", "eu-west-1c"}
 	for _, v := range onDemandPricing {
 		onDemandUnitPrice := v.calculateOnDemandUnitPrice()
 		for _, az := range azs {

@@ -1,6 +1,6 @@
 FROM ${ARCH}golang:1.15-alpine AS build_base
 ENV CI=docker
-RUN apk add --no-cache git
+RUN apk add --no-cache git ca-certificates
 
 # Set the Current Working Directory inside the container
 WORKDIR /tmp/cost-report
@@ -17,13 +17,14 @@ COPY . .
 RUN CGO_ENABLED=0 go test -v ./cloud
 
 # Build the Go app
-RUN go build -o ./out/cost-report .
+RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="-w -s" -o ./out/cost-report .
 
 # Start fresh from a smaller image
-FROM alpine:3.15 
-RUN apk add ca-certificates
+FROM scratch
+
 
 COPY --from=build_base /tmp/cost-report/out/cost-report /app/cost-report
+COPY --from=build_base /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 # This container exposes port 8080 to the outside world
 EXPOSE 8080
