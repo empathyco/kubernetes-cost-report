@@ -95,27 +95,21 @@ var filtering []*pricing.Filter = []*pricing.Filter{
 }
 
 func ParsingJsonString(dataByte []byte, key string) string {
-	//https://github.com/tidwall/gjson
-
 	value := gjson.Get(string(dataByte[:]), key).String()
 	return value
 }
 
 func parsingJsonFloat(dataByte []byte, key string) float64 {
-	//https://github.com/tidwall/gjson
-
 	value := gjson.Get(string(dataByte[:]), key).Float()
 	return value
 }
 
-func ParsingJsonStringArray(dataByte []byte, key string) []string {
-	//https://github.com/tidwall/gjson
+func parsingJsonStringArray(dataByte []byte, key string) []string {
 	result := []string{}
 	value := gjson.Get(string(dataByte[:]), key).Array()
 	for _, name := range value {
 		result = append(result, name.String())
 	}
-
 	return result
 }
 
@@ -135,10 +129,6 @@ func parsingPrice(PriceData aws.JSONValue) (*Price, error) {
 
 	return Pricing, nil
 }
-
-// Struct so that we can aggregate list of prices per instance type and AZ
-
-// https://docs.aws.amazon.com/sdk-for-go/api/service/pricing/
 
 func avg(array []float64) float64 {
 	result := 0.0
@@ -309,7 +299,7 @@ func listInstances() ([]string, error) {
 	err = svc.DescribeInstancesPages(input,
 		func(page *ec2.DescribeInstancesOutput, lastPage bool) bool {
 			data, _ := json.Marshal(page)
-			instanceTypes = ParsingJsonStringArray(data, "Reservations.#.Instances.0.InstanceType")
+			instanceTypes = parsingJsonStringArray(data, "Reservations.#.Instances.0.InstanceType")
 			return !lastPage
 		})
 	if err != nil {
@@ -357,8 +347,6 @@ func AWSMetrics() (prometheus.Gatherer, error) {
 		Name: "instance_capacity",
 		Help: "Capacity of the instance type",
 	}, labelUnit)
-	// family_price{name=c3, memory=0.02, cpu=0.01, type=ONDEMAND, zone=NA, region=eu-west-1, unit=hour}
-	// family_price{name=c3, memory=0.02, cpu=0.01, type=SPOT, zone=eu-west-1a, region=eu-west-1, unit=hour}
 	onDemandPricing, err := PriceMetric()
 	if err != nil {
 		return nil, err
@@ -374,7 +362,7 @@ func AWSMetrics() (prometheus.Gatherer, error) {
 	fmt.Println(instanceTypes)
 	azs := [3]string{"eu-west-1a", "eu-west-1b", "eu-west-1c"}
 	for _, v := range onDemandPricing {
-
+		onDemandUnitPrice := v.calculateOnDemandUnitPrice()
 		for _, az := range azs {
 			// All machine pricing calculation
 			allMachinePricing.With(prometheus.Labels{
@@ -388,7 +376,6 @@ func AWSMetrics() (prometheus.Gatherer, error) {
 				Region:         "eu-west-1",
 				Timestamp:      time.Now().String(),
 			}).Set(v.Price)
-			onDemandUnitPrice := v.calculateOnDemandUnitPrice()
 			vCPUPricing.With(prometheus.Labels{
 				InstanceType:   v.InstanceType,
 				InstanceOption: "ON_DEMAND",
