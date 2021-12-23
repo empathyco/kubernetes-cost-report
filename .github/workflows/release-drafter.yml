@@ -16,4 +16,4 @@ jobs:
         with:
           config-name: release-drafter.yml
         env:
-          GITHUB_TOKEN: ${{ secrets.SUPPORT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ORGANIZATION_TOKEN }}
