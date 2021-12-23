@@ -2,7 +2,7 @@ name: goreleaser
 on:
   push:
     tags:
-      - '*'
+      - 'v*'
 jobs:
   goreleaser:
     runs-on: self-hosted
