@@ -4,12 +4,16 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    # Only following types are handled by the action, but one can default to all as well
+    types: [opened, reopened, synchronize]
+
 jobs:
   update_release_draft:
     runs-on: ubuntu-latest
     steps:
       - uses: release-drafter/release-drafter@v5
         with:
-          config-name: release-drafter.yml
+          config-name: release-drafter.yaml
         env:
           GITHUB_TOKEN: ${{ secrets.SUPPORT_TOKEN }}
