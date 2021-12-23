@@ -20,7 +20,7 @@ RUN CGO_ENABLED=0 go test -v ./cloud
 RUN go build -o ./out/cost-report .
 
 # Start fresh from a smaller image
-FROM alpine:3.9 
+FROM alpine:3.15 
 RUN apk add ca-certificates
 
 COPY --from=build_base /tmp/cost-report/out/cost-report /app/cost-report
