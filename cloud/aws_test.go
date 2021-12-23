@@ -66,7 +66,7 @@ func TestParsingJsonStringArray(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := ParsingJsonStringArray(tt.args.dataByte, tt.args.key); !reflect.DeepEqual(got, tt.want) {
+			if got := parsingJsonStringArray(tt.args.dataByte, tt.args.key); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("ParsingJsonStringArray() = %v, want %v", got, tt.want)
 			}
 		})
@@ -352,8 +352,8 @@ func Test_listInstances(t *testing.T) {
 				t.Errorf("listInstances() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if len(got) > 0 {
-				t.Errorf("listInstances() = %v, want %v", got, tt.want)
+			if len(got) == 0 {
+				t.Errorf("listInstances() = %v, want %v", len(got), tt.want)
 			}
 		})
 	}
