@@ -1,0 +1,2 @@
+_extends: platform-github-settings
+name-template: 'Module Name $RESOLVED_VERSION'
