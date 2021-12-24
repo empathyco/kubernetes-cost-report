@@ -143,7 +143,6 @@ func TestParsingPrice(t *testing.T) {
 				Memory:       "1.0",
 				Price:        2.0,
 				Unit:         "Hrs",
-				Description:  "Linux/UNIX (Amazon VPC)",
 			},
 		},
 	}
