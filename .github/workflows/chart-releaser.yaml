@@ -29,4 +29,4 @@ jobs:
         with:
           charts_dir: helm
         env:
-          CR_TOKEN: "${{ secrets.SUPPORT_TOKEN }}"
+          CR_TOKEN: "${{ secrets.SUPPORT_TOKEN }}"  
