@@ -5,7 +5,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
@@ -43,6 +42,7 @@ type OnDemandUnitPrice struct {
 type SpotUnitPrice struct {
 	OnDemandUnitPrice
 	Capacity float64
+	Discount float64 
 }
 
 const (
@@ -158,18 +158,24 @@ func (prices Price) CalcUnitPrice() OnDemandUnitPrice {
 	}
 }
 
-func (spot *Spot) CalcUnitPrice(price *Price) SpotUnitPrice {
-	gbPrice := price.Price / (cpuMemRelation*float64(price.GetCPU()) + float64(price.GetMemory()))
+func (spot *Spot) CalcUnitPrice(valuespot Spot, price *Price) SpotUnitPrice {
+	// Considering the cpuMemRelation is a constant 
+	gbPrice := valuespot.Price / (cpuMemRelation*float64(price.GetCPU()) + float64(price.GetMemory()))
+	// Min Spo Price is around a 80% of saving for the OnDemand price
 	minSpotPrice := price.Price / 5
+	discount := 1- valuespot.Price/price.Price 
+	//fmt.Println(discount)
+	// Spot capacity for the instanceType based on the pricing
 	capacity := (spot.Price - minSpotPrice) / (4 * price.Price / 5)
 	return SpotUnitPrice{
 		OnDemandUnitPrice: OnDemandUnitPrice{
-			InstanceType: price.InstanceType,
-			AZ:           price.AZ,
+			InstanceType: valuespot.InstanceType,
+			AZ:           valuespot.AZ,
 			MemPrice:     gbPrice,
 			CPUPrice:     cpuMemRelation * gbPrice,
 		},
 		Capacity: capacity,
+		Discount: discount,
 	}
 
 }
@@ -343,6 +349,10 @@ func AWSMetrics() (prometheus.Gatherer, error) {
 		Name: "instance_capacity",
 		Help: "Capacity of the instance type",
 	}, labelUnit)
+	discount := promauto.With(reg).NewGaugeVec(prometheus.GaugeOpts{
+		Name: "instance_discount",
+		Help: "Discount of the instance type",
+	}, labelUnit)
 
 	onDemandPricing, err := PriceMetric()
 	if err != nil {
@@ -418,7 +428,7 @@ func AWSMetrics() (prometheus.Gatherer, error) {
 					AZ:             valueSpot.AZ,
 					Region:         "eu-west-1",
 				}).Set(valueSpot.Price)
-				spotUnitPrice := valueSpot.CalcUnitPrice(valueOnDemand)
+				spotUnitPrice := valueSpot.CalcUnitPrice(valueSpot, valueOnDemand)
 				vCPUPricing.With(prometheus.Labels{
 					InstanceType:   valueSpot.InstanceType,
 					InstanceOption: "SPOT",
@@ -440,6 +450,13 @@ func AWSMetrics() (prometheus.Gatherer, error) {
 					AZ:             valueSpot.AZ,
 					Region:         "eu-west-1",
 				}).Set(spotUnitPrice.Capacity)
+				discount.With(prometheus.Labels{
+					InstanceType:   valueSpot.InstanceType,
+					InstanceOption: "SPOT",
+					Unit:           "Hrs",
+					AZ:             valueSpot.AZ,
+					Region:         "eu-west-1",
+				}).Set(spotUnitPrice.Discount)
 				// In Use machine price calculation
 				for _, w := range instanceTypes {
 					if w == valueSpot.InstanceType {
