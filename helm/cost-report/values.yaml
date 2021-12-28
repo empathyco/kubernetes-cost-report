@@ -2,7 +2,7 @@ replicaCount: 1
 image:
   repository: empathyco/cost-report
   pullPolicy: IfNotPresent
-  tag: "0.0.7"
+  tag: "sha-27ab0c2"
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
