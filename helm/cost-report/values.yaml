@@ -8,7 +8,8 @@ nameOverride: ""
 fullnameOverride: ""
 serviceAccount:
   create: true
-  annotations: {}
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::927637044349:role/cost_report
   name: ""
 podAnnotations: {}
 podSecurityContext: {}
@@ -26,4 +27,4 @@ serviceMonitor:
     release: prometheus
   dashboards:
     enabled: true
-awsCredentialsSecret: cost-report
+#awsCredentialsSecret: cost-report
