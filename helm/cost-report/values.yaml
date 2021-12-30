@@ -8,7 +8,8 @@ nameOverride: ""
 fullnameOverride: ""
 serviceAccount:
   create: true
-  annotations: {}
+  annotations:
+    eks.amazonaws.com/role-arn: {}
   name: ""
 podAnnotations: {}
 podSecurityContext: {}
@@ -22,8 +23,7 @@ tolerations: []
 affinity: {}
 serviceMonitor:
   enabled: true
-  additionalLabels: 
+  additionalLabels:
     release: prometheus
   dashboards:
     enabled: true
-awsCredentialsSecret: cost-report
