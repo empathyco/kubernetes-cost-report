@@ -14,6 +14,7 @@ provider "aws" {
       Workload     = "Cost-report"
       Management   = "Terraform"
       Source       = "github.com/empathyco/platform-cost-report"
+      Environment  = var.environment_tag
     }
   }
 }

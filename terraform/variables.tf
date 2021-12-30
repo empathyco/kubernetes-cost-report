@@ -12,3 +12,8 @@ variable "oidc_url" {
   type        = string
   description = "OIDC url"
 }
+
+variable "environment_tag" {
+  type        = string
+  description = "Tag for the environment"
+}
