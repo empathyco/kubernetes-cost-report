@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
@@ -42,7 +43,7 @@ type OnDemandUnitPrice struct {
 type SpotUnitPrice struct {
 	OnDemandUnitPrice
 	Capacity float64
-	Discount float64 
+	Discount float64
 }
 
 const (
@@ -159,11 +160,11 @@ func (prices Price) CalcUnitPrice() OnDemandUnitPrice {
 }
 
 func (spot *Spot) CalcUnitPrice(valuespot Spot, price *Price) SpotUnitPrice {
-	// Considering the cpuMemRelation is a constant 
+	// Considering the cpuMemRelation is a constant
 	gbPrice := valuespot.Price / (cpuMemRelation*float64(price.GetCPU()) + float64(price.GetMemory()))
 	// Min Spo Price is around a 80% of saving for the OnDemand price
 	minSpotPrice := price.Price / 5
-	discount := 1- valuespot.Price/price.Price 
+	discount := 1 - valuespot.Price/price.Price
 	//fmt.Println(discount)
 	// Spot capacity for the instanceType based on the pricing
 	capacity := (spot.Price - minSpotPrice) / (4 * price.Price / 5)
@@ -369,48 +370,43 @@ func AWSMetrics() (prometheus.Gatherer, error) {
 
 	for _, v := range onDemandPricing {
 		onDemandUnitPrice := v.CalcUnitPrice()
-		for _, az := range azs {
-			// All machine pricing calculation
-			allMachinePricing.With(prometheus.Labels{
-				InstanceType:   v.InstanceType,
-				InstanceOption: "ON_DEMAND",
-				CPU:            v.CPU,
-				Memory:         v.Memory,
-				Unit:           v.Unit,
-				AZ:             az,
-				Region:         "eu-west-1",
-			}).Set(v.Price)
-			vCPUPricing.With(prometheus.Labels{
-				InstanceType:   v.InstanceType,
-				InstanceOption: "ON_DEMAND",
-				Unit:           v.Unit,
-				AZ:             az,
-				Region:         "eu-west-1",
-			}).Set(onDemandUnitPrice.CPUPrice)
-			memPricing.With(prometheus.Labels{
-				InstanceType:   v.InstanceType,
-				InstanceOption: "ON_DEMAND",
-				Unit:           v.Unit,
-				AZ:             az,
-				Region:         "eu-west-1",
-			}).Set(onDemandUnitPrice.MemPrice)
-		}
+		// All machine pricing calculation
+		allMachinePricing.With(prometheus.Labels{
+			InstanceType:   v.InstanceType,
+			InstanceOption: "ON_DEMAND",
+			CPU:            v.CPU,
+			Memory:         v.Memory,
+			Unit:           v.Unit,
+			AZ:             "",
+			Region:         "eu-west-1",
+		}).Set(v.Price)
+		vCPUPricing.With(prometheus.Labels{
+			InstanceType:   v.InstanceType,
+			InstanceOption: "ON_DEMAND",
+			Unit:           v.Unit,
+			AZ:             "",
+			Region:         "eu-west-1",
+		}).Set(onDemandUnitPrice.CPUPrice)
+		memPricing.With(prometheus.Labels{
+			InstanceType:   v.InstanceType,
+			InstanceOption: "ON_DEMAND",
+			Unit:           v.Unit,
+			AZ:             "",
+			Region:         "eu-west-1",
+		}).Set(onDemandUnitPrice.MemPrice)
 		// In Use machine price calculation
 		for _, w := range instanceTypes {
 			if w == v.InstanceType {
-				for _, az := range azs {
-					inUseMachinePricing.With(prometheus.Labels{
-						InstanceType:   v.InstanceType,
-						InstanceOption: "ON_DEMAND",
-						CPU:            v.CPU,
-						Memory:         v.Memory,
-						Unit:           v.Unit,
-						AZ:             az,
-						Region:         "eu-west-1",
-					}).Set(v.Price)
-				}
+				inUseMachinePricing.With(prometheus.Labels{
+					InstanceType:   v.InstanceType,
+					InstanceOption: "ON_DEMAND",
+					CPU:            v.CPU,
+					Memory:         v.Memory,
+					Unit:           v.Unit,
+					AZ:             "",
+					Region:         "eu-west-1",
+				}).Set(v.Price)
 			}
-
 		}
 	}
 
