@@ -21,8 +21,11 @@ jobs:
           version: "2021.1.1"
           install-go: false
           cache-key: ${{ matrix.go }}
+      - name: Install linters
+        run: '( cd linters && go get golang.org/x/lint/golint )'
+
       - name: Run reviewdog
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.SUPPORT_TOKEN }}
         run: |
-          reviewdog -reporter=github-pr-review
+          reviewdog -f=golint,govet -reporter=github-pr-review
