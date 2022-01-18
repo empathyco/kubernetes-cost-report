@@ -1,5 +1,5 @@
 name: reviewdog
-on: ["push","pull_request"]
+on: ["pull_request"]
 jobs:
   reviewdog:
     runs-on: ubuntu-latest
@@ -46,4 +46,4 @@ jobs:
           tool_name: errcheck
           level: info
           github_token: ${{ secrets.SUPPORT_TOKEN }}
-          reporter: github-pr-review[github-pr-check,github-pr-review]
+          # reporter: ["github-pr-check","github-pr-review"] 
