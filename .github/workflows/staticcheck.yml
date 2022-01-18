@@ -25,4 +25,9 @@ jobs:
         cache-key: ${{ matrix.go }}
     - run: "go install github.com/jpoles1/gopherbadger@latest"
     - run: 'CI=github gopherbadger -md="README.md" -png=false'
-    
+    - uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        # Optional, but recommended
+        # Defaults to "Apply automatic changes"
+        commit_message: Update Badger coverage
+        file_pattern: README.md
