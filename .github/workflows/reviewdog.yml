@@ -2,7 +2,7 @@ name: reviewdog
 on: [pull_request]
 jobs:
   reviewdog:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - uses: reviewdog/action-setup@v1
         with:
