@@ -1,7 +1,6 @@
 package cloud
 
 type UnitPrice interface {
-
 	// Methods
 	GetName() string
 }
@@ -12,6 +11,7 @@ type BaseUnitPrice struct {
 	MemPrice     float64
 	CPUPrice     float64
 }
+
 type OnDemand2UnitPrice struct {
 	BaseUnitPrice
 }
@@ -43,6 +43,7 @@ func Index(vs []UnitPrice, t UnitPrice) int {
 	}
 	return -1
 }
+
 func Include(vs []UnitPrice, t UnitPrice) bool {
 	return Index(vs, t) >= 0
 }

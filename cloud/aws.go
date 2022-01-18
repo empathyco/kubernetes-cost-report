@@ -2,6 +2,7 @@ package cloud
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -15,6 +16,7 @@ import (
 	"github.com/tidwall/gjson"
 )
 
+// Price represente an instance.
 type Price struct {
 	InstanceType string
 	Description  string
@@ -26,13 +28,14 @@ type Price struct {
 	Region       string
 }
 
+// Spot represent the an Spot instance.
 type Spot struct {
 	InstanceType string
 	AZ           string
 	Price        float64
 }
 
-// OnDemandUnitPrice represents the price per unit(1cpu, 1GB) of the instance type
+// OnDemandUnitPrice represents the price per unit(1cpu, 1GB) of the instance type.
 type OnDemandUnitPrice struct {
 	InstanceType string
 	AZ           string
@@ -40,6 +43,7 @@ type OnDemandUnitPrice struct {
 	CPUPrice     float64
 }
 
+// SpotUnitPrice represents the price per unit(1cpu, 1GB) of the Spot instance type.
 type SpotUnitPrice struct {
 	OnDemandUnitPrice
 	Capacity float64
@@ -59,74 +63,76 @@ const (
 	cpuMemRelation = 7.2
 )
 
-var (
-	filtering []*pricing.Filter = []*pricing.Filter{
-		{
-			Type:  aws.String("TERM_MATCH"),
-			Field: aws.String("PurchaseOption"),
-			Value: aws.String("No Upfront"),
-		},
-		{
-			Type:  aws.String("TERM_MATCH"),
-			Field: aws.String("regionCode"),
-			Value: aws.String("eu-west-1"),
-		},
-		{
-			Type:  aws.String("TERM_MATCH"),
-			Field: aws.String("tenancy"),
-			Value: aws.String("Shared"),
-		},
-		{
-			Type:  aws.String("TERM_MATCH"),
-			Field: aws.String("preInstalledSw"),
-			Value: aws.String("NA"),
-		},
-		{
-			Type:  aws.String("TERM_MATCH"),
-			Field: aws.String("operatingSystem"),
-			Value: aws.String("Linux"),
-		},
-		{
-			Type:  aws.String("TERM_MATCH"),
-			Field: aws.String("marketoption"),
-			Value: aws.String("OnDemand"),
-		},
-	}
-)
+var filtering []*pricing.Filter = []*pricing.Filter{
+	{
+		Type:  aws.String("TERM_MATCH"),
+		Field: aws.String("PurchaseOption"),
+		Value: aws.String("No Upfront"),
+	},
+	{
+		Type:  aws.String("TERM_MATCH"),
+		Field: aws.String("regionCode"),
+		Value: aws.String("eu-west-1"),
+	},
+	{
+		Type:  aws.String("TERM_MATCH"),
+		Field: aws.String("tenancy"),
+		Value: aws.String("Shared"),
+	},
+	{
+		Type:  aws.String("TERM_MATCH"),
+		Field: aws.String("preInstalledSw"),
+		Value: aws.String("NA"),
+	},
+	{
+		Type:  aws.String("TERM_MATCH"),
+		Field: aws.String("operatingSystem"),
+		Value: aws.String("Linux"),
+	},
+	{
+		Type:  aws.String("TERM_MATCH"),
+		Field: aws.String("marketoption"),
+		Value: aws.String("OnDemand"),
+	},
+}
 
+// parsingJSONString parse json filet os.
 func parsingJSONString(dataByte []byte, key string) string {
-	value := gjson.Get(string(dataByte[:]), key).String()
+	value := gjson.Get(string(dataByte), key).String()
+
 	return value
 }
 
 func parsingJSONFloat(dataByte []byte, key string) float64 {
-	value := gjson.Get(string(dataByte[:]), key).Float()
+	value := gjson.Get(string(dataByte), key).Float()
+
 	return value
 }
 
 func parsingJSONStringArray(dataByte []byte, key string) []string {
 	result := []string{}
-	value := gjson.Get(string(dataByte[:]), key).Array()
+	value := gjson.Get(string(dataByte), key).Array()
 	for _, name := range value {
 		result = append(result, name.String())
 	}
+
 	return result
 }
 
-func parsingPrice(PriceData aws.JSONValue) (*Price, error) {
-	Pricing := &Price{}
-	data, err := json.Marshal(PriceData)
+func parsingPrice(priceData aws.JSONValue) (*Price, error) {
+	pricing := &Price{}
+	data, err := json.Marshal(priceData)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("parsin price: %w", err)
 	}
 
-	Pricing.CPU = parsingJSONString(data, "product.attributes.vcpu")
-	Pricing.InstanceType = parsingJSONString(data, "product.attributes.instanceType")
-	Pricing.Memory = parsingJSONString(data, "product.attributes.memory")
-	Pricing.Price = parsingJSONFloat(data, "terms.OnDemand.*.priceDimensions.*.pricePerUnit.USD")
-	Pricing.Unit = parsingJSONString(data, "terms.OnDemand.*.priceDimensions.*.unit")
+	pricing.CPU = parsingJSONString(data, "product.attributes.vcpu")
+	pricing.InstanceType = parsingJSONString(data, "product.attributes.instanceType")
+	pricing.Memory = parsingJSONString(data, "product.attributes.memory")
+	pricing.Price = parsingJSONFloat(data, "terms.OnDemand.*.priceDimensions.*.pricePerUnit.USD")
+	pricing.Unit = parsingJSONString(data, "terms.OnDemand.*.priceDimensions.*.unit")
 
-	return Pricing, nil
+	return pricing, nil
 }
 
 func avg(array []float64) float64 {
@@ -148,7 +154,7 @@ func (p *Price) GetMemory() int {
 	return memory
 }
 
-// CalcUnitPrice calculate the unit price for onDemand instances
+// CalcUnitPrice calculate the unit price for onDemand instances.
 func (p *Price) CalcUnitPrice() OnDemandUnitPrice {
 	gbPrice := p.Price / (cpuMemRelation*float64(p.GetCPU()) + float64(p.GetMemory()))
 	return OnDemandUnitPrice{
@@ -159,15 +165,14 @@ func (p *Price) CalcUnitPrice() OnDemandUnitPrice {
 	}
 }
 
-// CalcUnitPrice calculate the unit price for Spot instance
+// CalcUnitPrice calculate the unit price for Spot instance.
 func (spot *Spot) CalcUnitPrice(valuespot Spot, price *Price) SpotUnitPrice {
-	// Considering the cpuMemRelation is a constant
+	// Considering the cpuMemRelation is a constant.
 	gbPrice := valuespot.Price / (cpuMemRelation*float64(price.GetCPU()) + float64(price.GetMemory()))
-	// Min Spo Price is around a 80% of saving for the OnDemand price
+	// Min Spot Price is around a 80% of saving for the OnDemand price.
 	minSpotPrice := price.Price / 5
 	discount := 1 - valuespot.Price/price.Price
-	//fmt.Println(discount)
-	// Spot capacity for the instanceType based on the pricing
+	// Spot capacity for the instanceType based on the pricing.
 	capacity := (spot.Price - minSpotPrice) / (4 * price.Price / 5)
 	return SpotUnitPrice{
 		OnDemandUnitPrice: OnDemandUnitPrice{
@@ -179,7 +184,6 @@ func (spot *Spot) CalcUnitPrice(valuespot Spot, price *Price) SpotUnitPrice {
 		Capacity: capacity,
 		Discount: discount,
 	}
-
 }
 
 func groupPricing(spotPrices []*ec2.SpotPrice) []Spot {
@@ -208,12 +212,11 @@ func groupPricing(spotPrices []*ec2.SpotPrice) []Spot {
 	return pricesArray
 }
 
-// SpotMetric is the function that returns the average spot price
+// SpotMetric is the function that returns the average spot price.
 func SpotMetric() ([]Spot, error) {
-
 	ses, err := session.NewSession()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("session: %w", err)
 	}
 
 	svc := ec2.New(ses, aws.NewConfig().WithRegion("eu-west-1"))
@@ -234,21 +237,19 @@ func SpotMetric() ([]Spot, error) {
 	err = svc.DescribeSpotPriceHistoryPages(input, paginator)
 	groupPrice := groupPricing(spotPrices)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("describeSpotPriceHistoryPages: %w", err)
 	}
 	return groupPrice, nil
 }
 
-// PriceMetric is the function that returns the average price
+// PriceMetric is the function that returns the average price.
 func PriceMetric() ([]*Price, error) {
 	ses, err := session.NewSession()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("session: %w", err)
 	}
 
 	svc := pricing.New(ses, aws.NewConfig().WithRegion("us-east-1"))
-
-	// GetProductsInput https://docs.aws.amazon.com/sdk-for-go/api/service/pricing/#GetProductsInput
 
 	input := &pricing.GetProductsInput{
 		Filters:     filtering,
@@ -257,11 +258,10 @@ func PriceMetric() ([]*Price, error) {
 	}
 
 	var prices []*Price
-	// GetProductsPages https://docs.aws.amazon.com/sdk-for-go/api/service/pricing/#Pricing.GetProductsPages
 	paginator := func(page *pricing.GetProductsOutput, lastPage bool) bool {
 		for _, v := range page.PriceList {
-			price, err := parsingPrice(v)
-			if err != nil {
+			price, err2 := parsingPrice(v)
+			if err2 != nil {
 				return false
 			}
 			prices = append(prices, price)
@@ -270,7 +270,7 @@ func PriceMetric() ([]*Price, error) {
 	}
 	err = svc.GetProductsPages(input, paginator)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("get producs: %w", err)
 	}
 
 	return prices, nil
@@ -279,7 +279,7 @@ func PriceMetric() ([]*Price, error) {
 func listInstances() ([]string, error) {
 	ses, err := session.NewSession()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("session: %w", err)
 	}
 	svc := ec2.New(ses, aws.NewConfig().WithRegion("eu-west-1"))
 
@@ -299,7 +299,6 @@ func listInstances() ([]string, error) {
 		},
 	}
 
-	// Example iterating over at most 3 pages of a DescribeInstances operation.
 	var instanceTypes []string
 	err = svc.DescribeInstancesPages(input,
 		func(page *ec2.DescribeInstancesOutput, lastPage bool) bool {
@@ -308,7 +307,7 @@ func listInstances() ([]string, error) {
 			return !lastPage
 		})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("DescribeInstancesPages: %w", err)
 	}
 	return removeDuplicateStr(instanceTypes), nil
 }
@@ -326,7 +325,6 @@ func removeDuplicateStr(strSlice []string) []string {
 }
 
 func AWSMetrics() (prometheus.Gatherer, error) {
-
 	reg := prometheus.NewRegistry()
 	labelNames := []string{InstanceType, InstanceOption, CPU, Memory, Unit, AZ, Region}
 	labelUnit := []string{InstanceType, InstanceOption, Unit, AZ, Region}
@@ -369,51 +367,19 @@ func AWSMetrics() (prometheus.Gatherer, error) {
 		return nil, err
 	}
 
-	for _, v := range onDemandPricing {
-		onDemandUnitPrice := v.CalcUnitPrice()
-		// All machine pricing calculation
-		allMachinePricing.With(prometheus.Labels{
-			InstanceType:   v.InstanceType,
-			InstanceOption: "ON_DEMAND",
-			CPU:            v.CPU,
-			Memory:         v.Memory,
-			Unit:           v.Unit,
-			AZ:             "",
-			Region:         "eu-west-1",
-		}).Set(v.Price)
-		vCPUPricing.With(prometheus.Labels{
-			InstanceType:   v.InstanceType,
-			InstanceOption: "ON_DEMAND",
-			Unit:           v.Unit,
-			AZ:             "",
-			Region:         "eu-west-1",
-		}).Set(onDemandUnitPrice.CPUPrice)
-		memPricing.With(prometheus.Labels{
-			InstanceType:   v.InstanceType,
-			InstanceOption: "ON_DEMAND",
-			Unit:           v.Unit,
-			AZ:             "",
-			Region:         "eu-west-1",
-		}).Set(onDemandUnitPrice.MemPrice)
-		// In Use machine price calculation
-		for _, w := range instanceTypes {
-			if w == v.InstanceType {
-				inUseMachinePricing.With(prometheus.Labels{
-					InstanceType:   v.InstanceType,
-					InstanceOption: "ON_DEMAND",
-					CPU:            v.CPU,
-					Memory:         v.Memory,
-					Unit:           v.Unit,
-					AZ:             "",
-					Region:         "eu-west-1",
-				}).Set(v.Price)
-			}
-		}
-	}
+	// All machine pricing calculation
+	// In Use machine price calculation
+	instancePriceCalc(onDemandPricing, allMachinePricing, vCPUPricing, memPricing, inUseMachinePricing, instanceTypes)
 
 	// Spot machine pricing calculation
+	// All machine pricing calculation
+	// In Use machine price calculation
+	spotInstancePriceCalc(spotPricing, onDemandPricing, allMachinePricing, vCPUPricing, memPricing, capacity, discount, inUseMachinePricing, instanceTypes)
+	return reg, nil
+}
+
+func spotInstancePriceCalc(spotPricing []Spot, onDemandPricing []*Price, allMachinePricing, vCPUPricing, memPricing, capacity, discount, inUseMachinePricing *prometheus.GaugeVec, instanceTypes []string) {
 	for _, valueSpot := range spotPricing {
-		// All machine pricing calculation
 		for _, valueOnDemand := range onDemandPricing {
 			if valueSpot.InstanceType == valueOnDemand.InstanceType {
 				allMachinePricing.With(prometheus.Labels{
@@ -454,22 +420,73 @@ func AWSMetrics() (prometheus.Gatherer, error) {
 					AZ:             valueSpot.AZ,
 					Region:         "eu-west-1",
 				}).Set(spotUnitPrice.Discount)
-				// In Use machine price calculation
-				for _, w := range instanceTypes {
-					if w == valueSpot.InstanceType {
-						inUseMachinePricing.With(prometheus.Labels{
-							InstanceType:   valueSpot.InstanceType,
-							InstanceOption: "SPOT",
-							CPU:            valueOnDemand.CPU,
-							Memory:         valueOnDemand.Memory,
-							Unit:           "Hrs",
-							AZ:             valueSpot.AZ,
-							Region:         "eu-west-1",
-						}).Set(valueSpot.Price)
-					}
-				}
+
+				inUseOnDemnandMachineCalc(instanceTypes, valueSpot, inUseMachinePricing, valueOnDemand)
 			}
 		}
 	}
-	return reg, nil
+}
+
+func instancePriceCalc(onDemandPricing []*Price, allMachinePricing, vCPUPricing, memPricing, inUseMachinePricing *prometheus.GaugeVec, instanceTypes []string) {
+	for _, v := range onDemandPricing {
+		onDemandUnitPrice := v.CalcUnitPrice()
+
+		allMachinePricing.With(prometheus.Labels{
+			InstanceType:   v.InstanceType,
+			InstanceOption: "ON_DEMAND",
+			CPU:            v.CPU,
+			Memory:         v.Memory,
+			Unit:           v.Unit,
+			AZ:             "",
+			Region:         "eu-west-1",
+		}).Set(v.Price)
+		vCPUPricing.With(prometheus.Labels{
+			InstanceType:   v.InstanceType,
+			InstanceOption: "ON_DEMAND",
+			Unit:           v.Unit,
+			AZ:             "",
+			Region:         "eu-west-1",
+		}).Set(onDemandUnitPrice.CPUPrice)
+		memPricing.With(prometheus.Labels{
+			InstanceType:   v.InstanceType,
+			InstanceOption: "ON_DEMAND",
+			Unit:           v.Unit,
+			AZ:             "",
+			Region:         "eu-west-1",
+		}).Set(onDemandUnitPrice.MemPrice)
+
+		inUseSpotMachineCalc(instanceTypes, v, inUseMachinePricing)
+	}
+}
+
+func inUseSpotMachineCalc(instanceTypes []string, v *Price, inUseMachinePricing *prometheus.GaugeVec) {
+	for _, w := range instanceTypes {
+		if w == v.InstanceType {
+			inUseMachinePricing.With(prometheus.Labels{
+				InstanceType:   v.InstanceType,
+				InstanceOption: "ON_DEMAND",
+				CPU:            v.CPU,
+				Memory:         v.Memory,
+				Unit:           v.Unit,
+				AZ:             "",
+				Region:         "eu-west-1",
+			}).Set(v.Price)
+		}
+	}
+}
+
+func inUseOnDemnandMachineCalc(instanceTypes []string, valueSpot Spot, inUseMachinePricing *prometheus.GaugeVec, valueOnDemand *Price) {
+	for _, w := range instanceTypes {
+		if w == valueSpot.InstanceType {
+			inUseMachinePricing.With(prometheus.Labels{
+				InstanceType:   valueSpot.InstanceType,
+				InstanceOption: "SPOT",
+				CPU:            valueOnDemand.CPU,
+				Memory:         valueOnDemand.Memory,
+				Unit:           "Hrs",
+				AZ:             valueSpot.AZ,
+				Region:         "eu-west-1",
+			}).Set(valueSpot.Price)
+		}
+	}
 }
