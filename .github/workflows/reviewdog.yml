@@ -25,13 +25,6 @@ jobs:
           filter_mode: nofilter
           # Exit with 1 when it find at least one finding.
           fail_on_error: true
-      - name: golangci-lint-pr-preview
-        uses: reviewdog/action-golangci-lint@v2
-        with:
-          golangci_lint_flags: "--tests=false --exclude-use-default=false -p style -p complexity -p error -p format -p bugs  -D gci -D scopelint -D exhaustivestruct -D varnamelen -D ireturn -D wsl -D gomnd -D gochecknoglobals -D lll -D golint -D stylecheck -D forbidigo"
-          level: "info"          
-          github_token: ${{ secrets.SUPPORT_TOKEN }}
-          reporter: github-pr-review
       - name: golangci-lint-check
         uses: reviewdog/action-golangci-lint@v2
         with:
@@ -39,3 +32,10 @@ jobs:
           level: "warning"
           github_token: ${{ secrets.SUPPORT_TOKEN }}
           reporter: github-pr-check
+      - name: golangci-lint-pr-preview
+        uses: reviewdog/action-golangci-lint@v2
+        with:
+          golangci_lint_flags: "--tests=false --exclude-use-default=false -p style -p complexity -p error -p format -p bugs  -D gci -D scopelint -D exhaustivestruct -D varnamelen -D ireturn -D wsl -D gomnd -D gochecknoglobals -D lll -D golint -D stylecheck -D forbidigo"
+          level: "info"          
+          github_token: ${{ secrets.SUPPORT_TOKEN }}
+          reporter: github-pr-review
