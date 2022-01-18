@@ -6,10 +6,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        go: ["1.16.x", "1.17.x"]
+        go: ["1.17.x"]
     steps:
       - name: Checkout Source
         uses: actions/checkout@v2
+      - uses: WillAbides/setup-go-faster@v1.7.0
+        with:
+          go-version: ${{ matrix.go }}
       - uses: reviewdog/action-setup@v1
         with:
           reviewdog_version: latest # Optional. [latest,nightly,v.X.Y.Z]
