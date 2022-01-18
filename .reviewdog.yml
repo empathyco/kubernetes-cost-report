@@ -7,11 +7,11 @@ runner:
   govet:
     cmd: go vet ./...
     format: govet
-  # errcheck:
-  #   cmd: errcheck -asserts -ignoretests -blank ./...
-  #   errorformat:
-  #     - "%f:%l:%c: %m"
-  #   level: warning
+  errcheck:
+    cmd: errcheck -asserts -ignoretests -blank ./...
+    errorformat:
+      - "%f:%l:%c: %m"
+    level: warning
   staticcheck:
     cmd: staticcheck ./...
     errorformat:
