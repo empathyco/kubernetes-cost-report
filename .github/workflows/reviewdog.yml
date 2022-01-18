@@ -16,15 +16,6 @@ jobs:
       - uses: reviewdog/action-setup@v1
         with:
           reviewdog_version: latest
-      - uses: reviewdog/action-staticcheck@v1
-        with:
-          github_token: ${{ secrets.SUPPORT_TOKEN }}
-          # Change reviewdog reporter if you need [github-pr-check,github-check,github-pr-review].
-          reporter: github-pr-review
-          # Report all results.
-          filter_mode: nofilter
-          # Exit with 1 when it find at least one finding.
-          fail_on_error: true
       - name: golangci-lint-check
         uses: reviewdog/action-golangci-lint@v2
         with:
