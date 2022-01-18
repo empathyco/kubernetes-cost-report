@@ -38,7 +38,7 @@ func TestParsingJsonString(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := ParsingJSONString(tt.args.dataByte, tt.args.key); got != tt.want {
+			if got := parsingJSONString(tt.args.dataByte, tt.args.key); got != tt.want {
 				t.Errorf("ParsingJsonString() = %v, want %v", got, tt.want)
 			}
 		})

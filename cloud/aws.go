@@ -94,7 +94,7 @@ var (
 	}
 )
 
-func ParsingJSONString(dataByte []byte, key string) string {
+func parsingJSONString(dataByte []byte, key string) string {
 	value := gjson.Get(string(dataByte[:]), key).String()
 	return value
 }
@@ -120,11 +120,11 @@ func parsingPrice(PriceData aws.JSONValue) (*Price, error) {
 		return nil, err
 	}
 
-	Pricing.CPU = ParsingJSONString(data, "product.attributes.vcpu")
-	Pricing.InstanceType = ParsingJSONString(data, "product.attributes.instanceType")
-	Pricing.Memory = ParsingJSONString(data, "product.attributes.memory")
+	Pricing.CPU = parsingJSONString(data, "product.attributes.vcpu")
+	Pricing.InstanceType = parsingJSONString(data, "product.attributes.instanceType")
+	Pricing.Memory = parsingJSONString(data, "product.attributes.memory")
 	Pricing.Price = parsingJSONFloat(data, "terms.OnDemand.*.priceDimensions.*.pricePerUnit.USD")
-	Pricing.Unit = ParsingJSONString(data, "terms.OnDemand.*.priceDimensions.*.unit")
+	Pricing.Unit = parsingJSONString(data, "terms.OnDemand.*.priceDimensions.*.unit")
 
 	return Pricing, nil
 }
@@ -148,6 +148,7 @@ func (p *Price) GetMemory() int {
 	return memory
 }
 
+// CalcUnitPrice calculate the unit price for onDemand instances
 func (p *Price) CalcUnitPrice() OnDemandUnitPrice {
 	gbPrice := p.Price / (cpuMemRelation*float64(p.GetCPU()) + float64(p.GetMemory()))
 	return OnDemandUnitPrice{
@@ -158,6 +159,7 @@ func (p *Price) CalcUnitPrice() OnDemandUnitPrice {
 	}
 }
 
+// CalcUnitPrice calculate the unit price for Spot instance
 func (spot *Spot) CalcUnitPrice(valuespot Spot, price *Price) SpotUnitPrice {
 	// Considering the cpuMemRelation is a constant
 	gbPrice := valuespot.Price / (cpuMemRelation*float64(price.GetCPU()) + float64(price.GetMemory()))
