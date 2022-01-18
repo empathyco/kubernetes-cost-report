@@ -3,7 +3,7 @@ on: ["push", "pull_request"]
 
 jobs:
   ci:
-    name: "Run CI"
+    name: "Run Static Checks"
     runs-on: self-hosted
     strategy:
       fail-fast: false
