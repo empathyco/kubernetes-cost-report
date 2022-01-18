@@ -1,23 +1,15 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"log"
-	"math/rand"
 	"net/http"
 	"platform-cost-report/cloud"
 	"runtime"
-	"time"
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/robfig/cron/v3"
 )
-
-func init() {
-	flag.Parse()
-	rand.Seed(time.Now().UnixNano())
-}
 
 func main() {
 	log.Printf("OS: %s\nArchitecture: %s\n", runtime.GOOS, runtime.GOARCH)

@@ -51,7 +51,7 @@ type SpotUnitPrice struct {
 }
 
 const (
-	InstanceType   = "label_beta_kubernetes_io_instance_type"
+	instanceType   = "label_beta_kubernetes_io_instance_type"
 	InstanceOption = "label_eks_amazonaws_com_capacity_type"
 	CPU            = "vcpu"
 	Memory         = "memory"
@@ -140,23 +140,29 @@ func avg(array []float64) float64 {
 	for _, v := range array {
 		result += v
 	}
+
 	return result / float64(len(array))
 }
 
+// GetCPU get cpu.
 func (p *Price) GetCPU() int {
 	cpu, _ := strconv.Atoi(p.CPU)
+
 	return cpu
 }
 
+// GetMemory get mem.
 func (p *Price) GetMemory() int {
 	num := strings.Fields(p.Memory)[0]
 	memory, _ := strconv.Atoi(num)
+
 	return memory
 }
 
 // CalcUnitPrice calculate the unit price for onDemand instances.
 func (p *Price) CalcUnitPrice() OnDemandUnitPrice {
 	gbPrice := p.Price / (cpuMemRelation*float64(p.GetCPU()) + float64(p.GetMemory()))
+
 	return OnDemandUnitPrice{
 		InstanceType: p.InstanceType,
 		AZ:           p.AZ,
@@ -174,6 +180,7 @@ func (spot *Spot) CalcUnitPrice(valuespot Spot, price *Price) SpotUnitPrice {
 	discount := 1 - valuespot.Price/price.Price
 	// Spot capacity for the instanceType based on the pricing.
 	capacity := (spot.Price - minSpotPrice) / (4 * price.Price / 5)
+
 	return SpotUnitPrice{
 		OnDemandUnitPrice: OnDemandUnitPrice{
 			InstanceType: valuespot.InstanceType,
@@ -209,6 +216,7 @@ func groupPricing(spotPrices []*ec2.SpotPrice) []Spot {
 		}
 		pricesArray = append(pricesArray, spotOne)
 	}
+
 	return pricesArray
 }
 
@@ -232,6 +240,7 @@ func SpotMetric() ([]Spot, error) {
 	var spotPrices []*ec2.SpotPrice
 	paginator := func(page *ec2.DescribeSpotPriceHistoryOutput, b bool) bool {
 		spotPrices = append(spotPrices, page.SpotPriceHistory...)
+
 		return !b
 	}
 	err = svc.DescribeSpotPriceHistoryPages(input, paginator)
@@ -239,6 +248,7 @@ func SpotMetric() ([]Spot, error) {
 	if err != nil {
 		return nil, fmt.Errorf("describeSpotPriceHistoryPages: %w", err)
 	}
+
 	return groupPrice, nil
 }
 
@@ -266,6 +276,7 @@ func PriceMetric() ([]*Price, error) {
 			}
 			prices = append(prices, price)
 		}
+
 		return !lastPage
 	}
 	err = svc.GetProductsPages(input, paginator)
@@ -304,11 +315,13 @@ func listInstances() ([]string, error) {
 		func(page *ec2.DescribeInstancesOutput, lastPage bool) bool {
 			data, _ := json.Marshal(page)
 			instanceTypes = parsingJSONStringArray(data, "Reservations.#.Instances.0.InstanceType")
+
 			return !lastPage
 		})
 	if err != nil {
 		return nil, fmt.Errorf("DescribeInstancesPages: %w", err)
 	}
+
 	return removeDuplicateStr(instanceTypes), nil
 }
 
@@ -321,13 +334,15 @@ func removeDuplicateStr(strSlice []string) []string {
 			list = append(list, item)
 		}
 	}
+
 	return list
 }
 
+// AWSMetrics export metrics.
 func AWSMetrics() (prometheus.Gatherer, error) {
 	reg := prometheus.NewRegistry()
-	labelNames := []string{InstanceType, InstanceOption, CPU, Memory, Unit, AZ, Region}
-	labelUnit := []string{InstanceType, InstanceOption, Unit, AZ, Region}
+	labelNames := []string{instanceType, InstanceOption, CPU, Memory, Unit, AZ, Region}
+	labelUnit := []string{instanceType, InstanceOption, Unit, AZ, Region}
 
 	allMachinePricing := promauto.With(reg).NewGaugeVec(prometheus.GaugeOpts{
 		Name: "instance_cost_all",
@@ -375,6 +390,7 @@ func AWSMetrics() (prometheus.Gatherer, error) {
 	// All machine pricing calculation
 	// In Use machine price calculation
 	spotInstancePriceCalc(spotPricing, onDemandPricing, allMachinePricing, vCPUPricing, memPricing, capacity, discount, inUseMachinePricing, instanceTypes)
+
 	return reg, nil
 }
 
@@ -383,7 +399,7 @@ func spotInstancePriceCalc(spotPricing []Spot, onDemandPricing []*Price, allMach
 		for _, valueOnDemand := range onDemandPricing {
 			if valueSpot.InstanceType == valueOnDemand.InstanceType {
 				allMachinePricing.With(prometheus.Labels{
-					InstanceType:   valueSpot.InstanceType,
+					instanceType:   valueSpot.InstanceType,
 					InstanceOption: "SPOT",
 					CPU:            valueOnDemand.CPU,
 					Memory:         valueOnDemand.Memory,
@@ -393,28 +409,28 @@ func spotInstancePriceCalc(spotPricing []Spot, onDemandPricing []*Price, allMach
 				}).Set(valueSpot.Price)
 				spotUnitPrice := valueSpot.CalcUnitPrice(valueSpot, valueOnDemand)
 				vCPUPricing.With(prometheus.Labels{
-					InstanceType:   valueSpot.InstanceType,
+					instanceType:   valueSpot.InstanceType,
 					InstanceOption: "SPOT",
 					Unit:           "Hrs",
 					AZ:             valueSpot.AZ,
 					Region:         "eu-west-1",
 				}).Set(spotUnitPrice.CPUPrice)
 				memPricing.With(prometheus.Labels{
-					InstanceType:   valueSpot.InstanceType,
+					instanceType:   valueSpot.InstanceType,
 					InstanceOption: "SPOT",
 					Unit:           "Hrs",
 					AZ:             valueSpot.AZ,
 					Region:         "eu-west-1",
 				}).Set(spotUnitPrice.MemPrice)
 				capacity.With(prometheus.Labels{
-					InstanceType:   valueSpot.InstanceType,
+					instanceType:   valueSpot.InstanceType,
 					InstanceOption: "SPOT",
 					Unit:           "Hrs",
 					AZ:             valueSpot.AZ,
 					Region:         "eu-west-1",
 				}).Set(spotUnitPrice.Capacity)
 				discount.With(prometheus.Labels{
-					InstanceType:   valueSpot.InstanceType,
+					instanceType:   valueSpot.InstanceType,
 					InstanceOption: "SPOT",
 					Unit:           "Hrs",
 					AZ:             valueSpot.AZ,
@@ -432,7 +448,7 @@ func instancePriceCalc(onDemandPricing []*Price, allMachinePricing, vCPUPricing,
 		onDemandUnitPrice := v.CalcUnitPrice()
 
 		allMachinePricing.With(prometheus.Labels{
-			InstanceType:   v.InstanceType,
+			instanceType:   v.InstanceType,
 			InstanceOption: "ON_DEMAND",
 			CPU:            v.CPU,
 			Memory:         v.Memory,
@@ -441,14 +457,14 @@ func instancePriceCalc(onDemandPricing []*Price, allMachinePricing, vCPUPricing,
 			Region:         "eu-west-1",
 		}).Set(v.Price)
 		vCPUPricing.With(prometheus.Labels{
-			InstanceType:   v.InstanceType,
+			instanceType:   v.InstanceType,
 			InstanceOption: "ON_DEMAND",
 			Unit:           v.Unit,
 			AZ:             "",
 			Region:         "eu-west-1",
 		}).Set(onDemandUnitPrice.CPUPrice)
 		memPricing.With(prometheus.Labels{
-			InstanceType:   v.InstanceType,
+			instanceType:   v.InstanceType,
 			InstanceOption: "ON_DEMAND",
 			Unit:           v.Unit,
 			AZ:             "",
@@ -463,7 +479,7 @@ func inUseSpotMachineCalc(instanceTypes []string, v *Price, inUseMachinePricing 
 	for _, w := range instanceTypes {
 		if w == v.InstanceType {
 			inUseMachinePricing.With(prometheus.Labels{
-				InstanceType:   v.InstanceType,
+				instanceType:   v.InstanceType,
 				InstanceOption: "ON_DEMAND",
 				CPU:            v.CPU,
 				Memory:         v.Memory,
@@ -479,7 +495,7 @@ func inUseOnDemnandMachineCalc(instanceTypes []string, valueSpot Spot, inUseMach
 	for _, w := range instanceTypes {
 		if w == valueSpot.InstanceType {
 			inUseMachinePricing.With(prometheus.Labels{
-				InstanceType:   valueSpot.InstanceType,
+				instanceType:   valueSpot.InstanceType,
 				InstanceOption: "SPOT",
 				CPU:            valueOnDemand.CPU,
 				Memory:         valueOnDemand.Memory,
