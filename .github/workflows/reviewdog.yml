@@ -29,3 +29,26 @@ jobs:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.SUPPORT_TOKEN }}
         run: |
           golint ./... | reviewdog -f=golint -reporter=github-pr-review
+      - uses: reviewdog/action-staticcheck@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          # Change reviewdog reporter if you need [github-pr-check,github-check,github-pr-review].
+          reporter: github-pr-review
+          # Report all results.
+          filter_mode: nofilter
+          # Exit with 1 when it find at least one finding.
+          fail_on_error: true
+      - name: golangci-lint
+        uses: reviewdog/action-golangci-lint@v2
+      - name: golint
+        uses: reviewdog/action-golangci-lint@v2
+        with:
+          golangci_lint_flags: '--disable-all -E golint'
+          tool_name: golint # Change reporter name.
+          level: warning # GitHub Status Check won't become failure with this level.
+      - name: errcheck
+        uses: reviewdog/action-golangci-lint@v2
+        with:
+          golangci_lint_flags: '--disable-all -E errcheck'
+          tool_name: errcheck
+          level: info
