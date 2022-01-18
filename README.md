@@ -1,14 +1,21 @@
-# Requirements
+# Cost Reports
+<a href='https://github.com/jpoles1/gopherbadger' target='_blank'>![gopherbadger-tag-do-not-edit](https://img.shields.io/badge/Go%20Coverage-25%25-brightgreen.svg?longCache=true&style=flat)</a>
+[![Docker](https://github.com/empathyco/platform-cost-report/actions/workflows/docker.yml/badge.svg)](https://github.com/empathyco/platform-cost-report/actions/workflows/docker.yml)
+[![Gosec](https://github.com/empathyco/platform-cost-report/actions/workflows/gosec.yaml/badge.svg)](https://github.com/empathyco/platform-cost-report/actions/workflows/gosec.yaml)
+[![Reviewdog](https://github.com/empathyco/platform-cost-report/actions/workflows/reviewdog.yml/badge.svg)](https://github.com/empathyco/platform-cost-report/actions/workflows/reviewdog.yml)
+## Architecture
+![](docs/diagram.png)
+## Requirements
 
 ```sh
 brew install go
 ```
 
-API based in Go
+## Build
 
-## Usage
-
-### Keep it simple
+```sh
+make build
+## Docker 
 
 For those who wants keep it simple and avoid install a lot of things:
 
@@ -17,7 +24,12 @@ docker build . -t cost-report
 docker run -p 8080:8080 cost-report
 ```
 
-### Start using it
+## Usage
+
+```sh
+
+```
+### Development
 1. Add comments to your API source code, [See Declarative Comments Format](https://swaggo.github.io/swaggo.io/declarative_comments_format/).
 2. Download [Swag](https://github.com/swaggo/swag) for Go by using:
 ```sh

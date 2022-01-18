@@ -32,7 +32,7 @@ type Spot struct {
 	Price        float64
 }
 
-// SpotUnitPrice represents the price per unit(1cpu, 1GB) of the instance type
+// OnDemandUnitPrice represents the price per unit(1cpu, 1GB) of the instance type
 type OnDemandUnitPrice struct {
 	InstanceType string
 	AZ           string
@@ -60,7 +60,6 @@ const (
 )
 
 var (
-	azs                         = [3]string{"eu-west-1a", "eu-west-1b", "eu-west-1c"}
 	filtering []*pricing.Filter = []*pricing.Filter{
 		{
 			Type:  aws.String("TERM_MATCH"),
@@ -95,17 +94,17 @@ var (
 	}
 )
 
-func ParsingJsonString(dataByte []byte, key string) string {
+func parsingJSONString(dataByte []byte, key string) string {
 	value := gjson.Get(string(dataByte[:]), key).String()
 	return value
 }
 
-func parsingJsonFloat(dataByte []byte, key string) float64 {
+func parsingJSONFloat(dataByte []byte, key string) float64 {
 	value := gjson.Get(string(dataByte[:]), key).Float()
 	return value
 }
 
-func parsingJsonStringArray(dataByte []byte, key string) []string {
+func parsingJSONStringArray(dataByte []byte, key string) []string {
 	result := []string{}
 	value := gjson.Get(string(dataByte[:]), key).Array()
 	for _, name := range value {
@@ -121,11 +120,11 @@ func parsingPrice(PriceData aws.JSONValue) (*Price, error) {
 		return nil, err
 	}
 
-	Pricing.CPU = ParsingJsonString(data, "product.attributes.vcpu")
-	Pricing.InstanceType = ParsingJsonString(data, "product.attributes.instanceType")
-	Pricing.Memory = ParsingJsonString(data, "product.attributes.memory")
-	Pricing.Price = parsingJsonFloat(data, "terms.OnDemand.*.priceDimensions.*.pricePerUnit.USD")
-	Pricing.Unit = ParsingJsonString(data, "terms.OnDemand.*.priceDimensions.*.unit")
+	Pricing.CPU = parsingJSONString(data, "product.attributes.vcpu")
+	Pricing.InstanceType = parsingJSONString(data, "product.attributes.instanceType")
+	Pricing.Memory = parsingJSONString(data, "product.attributes.memory")
+	Pricing.Price = parsingJSONFloat(data, "terms.OnDemand.*.priceDimensions.*.pricePerUnit.USD")
+	Pricing.Unit = parsingJSONString(data, "terms.OnDemand.*.priceDimensions.*.unit")
 
 	return Pricing, nil
 }
@@ -149,16 +148,18 @@ func (p *Price) GetMemory() int {
 	return memory
 }
 
-func (prices Price) CalcUnitPrice() OnDemandUnitPrice {
-	gbPrice := prices.Price / (cpuMemRelation*float64(prices.GetCPU()) + float64(prices.GetMemory()))
+// CalcUnitPrice calculate the unit price for onDemand instances
+func (p *Price) CalcUnitPrice() OnDemandUnitPrice {
+	gbPrice := p.Price / (cpuMemRelation*float64(p.GetCPU()) + float64(p.GetMemory()))
 	return OnDemandUnitPrice{
-		InstanceType: prices.InstanceType,
-		AZ:           prices.AZ,
+		InstanceType: p.InstanceType,
+		AZ:           p.AZ,
 		MemPrice:     gbPrice,
 		CPUPrice:     cpuMemRelation * gbPrice,
 	}
 }
 
+// CalcUnitPrice calculate the unit price for Spot instance
 func (spot *Spot) CalcUnitPrice(valuespot Spot, price *Price) SpotUnitPrice {
 	// Considering the cpuMemRelation is a constant
 	gbPrice := valuespot.Price / (cpuMemRelation*float64(price.GetCPU()) + float64(price.GetMemory()))
@@ -303,7 +304,7 @@ func listInstances() ([]string, error) {
 	err = svc.DescribeInstancesPages(input,
 		func(page *ec2.DescribeInstancesOutput, lastPage bool) bool {
 			data, _ := json.Marshal(page)
-			instanceTypes = parsingJsonStringArray(data, "Reservations.#.Instances.0.InstanceType")
+			instanceTypes = parsingJSONStringArray(data, "Reservations.#.Instances.0.InstanceType")
 			return !lastPage
 		})
 	if err != nil {

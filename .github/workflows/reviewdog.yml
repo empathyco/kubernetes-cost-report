@@ -1,0 +1,41 @@
+name: reviewdog
+on: ["pull_request"]
+jobs:
+  reviewdog:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        go: ["1.17.x"]
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v2
+      - uses: WillAbides/setup-go-faster@v1.7.0
+        with:
+          go-version: ${{ matrix.go }}
+      - uses: reviewdog/action-setup@v1
+        with:
+          reviewdog_version: latest
+      - uses: reviewdog/action-staticcheck@v1
+        with:
+          github_token: ${{ secrets.SUPPORT_TOKEN }}
+          # Change reviewdog reporter if you need [github-pr-check,github-check,github-pr-review].
+          reporter: github-pr-review
+          # Report all results.
+          filter_mode: nofilter
+          # Exit with 1 when it find at least one finding.
+          fail_on_error: true
+      - name: golangci-lint-pr-preview
+        uses: reviewdog/action-golangci-lint@v2
+        with:
+          golangci_lint_flags: "--enable-all --exclude-use-default=false -D wsl -D testpackage"
+          level: "warning"          
+          github_token: ${{ secrets.SUPPORT_TOKEN }}
+          reporter: github-pr-review
+      - name: golangci-lint-check
+        uses: reviewdog/action-golangci-lint@v2
+        with:
+          golangci_lint_flags: "--enable-all --exclude-use-default=false -D wsl -D testpackage"
+          level: "warning"
+          github_token: ${{ secrets.SUPPORT_TOKEN }}
+          reporter: github-pr-check

@@ -1,7 +1,5 @@
 package cloud
 
-import "fmt"
-
 type UnitPrice interface {
 
 	// Methods
@@ -95,49 +93,4 @@ func IntersectionForEach(vs1, vs2 []UnitPrice, t mapFunc) {
 			t(v, vs2[i])
 		}
 	}
-}
-
-func TryIt() {
-	var oD = []UnitPrice{
-		OnDemand2UnitPrice{
-			BaseUnitPrice{
-				InstanceType: "t1.micro",
-				AZ:           "us-east-1a",
-				MemPrice:     0.02,
-				CPUPrice:     0.005,
-			},
-		},
-		OnDemand2UnitPrice{
-			BaseUnitPrice{
-				InstanceType: "t1.micro",
-				AZ:           "us-east-1a",
-				MemPrice:     0.02,
-				CPUPrice:     0.005,
-			},
-		},
-	}
-	var spot = []UnitPrice{
-		Spot2UnitPrice{
-			BaseUnitPrice{
-				InstanceType: "t1.micro",
-				AZ:           "us-east-1a",
-				MemPrice:     0.02,
-				CPUPrice:     0.005,
-			},
-			0.1,
-		},
-		Spot2UnitPrice{
-			BaseUnitPrice{
-				InstanceType: "t1.micro",
-				AZ:           "us-east-1a",
-				MemPrice:     0.02,
-				CPUPrice:     0,
-			},
-			0.1,
-		},
-	}
-	IntersectionForEach(oD, spot, func(v1, v2 UnitPrice) {
-		fmt.Println(v1, v2)
-	})
-
 }

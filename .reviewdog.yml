@@ -1,0 +1,18 @@
+# reviewdog.yml
+runner:
+  golint:
+    cmd: golint ./...
+    format: golint
+    level: warning
+  govet:
+    cmd: go vet ./...
+    format: govet
+  errcheck:
+    cmd: errcheck -asserts -ignoretests -blank ./...
+    errorformat:
+      - "%f:%l:%c: %m"
+    level: warning
+  staticcheck:
+    cmd: staticcheck ./...
+    errorformat:
+      - "%f:%l:%c: %m"

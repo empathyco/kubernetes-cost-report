@@ -38,7 +38,7 @@ func TestParsingJsonString(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := ParsingJsonString(tt.args.dataByte, tt.args.key); got != tt.want {
+			if got := parsingJSONString(tt.args.dataByte, tt.args.key); got != tt.want {
 				t.Errorf("ParsingJsonString() = %v, want %v", got, tt.want)
 			}
 		})
@@ -66,7 +66,7 @@ func TestParsingJsonStringArray(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := parsingJsonStringArray(tt.args.dataByte, tt.args.key); !reflect.DeepEqual(got, tt.want) {
+			if got := parsingJSONStringArray(tt.args.dataByte, tt.args.key); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("ParsingJsonStringArray() = %v, want %v", got, tt.want)
 			}
 		})
@@ -93,7 +93,7 @@ func TestParsingJsonFloat(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := parsingJsonFloat(tt.args.dataByte, tt.args.key); got != tt.want {
+			if got := parsingJSONFloat(tt.args.dataByte, tt.args.key); got != tt.want {
 				t.Errorf("ParsingJsonFloat() = %v, want %v", got, tt.want)
 			}
 		})

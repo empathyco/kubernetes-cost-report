@@ -29,13 +29,16 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	scheduler.AddFunc("@every 12h", func() {
+	_, err = scheduler.AddFunc("@every 12h", func() {
 		reg, err = cloud.AWSMetrics()
 		fmt.Println("AWS metrics updated")
 		if err != nil {
 			fmt.Println("Error: %w", err)
 		}
 	})
+	if err != nil {
+		panic(err)
+	}
 	scheduler.Start()
 
 	http.HandleFunc("/updatePricing", func(rw http.ResponseWriter, r *http.Request) {
@@ -59,6 +62,9 @@ func main() {
 		handler.ServeHTTP(rw, r)
 	})
 
-	http.ListenAndServe(":8080", nil)
+	err = http.ListenAndServe(":8080", nil)
+	if err != nil {
+		panic(err)
+	}
 
 }
