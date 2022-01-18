@@ -1,4 +1,4 @@
-name: reviewdog2
+name: reviewdog
 on: [pull_request]
 jobs:
   reviewdog:
