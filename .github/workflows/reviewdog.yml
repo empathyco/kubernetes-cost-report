@@ -28,12 +28,14 @@ jobs:
       - name: golangci-lint-pr-preview
         uses: reviewdog/action-golangci-lint@v2
         with:
-          golangci_lint_flags: '--enable-all --exclude-use-default=false'
+          golangci_lint_flags: "--enable-all --exclude-use-default=false -D wsl -D testpackage"
+          level: "warning"          
           github_token: ${{ secrets.SUPPORT_TOKEN }}
           reporter: github-pr-review
       - name: golangci-lint-check
         uses: reviewdog/action-golangci-lint@v2
         with:
-          golangci_lint_flags: '--enable-all --exclude-use-default=false'
+          golangci_lint_flags: "--enable-all --exclude-use-default=false -D wsl -D testpackage"
+          level: "warning"
           github_token: ${{ secrets.SUPPORT_TOKEN }}
           reporter: github-pr-check
