@@ -1,14 +1,19 @@
-# Requirements
+# Cost Reports
+<a href='https://github.com/jpoles1/gopherbadger' target='_blank'>![gopherbadger-tag-do-not-edit](https://img.shields.io/badge/Go%20Coverage-25%25-brightgreen.svg?longCache=true&style=flat)</a>
+
+## Architecture
+![](docs/diagram.png)
+## Requirements
 
 ```sh
 brew install go
 ```
 
-API based in Go
+## Build
 
-## Usage
-
-### Keep it simple
+```sh
+go build 
+## Docker 
 
 For those who wants keep it simple and avoid install a lot of things:
 
@@ -16,6 +21,12 @@ For those who wants keep it simple and avoid install a lot of things:
 docker build . -t cost-report
 docker run -p 8080:8080 cost-report
 ```
+
+## Usage
+
+
+### Keep it simple
+
 
 ### Start using it
 1. Add comments to your API source code, [See Declarative Comments Format](https://swaggo.github.io/swaggo.io/declarative_comments_format/).
