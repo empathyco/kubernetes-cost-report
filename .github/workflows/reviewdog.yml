@@ -25,25 +25,15 @@ jobs:
           filter_mode: nofilter
           # Exit with 1 when it find at least one finding.
           fail_on_error: true
-      - name: golangci-lint
+      - name: golangci-lint-pr-preview
         uses: reviewdog/action-golangci-lint@v2
         with:
           golangci_lint_flags: '--enable-all --exclude-use-default=false'
           github_token: ${{ secrets.SUPPORT_TOKEN }}
           reporter: github-pr-review
-      - name: golint
+      - name: golangci-lint-check
         uses: reviewdog/action-golangci-lint@v2
         with:
-          golangci_lint_flags: '--disable-all -E golint'
-          tool_name: golint # Change reporter name.
-          level: warning # GitHub Status Check won't become failure with this level.
+          golangci_lint_flags: '--enable-all --exclude-use-default=false'
           github_token: ${{ secrets.SUPPORT_TOKEN }}
-          reporter: github-pr-review
-      - name: errcheck
-        uses: reviewdog/action-golangci-lint@v2
-        with:
-          golangci_lint_flags: '--disable-all -E errcheck'
-          tool_name: errcheck
-          level: info
-          github_token: ${{ secrets.SUPPORT_TOKEN }}
-          # reporter: ["github-pr-check","github-pr-review"] 
+          reporter: github-pr-check
