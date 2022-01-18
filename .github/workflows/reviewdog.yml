@@ -1,9 +1,11 @@
 name: reviewdog
-on: [pull_request]
+on: ["push", "pull_request"]
 jobs:
   reviewdog:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Source
+        uses: actions/checkout@v2
       - uses: reviewdog/action-setup@v1
         with:
           reviewdog_version: latest # Optional. [latest,nightly,v.X.Y.Z]
