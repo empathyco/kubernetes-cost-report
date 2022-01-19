@@ -1,0 +1,7 @@
+runner:
+  # examples
+  golint:
+    cmd: golint ./...
+    errorformat:
+      - "%f:%l:%c: %m"
+    level: warning

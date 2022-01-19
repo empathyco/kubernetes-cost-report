@@ -2,7 +2,7 @@ name: reviewdog
 on: ["pull_request"]
 jobs:
   reviewdog:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       fail-fast: false
       matrix:
@@ -19,14 +19,14 @@ jobs:
       - name: golangci-lint-check
         uses: reviewdog/action-golangci-lint@v2
         with:
-          golangci_lint_flags: "--tests=false --exclude-use-default=false -p style -p complexity -p error -p format -p bugs  -D gci -D scopelint -D exhaustivestruct -D varnamelen -D ireturn -D wsl -D gomnd -D gochecknoglobals -D lll -D golint -D stylecheck -D forbidigo -D interfacer"
+          golangci_lint_flags: "--tests=false --exclude-use-default=false --enable-all  -D gci -D scopelint -D exhaustivestruct  -D wsl -D gomnd -D gochecknoglobals -D lll -D golint -D forbidigo -D ireturn"
           level: "warning"
           github_token: ${{ secrets.SUPPORT_TOKEN }}
           reporter: github-pr-check
       - name: golangci-lint-pr-preview
         uses: reviewdog/action-golangci-lint@v2
         with:
-          golangci_lint_flags: "--tests=false --exclude-use-default=false -p style -p complexity -p error -p format -p bugs  -D gci -D scopelint -D exhaustivestruct -D varnamelen -D ireturn -D wsl -D gomnd -D gochecknoglobals -D lll -D golint -D stylecheck -D forbidigo -D interfacer"
+          golangci_lint_flags: "--tests=false --exclude-use-default=false --enable-all  -D gci -D scopelint -D exhaustivestruct  -D wsl -D gomnd -D gochecknoglobals -D lll -D golint -D forbidigo -D ireturn"
           level: "warning"          
           github_token: ${{ secrets.SUPPORT_TOKEN }}
           reporter: github-pr-review

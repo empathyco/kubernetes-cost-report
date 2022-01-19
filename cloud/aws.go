@@ -1,3 +1,4 @@
+// Package cloud provides functionality for the different cloud providers.
 package cloud
 
 import (
@@ -445,49 +446,49 @@ func spotInstancePriceCalc(spotPricing []Spot, onDemandPricing []*Price, allMach
 }
 
 func instancePriceCalc(onDemandPricing []*Price, allMachinePricing, vCPUPricing, memPricing, inUseMachinePricing *prometheus.GaugeVec, instanceTypes []string) {
-	for _, v := range onDemandPricing {
-		onDemandUnitPrice := v.CalcUnitPrice()
+	for _, price := range onDemandPricing {
+		onDemandUnitPrice := price.CalcUnitPrice()
 
 		allMachinePricing.With(prometheus.Labels{
-			instanceType:   v.InstanceType,
+			instanceType:   price.InstanceType,
 			InstanceOption: "ON_DEMAND",
-			CPU:            v.CPU,
-			Memory:         v.Memory,
-			Unit:           v.Unit,
+			CPU:            price.CPU,
+			Memory:         price.Memory,
+			Unit:           price.Unit,
 			AZ:             "",
 			Region:         "eu-west-1",
-		}).Set(v.Price)
+		}).Set(price.Price)
 		vCPUPricing.With(prometheus.Labels{
-			instanceType:   v.InstanceType,
+			instanceType:   price.InstanceType,
 			InstanceOption: "ON_DEMAND",
-			Unit:           v.Unit,
+			Unit:           price.Unit,
 			AZ:             "",
 			Region:         "eu-west-1",
 		}).Set(onDemandUnitPrice.CPUPrice)
 		memPricing.With(prometheus.Labels{
-			instanceType:   v.InstanceType,
+			instanceType:   price.InstanceType,
 			InstanceOption: "ON_DEMAND",
-			Unit:           v.Unit,
+			Unit:           price.Unit,
 			AZ:             "",
 			Region:         "eu-west-1",
 		}).Set(onDemandUnitPrice.MemPrice)
 
-		inUseSpotMachineCalc(instanceTypes, v, inUseMachinePricing)
+		inUseSpotMachineCalc(instanceTypes, price, inUseMachinePricing)
 	}
 }
 
-func inUseSpotMachineCalc(instanceTypes []string, v *Price, inUseMachinePricing *prometheus.GaugeVec) {
+func inUseSpotMachineCalc(instanceTypes []string, price *Price, inUseMachinePricing *prometheus.GaugeVec) {
 	for _, w := range instanceTypes {
-		if w == v.InstanceType {
+		if w == price.InstanceType {
 			inUseMachinePricing.With(prometheus.Labels{
-				instanceType:   v.InstanceType,
+				instanceType:   price.InstanceType,
 				InstanceOption: "ON_DEMAND",
-				CPU:            v.CPU,
-				Memory:         v.Memory,
-				Unit:           v.Unit,
+				CPU:            price.CPU,
+				Memory:         price.Memory,
+				Unit:           price.Unit,
 				AZ:             "",
 				Region:         "eu-west-1",
-			}).Set(v.Price)
+			}).Set(price.Price)
 		}
 	}
 }
