@@ -53,6 +53,7 @@ type SpotUnitPrice struct {
 const (
 	instanceType   = "label_beta_kubernetes_io_instance_type"
 	InstanceOption = "label_eks_amazonaws_com_capacity_type"
+	Kaka           = "delux"
 	CPU            = "vcpu"
 	Memory         = "memory"
 	Unit           = "unit"
