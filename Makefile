@@ -11,6 +11,8 @@ build_linux:
 build_windows:
 	GOARCH=amd64 GOOS=window go build -o ${BINARY_NAME}-windows main.go
 
+lint:
+	golangci-lint run  --tests=false --exclude-use-default=false -p complexity -p error -p format -p bugs  -D gci -D scopelint
 
 test:
 	go test -v ./...

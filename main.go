@@ -1,23 +1,15 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"log"
-	"math/rand"
 	"net/http"
 	"platform-cost-report/cloud"
 	"runtime"
-	"time"
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/robfig/cron/v3"
 )
-
-func init() {
-	flag.Parse()
-	rand.Seed(time.Now().UnixNano())
-}
 
 func main() {
 	log.Printf("OS: %s\nArchitecture: %s\n", runtime.GOOS, runtime.GOARCH)
@@ -41,15 +33,15 @@ func main() {
 	}
 	scheduler.Start()
 
-	http.HandleFunc("/updatePricing", func(rw http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/updatePricing", func(writter http.ResponseWriter, reader *http.Request) {
 		reg, err = cloud.AWSMetrics()
 		if err != nil {
 			fmt.Println("Error: %w", err)
-			rw.WriteHeader(http.StatusInternalServerError)
-			fmt.Fprintf(rw, "{\"error\":\"%v\"}", err)
+			writter.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(writter, "{\"error\":\"%v\"}", err)
 		}
-		rw.WriteHeader(http.StatusOK)
-		fmt.Fprintf(rw, "{\"message\":\"Pricing updated\"}")
+		writter.WriteHeader(http.StatusOK)
+		fmt.Fprintf(writter, "{\"message\":\"Pricing updated\"}")
 	})
 
 	http.HandleFunc("/health", func(rw http.ResponseWriter, r *http.Request) {
@@ -66,5 +58,4 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
 }
