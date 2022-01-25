@@ -53,14 +53,20 @@ type SpotUnitPrice struct {
 
 const (
 	instanceType   = "label_beta_kubernetes_io_instance_type"
-	InstanceOption = "label_eks_amazonaws_com_capacity_type"
-	Kaka           = "delux"
-	CPU            = "vcpu"
-	Memory         = "memory"
-	Unit           = "unit"
-	Description    = "description"
-	AZ             = "label_topology_kubernetes_io_zone"
-	Region         = "region"
+	instanceOption = "label_eks_amazonaws_com_capacity_type"
+	// CPU label.
+	CPU = "vcpu"
+	// Memory label.
+	Memory = "memory"
+	// Unit Label.
+	Unit = "unit"
+	// Description Label.
+	Description = "description"
+	// AZ label.
+	AZ = "label_topology_kubernetes_io_zone"
+	// Region label.
+	Region = "region"
+	// Timestamp label.
 	Timestamp      = "timestamp"
 	cpuMemRelation = 7.2
 )
@@ -343,8 +349,8 @@ func removeDuplicateStr(strSlice []string) []string {
 // AWSMetrics export metrics.
 func AWSMetrics() (prometheus.Gatherer, error) {
 	reg := prometheus.NewRegistry()
-	labelNames := []string{instanceType, InstanceOption, CPU, Memory, Unit, AZ, Region}
-	labelUnit := []string{instanceType, InstanceOption, Unit, AZ, Region}
+	labelNames := []string{instanceType, instanceOption, CPU, Memory, Unit, AZ, Region}
+	labelUnit := []string{instanceType, instanceOption, Unit, AZ, Region}
 
 	allMachinePricing := promauto.With(reg).NewGaugeVec(prometheus.GaugeOpts{
 		Name: "instance_cost_all",
@@ -402,7 +408,7 @@ func spotInstancePriceCalc(spotPricing []Spot, onDemandPricing []*Price, allMach
 			if valueSpot.InstanceType == valueOnDemand.InstanceType {
 				allMachinePricing.With(prometheus.Labels{
 					instanceType:   valueSpot.InstanceType,
-					InstanceOption: "SPOT",
+					instanceOption: "SPOT",
 					CPU:            valueOnDemand.CPU,
 					Memory:         valueOnDemand.Memory,
 					Unit:           "Hrs",
@@ -412,28 +418,28 @@ func spotInstancePriceCalc(spotPricing []Spot, onDemandPricing []*Price, allMach
 				spotUnitPrice := valueSpot.CalcUnitPrice(valueSpot, valueOnDemand)
 				vCPUPricing.With(prometheus.Labels{
 					instanceType:   valueSpot.InstanceType,
-					InstanceOption: "SPOT",
+					instanceOption: "SPOT",
 					Unit:           "Hrs",
 					AZ:             valueSpot.AZ,
 					Region:         "eu-west-1",
 				}).Set(spotUnitPrice.CPUPrice)
 				memPricing.With(prometheus.Labels{
 					instanceType:   valueSpot.InstanceType,
-					InstanceOption: "SPOT",
+					instanceOption: "SPOT",
 					Unit:           "Hrs",
 					AZ:             valueSpot.AZ,
 					Region:         "eu-west-1",
 				}).Set(spotUnitPrice.MemPrice)
 				capacity.With(prometheus.Labels{
 					instanceType:   valueSpot.InstanceType,
-					InstanceOption: "SPOT",
+					instanceOption: "SPOT",
 					Unit:           "Hrs",
 					AZ:             valueSpot.AZ,
 					Region:         "eu-west-1",
 				}).Set(spotUnitPrice.Capacity)
 				discount.With(prometheus.Labels{
 					instanceType:   valueSpot.InstanceType,
-					InstanceOption: "SPOT",
+					instanceOption: "SPOT",
 					Unit:           "Hrs",
 					AZ:             valueSpot.AZ,
 					Region:         "eu-west-1",
@@ -451,7 +457,7 @@ func instancePriceCalc(onDemandPricing []*Price, allMachinePricing, vCPUPricing,
 
 		allMachinePricing.With(prometheus.Labels{
 			instanceType:   price.InstanceType,
-			InstanceOption: "ON_DEMAND",
+			instanceOption: "ON_DEMAND",
 			CPU:            price.CPU,
 			Memory:         price.Memory,
 			Unit:           price.Unit,
@@ -460,14 +466,14 @@ func instancePriceCalc(onDemandPricing []*Price, allMachinePricing, vCPUPricing,
 		}).Set(price.Price)
 		vCPUPricing.With(prometheus.Labels{
 			instanceType:   price.InstanceType,
-			InstanceOption: "ON_DEMAND",
+			instanceOption: "ON_DEMAND",
 			Unit:           price.Unit,
 			AZ:             "",
 			Region:         "eu-west-1",
 		}).Set(onDemandUnitPrice.CPUPrice)
 		memPricing.With(prometheus.Labels{
 			instanceType:   price.InstanceType,
-			InstanceOption: "ON_DEMAND",
+			instanceOption: "ON_DEMAND",
 			Unit:           price.Unit,
 			AZ:             "",
 			Region:         "eu-west-1",
@@ -482,7 +488,7 @@ func inUseSpotMachineCalc(instanceTypes []string, price *Price, inUseMachinePric
 		if w == price.InstanceType {
 			inUseMachinePricing.With(prometheus.Labels{
 				instanceType:   price.InstanceType,
-				InstanceOption: "ON_DEMAND",
+				instanceOption: "ON_DEMAND",
 				CPU:            price.CPU,
 				Memory:         price.Memory,
 				Unit:           price.Unit,
@@ -498,7 +504,7 @@ func inUseOnDemnandMachineCalc(instanceTypes []string, valueSpot Spot, inUseMach
 		if w == valueSpot.InstanceType {
 			inUseMachinePricing.With(prometheus.Labels{
 				instanceType:   valueSpot.InstanceType,
-				InstanceOption: "SPOT",
+				instanceOption: "SPOT",
 				CPU:            valueOnDemand.CPU,
 				Memory:         valueOnDemand.Memory,
 				Unit:           "Hrs",
