@@ -13,7 +13,7 @@ data "aws_iam_policy_document" "policy" {
   statement {
     sid       = ""
     effect    = "Allow"
-    resources = ["*"]
+    resources = ["*"]#tfsec:ignore:aws-iam-no-policy-wildcards
     actions   = ["pricing:DescribeServices","pricing:GetAttributeValues","pricing:GetProducts"]
   }
 
