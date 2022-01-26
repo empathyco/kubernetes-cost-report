@@ -12,7 +12,7 @@ build_windows:
 	GOARCH=amd64 GOOS=window go build -o ${BINARY_NAME}-windows main.go
 
 lint:
-	golangci-lint run  --tests=false --exclude-use-default=false -p complexity -p error -p format -p bugs  -D gci -D scopelint
+	golangci-lint run  --tests=false --exclude-use-default=false --enable-all  -D gci -D scopelint -D exhaustivestruct  -D wsl -D gomnd -D gochecknoglobals -D lll -D golint -D forbidigo -D ireturn
 
 test:
 	go test -v ./...

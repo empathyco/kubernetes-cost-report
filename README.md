@@ -11,12 +11,55 @@
 brew install go
 ```
 
+### IAM
+
+To be able to query for prices you should have the following permissions:
+
+#### AWS
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": [
+                "pricing:*"
+            ],
+            "Effect": "Allow",
+            "Resource": "*"
+        },
+        {
+            "Action": [
+                "ec2:Describe*"
+            ],
+            "Effect": "Allow",
+            "Resource": "*"
+        }
+    ]
+}
+```
+You could run the terraform code to create it.
+
+set the following variables to be able to run the code:
+
+- **oidc_url**: eks cluster url where you will be running the exporter.
+- **role_name:** the name of the role to be created.
+- **terraform_role_ARN:** the role which will create the resources.
+
+```sh
+cd terraform
+terraform init
+terraform apply
+```
+
 ## Build
 
 ```sh
+## Binary
 make build
-## Docker 
-
+## Docker
+make docker
+```
 For those who wants keep it simple and avoid install a lot of things:
 
 ```sh
@@ -24,29 +67,80 @@ docker build . -t cost-report
 docker run -p 8080:8080 cost-report
 ```
 
-## Usage
+## Development
 
 ```sh
-
-```
-### Development
-1. Add comments to your API source code, [See Declarative Comments Format](https://swaggo.github.io/swaggo.io/declarative_comments_format/).
-2. Download [Swag](https://github.com/swaggo/swag) for Go by using:
-```sh
-$ go get -u github.com/swaggo/swag/cmd/swag
+go mod vendor
+go run main.go
 ```
 
-3. Run the [Swag](https://github.com/swaggo/swag) in your Go project root folder which contains `main.go` file, [Swag](https://github.com/swaggo/swag) will parse comments and generate required files(`docs` folder and `docs/doc.go`).
-```sh
-$ swag init
-```
-4. Run Cost Report API 
-```sh 
-$ go run main.go
-```
-
-
-5. Endpoints
+## Endpoints
 
 - Metrics: localhost:8080/metrics
 - Healthcheck: localhost:8080/health
+
+## Metrics
+
+### instance_cost_all
+
+| Name                                   | Description       |
+|----------------------------------------|-------------------|
+| label_beta_kubernetes_io_instance_type | machine type      |
+| label_eks_amazonaws_com_capacity_type  | instance type     |
+| vcpu                                   | virtual cpu       |
+| memory                                 | memory            |
+| unit                                   | unit              |
+| Description                            | description       |
+| label_topology_kubernetes_io_zone      | availability zone |
+| region                                 | region            |
+
+### instance_cost
+
+| Name                                   | Description       |
+|----------------------------------------|-------------------|
+| label_beta_kubernetes_io_instance_type | machine type      |
+| label_eks_amazonaws_com_capacity_type  | instance type     |
+| vcpu                                   | virtual cpu       |
+| memory                                 | memory            |
+| unit                                   | unit              |
+| Description                            | description       |
+| label_topology_kubernetes_io_zone      | availability zone |
+| region                                 | region            |
+### instance_mem_price
+
+| Name                                   | Description       |
+|----------------------------------------|-------------------|
+| label_beta_kubernetes_io_instance_type | machine type      |
+| label_eks_amazonaws_com_capacity_type  | instance type     |
+| unit                                   | unit              |
+| label_topology_kubernetes_io_zone      | availability zone |
+| region                                 | region            |
+
+### instance_cpu_price
+| Name                                   | Description       |
+|----------------------------------------|-------------------|
+| label_beta_kubernetes_io_instance_type | machine type      |
+| label_eks_amazonaws_com_capacity_type  | instance type     |
+| unit                                   | unit              |
+| label_topology_kubernetes_io_zone      | availability zone |
+| region                                 | region            |
+
+### instance_capacity
+
+| Name                                   | Description       |
+|----------------------------------------|-------------------|
+| label_beta_kubernetes_io_instance_type | machine type      |
+| label_eks_amazonaws_com_capacity_type  | instance type     |
+| unit                                   | unit              |
+| label_topology_kubernetes_io_zone      | availability zone |
+| region                                 | region            |
+
+### instance_discount
+
+| Name                                   | Description       |
+|----------------------------------------|-------------------|
+| label_beta_kubernetes_io_instance_type | machine type      |
+| label_eks_amazonaws_com_capacity_type  | instance type     |
+| unit                                   | unit              |
+| label_topology_kubernetes_io_zone      | availability zone |
+| region                                 | region            |
