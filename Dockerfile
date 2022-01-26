@@ -27,6 +27,7 @@ FROM scratch
 
 COPY --from=build_base /etc/passwd /etc/passwd
 USER scratchuser
+# kics-scan ignore-line
 COPY --from=build_base /tmp/cost-report/out/cost-report /app/cost-report
 COPY --from=build_base /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
