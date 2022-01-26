@@ -12,6 +12,10 @@ jobs:
       - name: tfsec
         uses: aquasecurity/tfsec-pr-commenter-action@v1.0.2
         with:
+<<<<<<< HEAD
           soft_fail_commenter: true
+=======
+          soft_fail_commenter: false
+>>>>>>> 9935423debedc071e72f826d527db4a2ec46b779
           working_directory: terraform
           github_token: ${{ secrets.SUPPORT_TOKEN }}
