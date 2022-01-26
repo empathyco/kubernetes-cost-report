@@ -13,7 +13,9 @@ serviceAccount:
   name: ""
 podAnnotations: {}
 podSecurityContext: {}
-securityContext: {}
+securityContext: 
+  runAsUser: 10100
+  allowPrivilegeEscalation: false
 service:
   type: ClusterIP
   port: 8080

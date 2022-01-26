@@ -1,0 +1,662 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "https://excalidraw.com",
+  "elements": [
+    {
+      "id": "XIPIIxAS6gVmvX5ap4--R",
+      "type": "text",
+      "x": 478.70574951171875,
+      "y": 232.78582763671875,
+      "width": 196,
+      "height": 35,
+      "angle": 0,
+      "strokeColor": "#1864ab",
+      "backgroundColor": "transparent",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "strokeSharpness": "sharp",
+      "seed": 1006410276,
+      "version": 146,
+      "versionNonce": 1463195684,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "id": "JRWM33EwGbAqhDcnafWWU",
+          "type": "arrow"
+        },
+        {
+          "id": "u9O-PKzkZw0yNkK5UNaNl",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1642667535296,
+      "text": "instance_cost",
+      "fontSize": 28,
+      "fontFamily": 1,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "baseline": 25,
+      "containerId": null,
+      "originalText": "instance_cost"
+    },
+    {
+      "id": "W8jfmKfRk4qu7JHetJGlU",
+      "type": "text",
+      "x": 476.2954406738281,
+      "y": 396.8677673339844,
+      "width": 264,
+      "height": 35,
+      "angle": 0,
+      "strokeColor": "#5c940d",
+      "backgroundColor": "transparent",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "strokeSharpness": "sharp",
+      "seed": 1844242076,
+      "version": 245,
+      "versionNonce": 1332784292,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "id": "wfEDohB6E2t2Zj9NLdHxR",
+          "type": "arrow"
+        },
+        {
+          "id": "KSBgL8VKG6LGv193f4WcB",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1642667537352,
+      "text": "instance_cpu_price",
+      "fontSize": 28,
+      "fontFamily": 1,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "baseline": 25,
+      "containerId": null,
+      "originalText": "instance_cpu_price"
+    },
+    {
+      "id": "fiHpXlNqabT49pH0XEJW2",
+      "type": "text",
+      "x": 472.3648681640625,
+      "y": 573.3029174804688,
+      "width": 271,
+      "height": 35,
+      "angle": 0,
+      "strokeColor": "#e67700",
+      "backgroundColor": "transparent",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "strokeSharpness": "sharp",
+      "seed": 1296937756,
+      "version": 607,
+      "versionNonce": 8380324,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "id": "4osDczq4aW1WDpmAvecMS",
+          "type": "arrow"
+        },
+        {
+          "id": "X5EEdO3lxyk4ladCNZRQ1",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1642667549676,
+      "text": "instance_mem_price",
+      "fontSize": 28,
+      "fontFamily": 1,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "baseline": 25,
+      "containerId": null,
+      "originalText": "instance_mem_price"
+    },
+    {
+      "id": "ovcvclEbYiGZBapJ1H2ie",
+      "type": "text",
+      "x": 850.5354614257812,
+      "y": 599.1725463867188,
+      "width": 2521,
+      "height": 72,
+      "angle": 0,
+      "strokeColor": "#e67700",
+      "backgroundColor": "transparent",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "strokeSharpness": "sharp",
+      "seed": 1447262884,
+      "version": 246,
+      "versionNonce": 77438620,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "id": "4osDczq4aW1WDpmAvecMS",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1642667519760,
+      "text": "instance_mem_price{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1a\",region=\"eu-west-1\",unit=\"Hrs\"} 0.0019893973214285716\ninstance_mem_price{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1b\",region=\"eu-west-1\",unit=\"Hrs\"} 0.0023477678571428573\ninstance_mem_price{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1c\",region=\"eu-west-1\",unit=\"Hrs\"} 0.0017373511904761904",
+      "fontSize": 20,
+      "fontFamily": 3,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "baseline": 67,
+      "containerId": null,
+      "originalText": "instance_mem_price{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1a\",region=\"eu-west-1\",unit=\"Hrs\"} 0.0019893973214285716\ninstance_mem_price{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1b\",region=\"eu-west-1\",unit=\"Hrs\"} 0.0023477678571428573\ninstance_mem_price{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1c\",region=\"eu-west-1\",unit=\"Hrs\"} 0.0017373511904761904"
+    },
+    {
+      "id": "yGyZsE3-jVvo98yBwyXeD",
+      "type": "text",
+      "x": 864.1234741210938,
+      "y": 418.2979736328125,
+      "width": 2509,
+      "height": 72,
+      "angle": 0,
+      "strokeColor": "#5c940d",
+      "backgroundColor": "transparent",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "strokeSharpness": "sharp",
+      "seed": 1084880164,
+      "version": 186,
+      "versionNonce": 1801888924,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "id": "KSBgL8VKG6LGv193f4WcB",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1642667524267,
+      "text": "instance_cpu_price{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1a\",region=\"eu-west-1\",unit=\"Hrs\"} 0.014323660714285716\ninstance_cpu_price{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1b\",region=\"eu-west-1\",unit=\"Hrs\"} 0.016903928571428573\ninstance_cpu_price{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1c\",region=\"eu-west-1\",unit=\"Hrs\"} 0.012508928571428572",
+      "fontSize": 20,
+      "fontFamily": 3,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "baseline": 67,
+      "containerId": null,
+      "originalText": "instance_cpu_price{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1a\",region=\"eu-west-1\",unit=\"Hrs\"} 0.014323660714285716\ninstance_cpu_price{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1b\",region=\"eu-west-1\",unit=\"Hrs\"} 0.016903928571428573\ninstance_cpu_price{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1c\",region=\"eu-west-1\",unit=\"Hrs\"} 0.012508928571428572"
+    },
+    {
+      "id": "zA3gYJnDKCQWEDGVY7OfX",
+      "type": "text",
+      "x": 851.8782348632812,
+      "y": 251.70489501953125,
+      "width": 2731,
+      "height": 72,
+      "angle": 0,
+      "strokeColor": "#1864ab",
+      "backgroundColor": "transparent",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "strokeSharpness": "sharp",
+      "seed": 1216708516,
+      "version": 75,
+      "versionNonce": 1060418084,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "id": "u9O-PKzkZw0yNkK5UNaNl",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1642667528891,
+      "text": "instance_cost{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1a\",memory=\"16 GiB\",region=\"eu-west-1\",unit=\"Hrs\",vcpu=\"4\"} 0.089125\ninstance_cost{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1b\",memory=\"16 GiB\",region=\"eu-west-1\",unit=\"Hrs\",vcpu=\"4\"} 0.10518000000000001\ninstance_cost{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1c\",memory=\"16 GiB\",region=\"eu-west-1\",unit=\"Hrs\",vcpu=\"4\"} 0.07783333333333332",
+      "fontSize": 20,
+      "fontFamily": 3,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "baseline": 67,
+      "containerId": null,
+      "originalText": "instance_cost{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1a\",memory=\"16 GiB\",region=\"eu-west-1\",unit=\"Hrs\",vcpu=\"4\"} 0.089125\ninstance_cost{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1b\",memory=\"16 GiB\",region=\"eu-west-1\",unit=\"Hrs\",vcpu=\"4\"} 0.10518000000000001\ninstance_cost{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1c\",memory=\"16 GiB\",region=\"eu-west-1\",unit=\"Hrs\",vcpu=\"4\"} 0.07783333333333332"
+    },
+    {
+      "id": "FyDKRH4Q32xi7Uq_jMBAQ",
+      "type": "text",
+      "x": 854.755126953125,
+      "y": 189.63278198242188,
+      "width": 2509,
+      "height": 24,
+      "angle": 0,
+      "strokeColor": "#a61e4d",
+      "backgroundColor": "transparent",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "strokeSharpness": "sharp",
+      "seed": 1620688540,
+      "version": 49,
+      "versionNonce": 1152130332,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "id": "JRWM33EwGbAqhDcnafWWU",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1642667526359,
+      "text": "instance_cost{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"ON_DEMAND\",label_topology_kubernetes_io_zone=\"\",memory=\"16 GiB\",region=\"eu-west-1\",unit=\"Hrs\",vcpu=\"4\"} 0.214",
+      "fontSize": 20,
+      "fontFamily": 3,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "baseline": 19,
+      "containerId": null,
+      "originalText": "instance_cost{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"ON_DEMAND\",label_topology_kubernetes_io_zone=\"\",memory=\"16 GiB\",region=\"eu-west-1\",unit=\"Hrs\",vcpu=\"4\"} 0.214"
+    },
+    {
+      "id": "l_7B4zABkYsYpSAKOZjQE",
+      "type": "text",
+      "x": 862.9197998046875,
+      "y": 370.85272216796875,
+      "width": 2439,
+      "height": 24,
+      "angle": 0,
+      "strokeColor": "#a61e4d",
+      "backgroundColor": "transparent",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "strokeSharpness": "sharp",
+      "seed": 465566620,
+      "version": 149,
+      "versionNonce": 431157148,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "id": "wfEDohB6E2t2Zj9NLdHxR",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1642667522029,
+      "text": "instance_cpu_price{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"ON_DEMAND\",label_topology_kubernetes_io_zone=\"\",region=\"eu-west-1\",unit=\"Hrs\"} 0.03439285714285714",
+      "fontSize": 20,
+      "fontFamily": 3,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "baseline": 19,
+      "containerId": null,
+      "originalText": "instance_cpu_price{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"ON_DEMAND\",label_topology_kubernetes_io_zone=\"\",region=\"eu-west-1\",unit=\"Hrs\"} 0.03439285714285714"
+    },
+    {
+      "id": "XNyab4hZmXNep4ZL8zCcS",
+      "type": "text",
+      "x": 856.8656005859375,
+      "y": 542.8819580078125,
+      "width": 2450,
+      "height": 24,
+      "angle": 0,
+      "strokeColor": "#a61e4d",
+      "backgroundColor": "transparent",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "strokeSharpness": "sharp",
+      "seed": 1184754972,
+      "version": 60,
+      "versionNonce": 1477215396,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1642667494985,
+      "text": "instance_mem_price{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"ON_DEMAND\",label_topology_kubernetes_io_zone=\"\",region=\"eu-west-1\",unit=\"Hrs\"} 0.004776785714285714",
+      "fontSize": 20,
+      "fontFamily": 3,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "baseline": 19,
+      "containerId": null,
+      "originalText": "instance_mem_price{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"ON_DEMAND\",label_topology_kubernetes_io_zone=\"\",region=\"eu-west-1\",unit=\"Hrs\"} 0.004776785714285714"
+    },
+    {
+      "id": "X5EEdO3lxyk4ladCNZRQ1",
+      "type": "arrow",
+      "x": 753.9121345445513,
+      "y": 587.1323072774376,
+      "width": 85.73178635388615,
+      "height": 28.999494777437576,
+      "angle": 0,
+      "strokeColor": "#a61e4d",
+      "backgroundColor": "transparent",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "strokeSharpness": "round",
+      "seed": 227598492,
+      "version": 225,
+      "versionNonce": 602695964,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1642667549677,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          85.73178635388615,
+          -28.999494777437576
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "fiHpXlNqabT49pH0XEJW2",
+        "focus": 0.722062300391797,
+        "gap": 10.54726638048885
+      },
+      "endBinding": null,
+      "startArrowhead": null,
+      "endArrowhead": "triangle"
+    },
+    {
+      "id": "4osDczq4aW1WDpmAvecMS",
+      "type": "arrow",
+      "x": 755.3467407226562,
+      "y": 596.5943602795347,
+      "width": 78.81329345703125,
+      "height": 26.389712129128498,
+      "angle": 0,
+      "strokeColor": "#a61e4d",
+      "backgroundColor": "transparent",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "strokeSharpness": "round",
+      "seed": 354124452,
+      "version": 338,
+      "versionNonce": 1009535780,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1642667549677,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          78.81329345703125,
+          26.389712129128498
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "fiHpXlNqabT49pH0XEJW2",
+        "focus": -0.6938749615778996,
+        "gap": 11.98187255859375
+      },
+      "endBinding": {
+        "elementId": "ovcvclEbYiGZBapJ1H2ie",
+        "focus": -0.9067698424719128,
+        "gap": 16.37542724609375
+      },
+      "startArrowhead": null,
+      "endArrowhead": "triangle"
+    },
+    {
+      "id": "wfEDohB6E2t2Zj9NLdHxR",
+      "type": "arrow",
+      "x": 746.4163208007812,
+      "y": 414.7771995063516,
+      "width": 113.79754638671875,
+      "height": 30.938284728148233,
+      "angle": 0,
+      "strokeColor": "#a61e4d",
+      "backgroundColor": "transparent",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "strokeSharpness": "round",
+      "seed": 1418078500,
+      "version": 84,
+      "versionNonce": 1836808228,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1642667537353,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          113.79754638671875,
+          -30.938284728148233
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "W8jfmKfRk4qu7JHetJGlU",
+        "focus": 0.7106418828741676,
+        "gap": 6.120880126953125
+      },
+      "endBinding": {
+        "elementId": "l_7B4zABkYsYpSAKOZjQE",
+        "focus": 0.9643410471723766,
+        "gap": 2.7059326171875
+      },
+      "startArrowhead": null,
+      "endArrowhead": "triangle"
+    },
+    {
+      "id": "KSBgL8VKG6LGv193f4WcB",
+      "type": "arrow",
+      "x": 748.4856567382812,
+      "y": 419.4238344268502,
+      "width": 104.3857421875,
+      "height": 27.517095277973453,
+      "angle": 0,
+      "strokeColor": "#a61e4d",
+      "backgroundColor": "transparent",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "strokeSharpness": "round",
+      "seed": 1122658340,
+      "version": 100,
+      "versionNonce": 656462756,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1642667537353,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          104.3857421875,
+          27.517095277973453
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "W8jfmKfRk4qu7JHetJGlU",
+        "focus": -0.6112244215718537,
+        "gap": 8.190216064453125
+      },
+      "endBinding": {
+        "elementId": "yGyZsE3-jVvo98yBwyXeD",
+        "focus": -0.8898525609982615,
+        "gap": 11.2520751953125
+      },
+      "startArrowhead": null,
+      "endArrowhead": "triangle"
+    },
+    {
+      "id": "JRWM33EwGbAqhDcnafWWU",
+      "type": "arrow",
+      "x": 682.8530883789062,
+      "y": 254.52059290347404,
+      "width": 159.57598876953125,
+      "height": 49.67117832196564,
+      "angle": 0,
+      "strokeColor": "#a61e4d",
+      "backgroundColor": "transparent",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "strokeSharpness": "round",
+      "seed": 1597539108,
+      "version": 116,
+      "versionNonce": 1819800484,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1642667535297,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          159.57598876953125,
+          -49.67117832196564
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "XIPIIxAS6gVmvX5ap4--R",
+        "focus": 0.776694093787389,
+        "gap": 8.1473388671875
+      },
+      "endBinding": {
+        "elementId": "FyDKRH4Q32xi7Uq_jMBAQ",
+        "focus": 0.9717260914884431,
+        "gap": 12.3260498046875
+      },
+      "startArrowhead": null,
+      "endArrowhead": "triangle"
+    },
+    {
+      "id": "u9O-PKzkZw0yNkK5UNaNl",
+      "type": "arrow",
+      "x": 687.5079956054688,
+      "y": 256.9944962395841,
+      "width": 150.67523193359375,
+      "height": 1.936821240395659,
+      "angle": 0,
+      "strokeColor": "#a61e4d",
+      "backgroundColor": "transparent",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "strokeSharpness": "round",
+      "seed": 1099223716,
+      "version": 117,
+      "versionNonce": 402775844,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1642667535297,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          150.67523193359375,
+          1.936821240395659
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "XIPIIxAS6gVmvX5ap4--R",
+        "focus": 0.29022648002518653,
+        "gap": 12.80224609375
+      },
+      "endBinding": {
+        "elementId": "zA3gYJnDKCQWEDGVY7OfX",
+        "focus": 0.20624656066368918,
+        "gap": 13.69500732421875
+      },
+      "startArrowhead": null,
+      "endArrowhead": "triangle"
+    },
+    {
+      "id": "X8jeOzaZWxcndbu4vqRQl",
+      "type": "text",
+      "x": 1491.9168375651043,
+      "y": 47.122406005859375,
+      "width": 994,
+      "height": 102,
+      "angle": 0,
+      "strokeColor": "#000000",
+      "backgroundColor": "transparent",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "strokeSharpness": "sharp",
+      "seed": 1295574428,
+      "version": 182,
+      "versionNonce": 865042972,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1642667614508,
+      "text": "Transformation for Prom",
+      "fontSize": 81.17392578124998,
+      "fontFamily": 1,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "baseline": 72,
+      "containerId": null,
+      "originalText": "Transformation for Prom"
+    }
+  ],
+  "appState": {
+    "gridSize": null,
+    "viewBackgroundColor": "#ffffff"
+  },
+  "files": {}
+}

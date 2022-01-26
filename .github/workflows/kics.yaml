@@ -1,0 +1,26 @@
+name: kics-github-action
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  kics-scan:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run KICS Scan
+        uses: checkmarx/kics-action@v1.4
+        with:
+          token: ${{ secrets.SUPPORT_TOKEN }}
+          path: "."
+          ignore_on_exit: results
+          exclude_queries: "b03a748a-542d-44f4-bb86-9199ab4fd2d5,e592a0c5-5bdb-414c-9066-5dba7cdea370"
+          enable_comments: true
+          output_path: ./results
+          output_formats: json,html
+      - uses: actions/upload-artifact@v2
+        with:
+          name: results
+          path: ./results
