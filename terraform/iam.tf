@@ -11,7 +11,6 @@ module "cost_report_iam_assumable_role_with_oidc" {
 resource "aws_iam_policy" "cost_report_policy" {
   name = "cost_report_policy"
   description = "cost_report_policy"
-#tfsec:ignore:aws-iam-no-policy-wildcards
   policy = <<EOF
 {
     "Version": "2012-10-17",
