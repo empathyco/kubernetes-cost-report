@@ -13,5 +13,5 @@ jobs:
         uses: aquasecurity/tfsec-pr-commenter-action@v1.0.2
         with:
           soft_fail_commenter: true
-          working_directory: .
+          working_directory: terraform
           github_token: ${{ secrets.SUPPORT_TOKEN }}
