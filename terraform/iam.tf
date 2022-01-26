@@ -14,19 +14,18 @@ data "aws_iam_policy_document" "policy" {
     sid       = ""
     effect    = "Allow"
     resources = ["*"]
-    actions   = ["pricing:*"]
+    actions   = ["pricing:DescribeServices","pricing:GetAttributeValues","pricing:GetProducts"]
   }
 
   statement {
     sid       = ""
     effect    = "Allow"
-    resources = ["*"]
-    actions   = ["ec2:Describe*"]
+    resources = ["*"]#tfsec:ignore:aws-iam-no-policy-wildcards
+    actions   = ["ec2:DescribeInstances"]
   }
 }
 resource "aws_iam_policy" "cost_report_policy" {
   name = "cost_report_policy"
   description = "cost_report_policy"
-# Test
   policy = data.aws_iam_policy_document.policy.json
 }
