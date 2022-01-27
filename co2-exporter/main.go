@@ -25,58 +25,63 @@ func newMetrics(ctx context.Context) *co2.Metrics {
 	// use the current context in kubeconfig
 	k8s := co2.NewMetrics(ctx, kubeconfig)
 	// fmt.Println(k8s.PrintNodes())
-	fmt.Println(k8s.PrintPods())
+	// fmt.Println(k8s.PrintPods())
+
 	return k8s
 }
 
 func main() {
 	ctx := context.Background()
-	db := co2.NewCo2DB(ctx)
+	co2DB := co2.NewCo2DB(ctx)
 	metrics := newMetrics(ctx)
+	http.HandleFunc("/updateco2", func(write http.ResponseWriter, read *http.Request) {
+		if err := co2DB.UpdateData(); err != nil {
+			write.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(write, "{\"message\":\"%s\"}", err)
 
-	// updateData(ctx, metrics)
-	http.HandleFunc("/updateco2", func(rw http.ResponseWriter, r *http.Request) {
-		db.UpdateData()
-		rw.WriteHeader(http.StatusOK)
-		fmt.Fprintf(rw, "{\"message\":\"OK\"}")
-	})
-
-	http.HandleFunc("/getCo2Nodes", func(rw http.ResponseWriter, r *http.Request) {
-		if err := metrics.GetMetrics(); err != nil {
-			rw.WriteHeader(http.StatusInternalServerError)
-			fmt.Fprintf(rw, "{\"message\":\"%s\"}", err)
 			return
 		}
+		write.WriteHeader(http.StatusOK)
+		fmt.Fprintf(write, "{\"message\":\"OK\"}")
+	})
 
-		co2NodesMetrics := db.GetNodesConsumption(metrics)
+	http.HandleFunc("/getCo2Nodes", func(write http.ResponseWriter, read *http.Request) {
+		if err := metrics.GetMetrics(); err != nil {
+			write.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(write, "{\"message\":\"%s\"}", err)
+
+			return
+		}
+		co2NodesMetrics := co2DB.GetNodesConsumption(metrics)
 		data, _ := json.Marshal(&co2NodesMetrics)
-		rw.WriteHeader(http.StatusOK)
-		rw.Header().Set("Content-Type", "application/json")
-		fmt.Fprint(rw, string(data))
+		write.WriteHeader(http.StatusOK)
+		write.Header().Set("Content-Type", "application/json")
+		fmt.Fprint(write, string(data))
 	})
 
-	http.HandleFunc("/getCo2Pods", func(rw http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/getCo2Pods", func(write http.ResponseWriter, read *http.Request) {
 		if err := metrics.GetMetrics(); err != nil {
-			rw.WriteHeader(http.StatusInternalServerError)
-			fmt.Fprintf(rw, "{\"message\":\"%s\"}", err)
+			write.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(write, "{\"message\":\"%s\"}", err)
+
 			return
 		}
-
-		co2PodsMetrics := db.GetPodsConsumption(metrics)
+		co2PodsMetrics := co2DB.GetPodsConsumption(metrics)
 		data, _ := json.Marshal(&co2PodsMetrics)
-		rw.WriteHeader(http.StatusOK)
-		rw.Header().Set("Content-Type", "application/json")
-		fmt.Fprint(rw, string(data))
+		write.WriteHeader(http.StatusOK)
+		write.Header().Set("Content-Type", "application/json")
+		fmt.Fprint(write, string(data))
 	})
-	http.HandleFunc("/metrics", func(rw http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/metrics", func(write http.ResponseWriter, read *http.Request) {
 		if err := metrics.GetMetrics(); err != nil {
-			rw.WriteHeader(http.StatusInternalServerError)
-			fmt.Fprintf(rw, "{\"message\":\"%s\"}", err)
+			write.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(write, "{\"message\":\"%s\"}", err)
+
 			return
 		}
-		reg := db.GetMetrics(metrics)
+		reg := co2DB.GetMetrics(metrics)
 		handler := promhttp.HandlerFor(reg, promhttp.HandlerOpts{})
-		handler.ServeHTTP(rw, r)
+		handler.ServeHTTP(write, read)
 	})
 
 	err := http.ListenAndServe(":8080", nil)

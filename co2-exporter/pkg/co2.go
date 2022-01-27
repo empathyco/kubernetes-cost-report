@@ -1,3 +1,4 @@
+// Package pkg provides functions to calculate co2.
 package pkg
 
 import (
@@ -8,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"sync"
@@ -21,13 +23,15 @@ import (
 	"google.golang.org/api/sheets/v4"
 )
 
-type WattCpu struct {
+// WattCPU returns the watt of a machine.
+type WattCPU struct {
 	Idle    float64
 	Watt10  float64
 	Watt50  float64
 	Watt100 float64
 }
 
+// WattMemory returns the watt of a machine.
 type WattMemory struct {
 	Idle    float64
 	Watt10  float64
@@ -35,33 +39,37 @@ type WattMemory struct {
 	Watt100 float64
 }
 
+// Co2Machine Co2Machine struct.
 type Co2Machine struct {
 	MachineType string
-	TotalCpu    int
+	TotalCPU    int
 	TotalMemory int
-	WattCpu     WattCpu
+	WattCPU     WattCPU
 	WattMemory  WattMemory
 	Co2Factory  float64
 }
 
+// Co2Metrics co2 metrics representation.
 type Co2Metrics interface {
 	PrintData()
 }
 
+// Co2PodMetrics represents the co2 consumption of a pod.
 type Co2PodMetrics struct {
 	Metrics PodMetrics
 	Watts   float64 `json:"watts"`
 	Co2     float64 `json:"co2"`
 }
 
+// PrintData print co2 data.
 func (co2PodMetrics *Co2PodMetrics) PrintData() string {
 	return fmt.Sprintf("%s\t\t\t\t\t%f\t%f\n",
 		co2PodMetrics.Metrics.Name,
 		co2PodMetrics.Watts,
 		co2PodMetrics.Co2)
-
 }
 
+// Co2NodeMetrics represents the co2 consumption of a node.
 type Co2NodeMetrics struct {
 	Metrics NodeMetrics `json:"metrics"`
 	WattCPU float64     `json:"co2_cpu"`
@@ -71,6 +79,7 @@ type Co2NodeMetrics struct {
 	Co2     float64     `json:"co2"`
 }
 
+// PrintData Prints the data in the struct.
 func (co2Metrics *Co2NodeMetrics) PrintData() string {
 	return fmt.Sprintf("%s\t%s\t%f\t%f\t%f\t%f\n",
 		co2Metrics.Metrics.Name,
@@ -81,19 +90,22 @@ func (co2Metrics *Co2NodeMetrics) PrintData() string {
 		co2Metrics.Co2)
 }
 
-func (c *Co2Machine) GetWattCpu(usage float64) float64 {
+// GetWattCPU Retrieves the co2 consumption of a machine.
+func (c *Co2Machine) GetWattCPU(usage float64) float64 {
 	if usage <= 10 {
-		return c.WattCpu.Idle
+		return c.WattCPU.Idle
 	}
 	if usage < 50 {
-		return c.WattCpu.Idle + c.WattCpu.Watt10
+		return c.WattCPU.Idle + c.WattCPU.Watt10
 	}
 	if usage < 100 {
-		return c.WattCpu.Idle + c.WattCpu.Watt50
+		return c.WattCPU.Idle + c.WattCPU.Watt50
 	}
-	return c.WattCpu.Idle + c.WattCpu.Watt100
+
+	return c.WattCPU.Idle + c.WattCPU.Watt100
 }
 
+// GetWattMem get watt per memeory unit.
 func (c *Co2Machine) GetWattMem(usage float64) float64 {
 	if usage <= 10 {
 		return c.WattMemory.Idle
@@ -104,27 +116,33 @@ func (c *Co2Machine) GetWattMem(usage float64) float64 {
 	if usage < 100 {
 		return c.WattMemory.Idle + c.WattMemory.Watt50
 	}
+
 	return c.WattMemory.Idle + c.WattMemory.Watt100
 }
 
+// GetWattCPUUnit Retrieves the co2 consumption of a vCPU in a node.
 func (c *Co2Machine) GetWattCPUUnit(usage float64) float64 {
-	return c.GetWattCpu(usage) / float64(c.TotalCpu)
+	return c.GetWattCPU(usage) / float64(c.TotalCPU)
 }
 
+// GetWattMemUnit Retrieves the co2 consumption of a Gb in a node.
 func (c *Co2Machine) GetWattMemUnit(usage float64) float64 {
 	return c.GetWattMem(usage) / float64(c.TotalMemory)
 }
 
-func (c *Co2Machine) GetWattComsumption(usageCpu, usageMem float64) float64 {
-	return c.GetWattCpu(usageCpu) + c.GetWattMem(usageMem)
+// GetWattComsumption Retrieves the watt consumption of a machine.
+func (c *Co2Machine) GetWattComsumption(usageCPU, usageMem float64) float64 {
+	return c.GetWattCPU(usageCPU) + c.GetWattMem(usageMem)
 }
 
+// Co2Region represetn a region aws.
 type Co2Region struct {
 	Region string
 	Co2    float64
 	PUE    float64
 }
 
+// PrintData Prints the data in the struct.
 func (co2Metrics *Co2Region) PrintData() string {
 	return fmt.Sprintf("%s\t%f\t%f\n",
 		co2Metrics.Region,
@@ -132,9 +150,10 @@ func (co2Metrics *Co2Region) PrintData() string {
 		co2Metrics.Co2)
 }
 
+// Co2DB Co2DB struct.
 type Co2DB struct {
 	MachineDB map[string]Co2Machine
-	RegionsDb map[string]Co2Region
+	RegionsDB map[string]Co2Region
 	Context   context.Context
 }
 
@@ -147,15 +166,19 @@ func GetClient(config *oauth2.Config) *http.Client {
 	tok, err := TokenFromFile(tokFile)
 	if err != nil {
 		tok = GetTokenFromWeb(config)
-		SaveToken(tokFile, tok)
+		err = SaveToken(tokFile, tok)
+		if err != nil {
+			log.Fatalf("Unable to save token to file: %v", err)
+		}
 	}
+
 	return config.Client(context.Background(), tok)
 }
 
 // GetTokenFromWeb Request a token from the web, then returns the retrieved token.
 func GetTokenFromWeb(config *oauth2.Config) *oauth2.Token {
 	authURL := config.AuthCodeURL("state-token", oauth2.AccessTypeOffline)
-	fmt.Printf("Go to the following link in your browser then type the "+
+	log.Printf("Go to the following link in your browser then type the "+
 		"authorization code: \n%v\n", authURL)
 
 	var authCode string
@@ -167,78 +190,105 @@ func GetTokenFromWeb(config *oauth2.Config) *oauth2.Token {
 	if err != nil {
 		log.Fatalf("Unable to retrieve token from web: %v", err)
 	}
+
 	return tok
 }
 
 // TokenFromFile Retrieves a token from a local file.
 func TokenFromFile(file string) (*oauth2.Token, error) {
-	f, err := os.Open(file)
+	repoFile := filepath.Clean(file)
+	fil, err := os.Open(repoFile)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("get token: %w", err)
 	}
-	defer f.Close()
+
 	tok := &oauth2.Token{}
-	err = json.NewDecoder(f).Decode(tok)
-	return tok, err
+	err = json.NewDecoder(fil).Decode(tok)
+	if err != nil {
+		return nil, fmt.Errorf("decode token: %w", err)
+	}
+	err = fil.Close()
+	if err != nil {
+		return nil, fmt.Errorf("close credentials: %w", err)
+	}
+	return tok, nil
 }
 
-// Saves a token to a file path.
-func SaveToken(path string, token *oauth2.Token) {
-	fmt.Printf("Saving credential file to: %s\n", path)
-	f, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0600)
+// SaveToken a token to a file path.
+func SaveToken(path string, token *oauth2.Token) error {
+	log.Printf("Saving credential file to: %s\n", path)
+	repoFile := filepath.Clean(path)
+	// nolint:gofumpt
+	fil, err := os.OpenFile(repoFile, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0600)
 	if err != nil {
 		log.Fatalf("Unable to cache oauth token: %v", err)
 	}
-	defer f.Close()
-	json.NewEncoder(f).Encode(token)
+
+	err = json.NewEncoder(fil).Encode(token)
+	if err != nil {
+		return fmt.Errorf("decode credentials: %w", err)
+	}
+
+	err = fil.Close()
+	if err != nil {
+		return fmt.Errorf("close credentials: %w", err)
+	}
+
+	return nil
 }
 
+// NewCo2DB Create a new Co2DB.
 func NewCo2DB(ctx context.Context) *Co2DB {
 	co2DB := &Co2DB{
 		MachineDB: make(map[string]Co2Machine),
-		RegionsDb: make(map[string]Co2Region),
+		RegionsDB: make(map[string]Co2Region),
 		Context:   ctx,
 	}
-	co2DB.UpdateData()
+	if err := co2DB.UpdateData(); err != nil {
+		log.Fatalf("Unable to update data: %v", err)
+	}
+
 	return co2DB
 }
 
+// UpdateData Update the data from the API sheet.
 func (c *Co2DB) UpdateData() error {
 	b, err := ioutil.ReadFile("credentials.json")
 	if err != nil {
-		return err
+		return fmt.Errorf("get credentials: %w", err)
 	}
 	// If modifying these scopes, delete your previously saved token.json.
 	config, err := google.ConfigFromJSON(b, "https://www.googleapis.com/auth/spreadsheets.readonly")
 	if err != nil {
-		return err
+		return fmt.Errorf("get sheet config: %w", err)
 	}
 	client := GetClient(config)
 
 	srv, err := sheets.NewService(c.Context, option.WithHTTPClient(client))
 	if err != nil {
-		return err
+		return fmt.Errorf("get sheet service: %w", err)
 	}
 
-	spreadsheetId := "1DqYgQnEDLQVQm5acMAhLgHLD8xXCG9BIrk-_Nv6jF3k"
+	spreadsheetID := "1DqYgQnEDLQVQm5acMAhLgHLD8xXCG9BIrk-_Nv6jF3k"
+	waitingGroup := sync.WaitGroup{}
+	waitingGroup.Add(2)
+	go func() {
+		defer waitingGroup.Done()
+		c.GetMachines(srv, spreadsheetID)
+	}()
+	go func() {
+		defer waitingGroup.Done()
+		c.GetRegions(srv, spreadsheetID)
+	}()
+	waitingGroup.Wait()
 
-	wg := sync.WaitGroup{}
-	wg.Add(2)
-	go func() {
-		defer wg.Done()
-		c.GetMachines(srv, spreadsheetId)
-	}()
-	go func() {
-		defer wg.Done()
-		c.GetRegions(srv, spreadsheetId)
-	}()
-	wg.Wait()
 	return nil
 }
 
-func (c *Co2DB) GetRegions(srv *sheets.Service, spreadsheetId string) {
+// GetRegions Retrieves the regions from the API sheet.
+func (c *Co2DB) GetRegions(srv *sheets.Service, spreadsheetID string) {
 	readRange := "AWS Regions Mix Intensity!A2:G"
-	resp, err := srv.Spreadsheets.Values.Get(spreadsheetId, readRange).Do()
+	resp, err := srv.Spreadsheets.Values.Get(spreadsheetID, readRange).Do()
 	if err != nil {
 		log.Fatalf("Unable to retrieve data from sheet: %v", err)
 	}
@@ -247,25 +297,24 @@ func (c *Co2DB) GetRegions(srv *sheets.Service, spreadsheetId string) {
 		if region := row[0].(string); region != "" {
 			co2 := calcWatt(row[4].(string))
 			pue := calcWatt(row[6].(string))
-			c.RegionsDb[region] = Co2Region{
+			c.RegionsDB[region] = Co2Region{
 				Region: region,
 				Co2:    co2,
 				PUE:    pue,
 			}
 		}
-
 	}
 }
 
-func (c *Co2DB) GetMachines(srv *sheets.Service, spreadsheetId string) {
+// GetMachines Get the machines from the API sheet.
+func (c *Co2DB) GetMachines(srv *sheets.Service, spreadsheetID string) {
 	readRange := "EC2 Instances Dataset!A2:AK"
-	resp, err := srv.Spreadsheets.Values.Get(spreadsheetId, readRange).Do()
+	resp, err := srv.Spreadsheets.Values.Get(spreadsheetID, readRange).Do()
 	if err != nil {
 		log.Fatalf("Unable to retrieve data from sheet: %v", err)
 	}
 
 	for _, row := range resp.Values {
-
 		machineType := row[0].(string)
 		cpu, _ := strconv.Atoi(row[2].(string))
 		memory, _ := strconv.Atoi(row[5].(string))
@@ -280,88 +329,99 @@ func (c *Co2DB) GetMachines(srv *sheets.Service, spreadsheetId string) {
 		co2Factory := calcWatt(row[36].(string))
 		c.MachineDB[machineType] = Co2Machine{
 			MachineType: machineType,
-			TotalCpu:    cpu,
+			TotalCPU:    cpu,
 			TotalMemory: memory,
-			WattCpu:     WattCpu{Idle: CPUWattIdle, Watt10: CPUWatt10, Watt50: CPUWatt50, Watt100: CPUWatt100},
+			WattCPU:     WattCPU{Idle: CPUWattIdle, Watt10: CPUWatt10, Watt50: CPUWatt50, Watt100: CPUWatt100},
 			WattMemory:  WattMemory{Idle: memoryWattIdle, Watt10: memoryWatt10, Watt50: memoryWatt50, Watt100: memoryWatt100},
 			Co2Factory:  co2Factory,
 		}
 	}
 }
 
+// GetNodeWattComp returns the watt of a machine.
 func (c *Co2DB) GetNodeWattComp(no NodeMetrics) float64 {
 	watt := c.MachineDB[no.MachineType]
+
 	return watt.GetWattComsumption(no.CPUUsage, no.MemoryUsage)
 }
 
-func (c *Co2DB) GetPodsConsumption(m *Metrics) []Co2PodMetrics {
-	co2NodesMetrics := c.GetNodesConsumption(m)
+// GetPodsConsumption returns the co2 consumption of a pod.
+func (c *Co2DB) GetPodsConsumption(metrics *Metrics) []Co2PodMetrics {
+	co2NodesMetrics := c.GetNodesConsumption(metrics)
 	co2PodsMetrics := make([]Co2PodMetrics, 0)
-	for _, pod := range m.Pods {
-		nodeMetrics := co2NodesMetrics[pod.Node]
+	for podIndex := range metrics.Pods {
+		nodeMetrics := co2NodesMetrics[metrics.Pods[podIndex].Node]
 		regionName := nodeMetrics.Region
 
-		region := c.RegionsDb[regionName]
-		watt := CalcPodWatt(&pod, &nodeMetrics)
+		region := c.RegionsDB[regionName]
+		watt := CalcPodWatt(&metrics.Pods[podIndex], &nodeMetrics)
 
 		co2 := CalculateCo2(watt, 0.0, region)
 		podCo2 := Co2PodMetrics{
-			Metrics: pod,
+			Metrics: metrics.Pods[podIndex],
 			Watts:   watt,
 			Co2:     co2,
 		}
 		co2PodsMetrics = append(co2PodsMetrics, podCo2)
-
 	}
+
 	return co2PodsMetrics
 }
 
+// CalcPodWatt calculates the watt consumption of a pod.
 func CalcPodWatt(pod *PodMetrics, node *Co2NodeMetrics) float64 {
 	expo := float64(1000000000)
+
 	return (pod.CPUUsage/1000)*node.WattCPU + (pod.MemoryUsage/expo)*node.WattMem
 }
 
+// GetNodesConsumption returns the co2 consumption of each node.
 func (c *Co2DB) GetNodesConsumption(m *Metrics) map[string]Co2NodeMetrics {
 	nodesMetrics := make(map[string]Co2NodeMetrics)
-	for _, no := range m.Nodes {
-		watt := c.GetNodeWattComp(no)
-		region := c.RegionsDb[no.Region]
-		machine := c.MachineDB[no.MachineType]
-		co2 := CalculateCo2(watt, c.MachineDB[no.MachineType].Co2Factory, region)
+	for _, node := range m.Nodes {
+		watt := c.GetNodeWattComp(node)
+		region := c.RegionsDB[node.Region]
+		machine := c.MachineDB[node.MachineType]
+		co2 := CalculateCo2(watt, c.MachineDB[node.MachineType].Co2Factory, region)
 
 		co2Metrics := Co2NodeMetrics{
-			Metrics: no,
+			Metrics: node,
 			Watts:   watt,
 			Co2:     co2,
-			Region:  no.Region,
-			WattCPU: machine.GetWattCPUUnit(no.CPUUsage),
-			WattMem: machine.GetWattMemUnit(no.MemoryUsage),
+			Region:  node.Region,
+			WattCPU: machine.GetWattCPUUnit(node.CPUUsage),
+			WattMem: machine.GetWattMemUnit(node.MemoryUsage),
 		}
-		nodesMetrics[no.Name] = co2Metrics
+		nodesMetrics[node.Name] = co2Metrics
 	}
+
 	return nodesMetrics
 }
 
+// CalculateCo2 calculates the co2 emission of a given watt consumption.
 func CalculateCo2(watt, co2MachineFactory float64, region Co2Region) float64 {
 	return (watt/1000)*region.PUE*region.Co2 + co2MachineFactory
 }
 
-func calcWatt(CPUCo2 string) float64 {
+func calcWatt(cpuCo2 string) float64 {
 	// strings.Replace(CPUCo2, ",", ".", -1)
-	CPUCo2Float, err := strconv.ParseFloat(strings.Replace(CPUCo2, ",", ".", -1), 64)
+	CPUCo2Float, err := strconv.ParseFloat(strings.ReplaceAll(cpuCo2, ",", "."), 64)
 	if err != nil {
 		log.Fatalf("Unable to convert string to int: %v", err)
 	}
-	return float64(CPUCo2Float)
+
+	return CPUCo2Float
 }
 
+// PrintWatt print watts.
 func (c *Co2DB) PrintWatt() {
 	for i, v := range c.MachineDB {
-		fmt.Printf("%s\t%v\n", i, v)
+		log.Printf("%s\t%v\n", i, v)
 	}
 }
 
-func (c *Co2DB) GetMetrics(m *Metrics) prometheus.Gatherer {
+// GetMetrics get prometheus metrics.
+func (c *Co2DB) GetMetrics(metrics *Metrics) prometheus.Gatherer {
 	reg := prometheus.NewRegistry()
 	labelNodes := []string{"name", "region", "machine_type"}
 	labelPods := []string{"name", "region"}
@@ -386,31 +446,33 @@ func (c *Co2DB) GetMetrics(m *Metrics) prometheus.Gatherer {
 		Help: "Watt Pods",
 	}, labelPods)
 
-	c.GetNodesMetrics(m, co2Nodes, wattNodes)
-	c.GetPodsMetrics(m, co2Pods, wattPods)
+	c.GetNodesMetrics(metrics, co2Nodes, wattNodes)
+	c.GetPodsMetrics(metrics, co2Pods, wattPods)
 
 	return reg
 }
 
+// GetNodesMetrics get metrics for nodes.
 func (c *Co2DB) GetNodesMetrics(m *Metrics, co2Prom, wattProm *prometheus.GaugeVec) {
 	for _, no := range m.Nodes {
 		watt := c.GetNodeWattComp(no)
-		co2 := CalculateCo2(watt, c.MachineDB[no.MachineType].Co2Factory, c.RegionsDb[no.Region])
+		co2 := CalculateCo2(watt, c.MachineDB[no.MachineType].Co2Factory, c.RegionsDB[no.Region])
 		co2Prom.WithLabelValues(no.Name, no.Region, no.MachineType).Set(co2)
 		wattProm.WithLabelValues(no.Name, no.Region, no.MachineType).Set(watt)
 	}
 }
 
-func (c *Co2DB) GetPodsMetrics(m *Metrics, co2Prom, wattProm *prometheus.GaugeVec) {
-	co2NodesMetrics := c.GetNodesConsumption(m)
-	for _, pod := range m.Pods {
-		nodeMetrics := co2NodesMetrics[pod.Node]
+// GetPodsMetrics get pod metrics.
+func (c *Co2DB) GetPodsMetrics(metrics *Metrics, co2Prom, wattProm *prometheus.GaugeVec) {
+	co2NodesMetrics := c.GetNodesConsumption(metrics)
+	for pod := range metrics.Pods {
+		nodeMetrics := co2NodesMetrics[metrics.Pods[pod].Node]
 		regionName := nodeMetrics.Region
-		region := c.RegionsDb[regionName]
-		watt := CalcPodWatt(&pod, &nodeMetrics)
+		region := c.RegionsDB[regionName]
+		watt := CalcPodWatt(&metrics.Pods[pod], &nodeMetrics)
 
 		co2 := CalculateCo2(watt, 0.0, region)
-		co2Prom.WithLabelValues(pod.Name, regionName).Set(co2)
-		wattProm.WithLabelValues(pod.Name, regionName).Set(watt)
+		co2Prom.WithLabelValues(metrics.Pods[pod].Name, regionName).Set(co2)
+		wattProm.WithLabelValues(metrics.Pods[pod].Name, regionName).Set(watt)
 	}
 }
