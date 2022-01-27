@@ -26,10 +26,10 @@ RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="-w -s" -o ./out/co2
 FROM scratch
 
 COPY --from=build_base /etc/passwd /etc/passwd
-USER scratchuser
 # kics-scan ignore-line
 COPY --from=build_base /tmp/cost-report/out/co2 /app/co2
 COPY --from=build_base /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+USER scratchuser
 
 # This container exposes port 8080 to the outside world
 EXPOSE 8080
