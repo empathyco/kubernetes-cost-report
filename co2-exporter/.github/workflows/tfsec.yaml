@@ -1,0 +1,16 @@
+name: tfsec-pr-commenter
+on:
+  pull_request:
+jobs:
+  tfsec:
+    name: tfsec PR commenter
+    runs-on: self-hosted
+
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@master
+      - name: tfsec
+        uses: aquasecurity/tfsec-pr-commenter-action@v1.0.3
+        with:
+          working_directory: terraform
+          github_token: ${{ secrets.SUPPORT_TOKEN }}
