@@ -8,9 +8,9 @@ variable "role_name" {
   description = "IAM role name"
 }
 
-variable "oidc_url" {
+variable "cluster_name" {
   type        = string
-  description = "OIDC url"
+  description = "Cluster name"
 }
 
 variable "environment_tag" {

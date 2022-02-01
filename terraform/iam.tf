@@ -1,31 +1,33 @@
-module "cost_report_iam_assumable_role_with_oidc" {
-  source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-  version                       = "4.7.0"
-  create_role                   = true
-  role_name                     = var.role_name
-  number_of_role_policy_arns    = 1
-  provider_url                  = var.oidc_url
-  role_policy_arns              = [aws_iam_policy.cost_report_policy.arn]
-  oidc_fully_qualified_subjects = ["system:serviceaccount:${local.oidc.namespace}:${local.oidc.serviceaccount}"]
+module "cost_report_iam_eks_role" {
+  source      = "terraform-aws-modules/iam/aws//modules/iam-eks-role"
+  version     = "4.10.1"
+  create_role = true
+  role_name   = var.role_name
+
+  cluster_service_accounts = {
+    "${var.cluster_name}" = ["${local.namespace}:${local.serviceaccount}"]
+  }
+
+  role_policy_arns = [aws_iam_policy.cost_report_policy.arn]
 }
 
 data "aws_iam_policy_document" "policy" {
   statement {
     sid       = ""
     effect    = "Allow"
-    resources = ["*"]#tfsec:ignore:aws-iam-no-policy-wildcards
-    actions   = ["pricing:DescribeServices","pricing:GetAttributeValues","pricing:GetProducts"]
+    resources = ["*"] #tfsec:ignore:aws-iam-no-policy-wildcards
+    actions   = ["pricing:DescribeServices", "pricing:GetAttributeValues", "pricing:GetProducts"]
   }
 
   statement {
     sid       = ""
     effect    = "Allow"
-    resources = ["*"]#tfsec:ignore:aws-iam-no-policy-wildcards
+    resources = ["*"] #tfsec:ignore:aws-iam-no-policy-wildcards
     actions   = ["ec2:DescribeInstances"]
   }
 }
 resource "aws_iam_policy" "cost_report_policy" {
-  name = "cost_report_policy"
+  name        = "cost_report_policy"
   description = "cost_report_policy"
-  policy = data.aws_iam_policy_document.policy.json
+  policy      = data.aws_iam_policy_document.policy.json
 }

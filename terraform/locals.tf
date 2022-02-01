@@ -1,6 +1,4 @@
 locals {
-  oidc = {
-    namespace      = "cost-report"
-    serviceaccount = "cost-report"
-  }
+  namespace      = "cost-report"
+  serviceaccount = "cost-report"
 }
