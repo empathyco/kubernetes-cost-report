@@ -1,5 +1,5 @@
 {
   "extends": [
-    "github>empathyco/platform-github-settings:modules"
+    "github>empathyco/.github:modules"
   ]
 }
