@@ -6,7 +6,10 @@ data:
 kind: ConfigMap
 metadata:
   namespace: monitoring
+  {{- with .Values.serviceMonitor.dashboards.annotations }}
   annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   labels:
     grafana_dashboard: {{ include "cost-report.fullname" . }}
     {{- include "cost-report.labels" . | nindent 4 }}

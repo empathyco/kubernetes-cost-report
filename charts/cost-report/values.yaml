@@ -1,0 +1,76 @@
+
+# -- Chart name override
+nameOverride: ""
+# -- Chart full name override
+fullnameOverride: ""
+
+# -- Number of deployment replicas
+replicaCount: 1
+
+image:
+  # -- Image repository
+  repository: empathyco/cost-report
+  # -- Image pullpolicy
+  pullPolicy: IfNotPresent
+  # -- Image tag
+  tag: "0.0.12"
+
+# -- Image pull secrets
+imagePullSecrets: []
+
+serviceAccount:
+  # -- Specifies whether a service account should be created
+  create: true
+  # -- Annotations to add to the service account
+  annotations: {}
+    #eks.amazonaws.com/role-arn: {}
+  # -- The name of the service account to use. If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+# -- Custom pod annotations
+podAnnotations: {}
+
+# -- Custom pod security context
+podSecurityContext: {}
+
+# -- Custom container security context
+securityContext: {}
+
+service:
+  # -- Service type 
+  type: ClusterIP
+  # -- Service port
+  port: 8080
+
+# -- Container resources
+resources: {}
+
+# -- Kubernetes node selector
+nodeSelector: {}
+
+# -- Kubernetes tolerations
+tolerations: []
+
+# -- Kubernetes pod affinity
+affinity: {}
+
+
+serviceMonitor:
+  # -- if true, creates a Prometheus Operator ServiceMonitor
+  enabled: true
+  # -- Prometheus instance selector labels
+  additionalLabels:
+    release: prometheus
+  dashboards:
+    # -- Create Grafana dashboard. This dashboard requires the recording rules in serviceMonitor.prometheusRules
+    enabled: true
+    # -- Create Grafana dashboard folder.
+    annotations: {}
+    # grafana-folder: "/tmp/dashboards/FinOps"
+
+  prometheusRules:
+    # -- Create Prometheus recording rules.
+    enabled: true
+    # -- prometheusRules selector labels.
+    additionalLabels:
+      release: prometheus
