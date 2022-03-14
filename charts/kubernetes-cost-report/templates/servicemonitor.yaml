@@ -2,9 +2,9 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ include "cost-report.fullname" . }}
+  name: {{ include "kubernetes-cost-report.fullname" . }}
   labels:
-    {{- include "cost-report.labels" . | nindent 4 }}
+    {{- include "kubernetes-cost-report.labels" . | nindent 4 }}
     {{- with .Values.serviceMonitor.additionalLabels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
@@ -15,7 +15,7 @@ spec:
     port: metrics
   selector:
     matchLabels:
-      {{- include "cost-report.selectorLabels" . | nindent 6 }}
+      {{- include "kubernetes-cost-report.selectorLabels" . | nindent 6 }}
   namespaceSelector:
     matchNames:
     - {{ .Release.Namespace }}

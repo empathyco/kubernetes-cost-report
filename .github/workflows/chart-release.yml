@@ -6,8 +6,8 @@ on:
     branches:
       - main
     paths:
-      - 'charts/cost-report/Chart.yaml'
-      - 'charts/cost-report/**/*'
+      - 'charts/kubernetes-cost-report/Chart.yaml'
+      - 'charts/kubernetes-cost-report/**/*'
 
 env:
   HELM_VERSION: "v3.5.3"

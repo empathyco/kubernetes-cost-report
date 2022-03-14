@@ -3,21 +3,21 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: {{ include "cost-report.fullname" . }}
+  name: {{ include "kubernetes-cost-report.fullname" . }}
   labels:
-    {{- include "cost-report.labels" . | nindent 4 }}
+    {{- include "kubernetes-cost-report.labels" . | nindent 4 }}
     {{- with .Values.serviceMonitor.prometheusRules.additionalLabels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
 spec:
   groups:
-  - name: cost-report.rules
+  - name: kubernetes-cost-report.rules
     rules:
     - expr: |-
         (
           sum by (label_topology_kubernetes_io_zone, label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (kube_node_labels{job="kube-state-metrics"}) 
           * on (label_topology_kubernetes_io_zone, label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) 
-          sum by (label_topology_kubernetes_io_zone, label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (instance_cost_all{job="cost-report", label_eks_amazonaws_com_capacity_type="SPOT"})
+          sum by (label_topology_kubernetes_io_zone, label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (instance_cost_all{job="kubernetes-cost-report", label_eks_amazonaws_com_capacity_type="SPOT"})
         )
       record: zone_capacity_instance:spot_instance_cost:cost
     - expr: |-
@@ -30,7 +30,7 @@ spec:
         (
           sum by (label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (kube_node_labels{job="kube-state-metrics"}) 
           * on (label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) 
-          sum by (label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (instance_cost_all{job="cost-report", label_eks_amazonaws_com_capacity_type="ON_DEMAND"})
+          sum by (label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (instance_cost_all{job="kubernetes-cost-report", label_eks_amazonaws_com_capacity_type="ON_DEMAND"})
         )
       record: capacity_instance:on_demand_instance_cost:cost
     - expr: |-
@@ -43,7 +43,7 @@ spec:
 
           * ignoring(namespace, node, pod) group_left(label_topology_kubernetes_io_zone, label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) 
 
-          sum by (label_topology_kubernetes_io_zone, label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (instance_mem_price{job="cost-report", label_eks_amazonaws_com_capacity_type="SPOT"})
+          sum by (label_topology_kubernetes_io_zone, label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (instance_mem_price{job="kubernetes-cost-report", label_eks_amazonaws_com_capacity_type="SPOT"})
         )
       record: zone_capacity_instance_namespace_node_pod:pod_memory_requests_instance_mem_price:spot_pod_mem_requests_cost
     - expr: |-
@@ -56,7 +56,7 @@ spec:
 
           * ignoring(namespace, node, pod) group_left(label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) 
 
-          sum by (label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (instance_mem_price{job="cost-report", label_eks_amazonaws_com_capacity_type="ON_DEMAND"})
+          sum by (label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (instance_mem_price{job="kubernetes-cost-report", label_eks_amazonaws_com_capacity_type="ON_DEMAND"})
         )
       record: capacity_instance_namespace_node_pod:pod_memory_requests_instance_mem_price:on_demand_pod_mem_requests_cost
     - expr: |-
@@ -95,7 +95,7 @@ spec:
 
           * ignoring(namespace, node, pod) group_left(label_topology_kubernetes_io_zone, label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) 
 
-          sum by (label_topology_kubernetes_io_zone, label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (instance_mem_price{job="cost-report", label_eks_amazonaws_com_capacity_type="SPOT"})
+          sum by (label_topology_kubernetes_io_zone, label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (instance_mem_price{job="kubernetes-cost-report", label_eks_amazonaws_com_capacity_type="SPOT"})
         )
       record: zone_capacity_instance_namespace_node_pod:pod_memory_usage_instance_mem_price:spot_pod_mem_usage_cost
     - expr: |-
@@ -108,7 +108,7 @@ spec:
 
           * ignoring(namespace, node, pod) group_left(label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) 
 
-          sum by (label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (instance_mem_price{job="cost-report", label_eks_amazonaws_com_capacity_type="ON_DEMAND"})
+          sum by (label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (instance_mem_price{job="kubernetes-cost-report", label_eks_amazonaws_com_capacity_type="ON_DEMAND"})
         )
       record: capacity_instance_namespace_node_pod:pod_memory_usage_instance_mem_price:on_demand_pod_mem_usage_cost
     - expr: |-
@@ -121,7 +121,7 @@ spec:
 
           * ignoring(namespace, node, pod) group_left(label_topology_kubernetes_io_zone, label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) 
 
-          sum by (label_topology_kubernetes_io_zone, label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (instance_cpu_price{job="cost-report", label_eks_amazonaws_com_capacity_type="SPOT"})
+          sum by (label_topology_kubernetes_io_zone, label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (instance_cpu_price{job="kubernetes-cost-report", label_eks_amazonaws_com_capacity_type="SPOT"})
         )
       record: zone_capacity_instance_namespace_node_pod:pod_cpu_usage_instance_cpu_price:spot_pod_cpu_usage_cost
     - expr: |-
@@ -134,7 +134,7 @@ spec:
 
           * ignoring(namespace, node, pod) group_left(label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) 
 
-          sum by (label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (instance_cpu_price{job="cost-report", label_eks_amazonaws_com_capacity_type="ON_DEMAND"})
+          sum by (label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (instance_cpu_price{job="kubernetes-cost-report", label_eks_amazonaws_com_capacity_type="ON_DEMAND"})
         )
       record: capacity_instance_namespace_node_pod:pod_cpu_usage_instance_cpu_price:on_demand_pod_cpu_usage_cost
     - expr: |-
@@ -155,7 +155,7 @@ spec:
 
           * ignoring (node, resource) group_left
 
-          sum by (label_topology_kubernetes_io_zone, label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (instance_cpu_price{job="cost-report", label_eks_amazonaws_com_capacity_type="SPOT"})
+          sum by (label_topology_kubernetes_io_zone, label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (instance_cpu_price{job="kubernetes-cost-report", label_eks_amazonaws_com_capacity_type="SPOT"})
 
         )
       record: zone_capacity_instance_node_resource:kube_node_status_allocatable_idle_instance_cpu_price:spot_idle_cpu_cost
@@ -177,7 +177,7 @@ spec:
 
           * ignoring (node, resource) group_left
 
-          sum by (label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (instance_cpu_price{job="cost-report", label_eks_amazonaws_com_capacity_type="ON_DEMAND"})
+          sum by (label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (instance_cpu_price{job="kubernetes-cost-report", label_eks_amazonaws_com_capacity_type="ON_DEMAND"})
 
         )
       record: capacity_instance_node_resource:kube_node_status_allocatable_idle_instance_cpu_price:on_demand_idle_cpu_cost
@@ -200,7 +200,7 @@ spec:
 
           * ignoring (node, resource) group_left
 
-          sum by (label_topology_kubernetes_io_zone, label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (instance_mem_price{job="cost-report", label_eks_amazonaws_com_capacity_type="SPOT"})
+          sum by (label_topology_kubernetes_io_zone, label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (instance_mem_price{job="kubernetes-cost-report", label_eks_amazonaws_com_capacity_type="SPOT"})
 
         )
       record: zone_capacity_instance_node_resource:kube_node_status_allocatable_idle_instance_mem_price:spot_idle_mem_cost
@@ -223,7 +223,7 @@ spec:
 
           * ignoring (node, resource) group_left
 
-          sum by (label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (instance_mem_price{job="cost-report", label_eks_amazonaws_com_capacity_type="ON_DEMAND"})
+          sum by (label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (instance_mem_price{job="kubernetes-cost-report", label_eks_amazonaws_com_capacity_type="ON_DEMAND"})
 
         )
       record: capacity_instance_node_resource:kube_node_status_allocatable_idle_instance_mem_price:on_demand_idle_mem_cost
@@ -245,7 +245,7 @@ spec:
 
           * ignoring(node, resource) group_left(label_topology_kubernetes_io_zone, label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) 
 
-          sum by (label_topology_kubernetes_io_zone, label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (instance_cpu_price{job="cost-report", label_eks_amazonaws_com_capacity_type="SPOT"})
+          sum by (label_topology_kubernetes_io_zone, label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (instance_cpu_price{job="kubernetes-cost-report", label_eks_amazonaws_com_capacity_type="SPOT"})
         )
       record: zone_capacity_instance_node_resource:kube_node_status_shared_instance_cpu_price:spot_shared_cpu_cost
     - expr: |-
@@ -266,7 +266,7 @@ spec:
 
           * ignoring(node, resource) group_left(label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) 
 
-          sum by (label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (instance_cpu_price{job="cost-report", label_eks_amazonaws_com_capacity_type="ON_DEMAND"})
+          sum by (label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (instance_cpu_price{job="kubernetes-cost-report", label_eks_amazonaws_com_capacity_type="ON_DEMAND"})
         )
       record: capacity_instance_node_resource:kube_node_status_shared_instance_cpu_price:on_demand_shared_cpu_cost
     - expr: |-
@@ -287,7 +287,7 @@ spec:
 
           * ignoring(node, resource) group_left(label_topology_kubernetes_io_zone, label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) 
 
-          sum by (label_topology_kubernetes_io_zone, label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (instance_mem_price{job="cost-report", label_eks_amazonaws_com_capacity_type="SPOT"})
+          sum by (label_topology_kubernetes_io_zone, label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (instance_mem_price{job="kubernetes-cost-report", label_eks_amazonaws_com_capacity_type="SPOT"})
         )
       record: zone_capacity_instance_node_resource:kube_node_status_shared_instance_mem_price:spot_shared_mem_cost
     - expr: |-
@@ -308,7 +308,7 @@ spec:
 
           * ignoring(node, resource) group_left(label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) 
 
-          sum by (label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (instance_mem_price{job="cost-report", label_eks_amazonaws_com_capacity_type="ON_DEMAND"})
+          sum by (label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (instance_mem_price{job="kubernetes-cost-report", label_eks_amazonaws_com_capacity_type="ON_DEMAND"})
         )
       record: capacity_instance_node_resource:kube_node_status_shared_instance_mem_price:on_demand_shared_mem_cost
 {{- end }}

@@ -1,14 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "cost-report.fullname" . }}
+  name: {{ include "kubernetes-cost-report.fullname" . }}
   labels:
-    {{- include "cost-report.labels" . | nindent 4 }}
+    {{- include "kubernetes-cost-report.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "cost-report.selectorLabels" . | nindent 6 }}
+      {{- include "kubernetes-cost-report.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -16,13 +16,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "cost-report.selectorLabels" . | nindent 8 }}
+        {{- include "kubernetes-cost-report.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "cost-report.serviceAccountName" . }}
+      serviceAccountName: {{ include "kubernetes-cost-report.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
