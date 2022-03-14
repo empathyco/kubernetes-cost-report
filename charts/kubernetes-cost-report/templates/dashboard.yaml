@@ -11,8 +11,8 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   labels:
-    grafana_dashboard: {{ include "cost-report.fullname" . }}
-    {{- include "cost-report.labels" . | nindent 4 }}
-  name: {{ include "cost-report.fullname" . }}-dashboard
+    grafana_dashboard: {{ include "kubernetes-cost-report.fullname" . }}
+    {{- include "kubernetes-cost-report.labels" . | nindent 4 }}
+  name: {{ include "kubernetes-cost-report.fullname" . }}-dashboard
 {{- end }}
 {{- end }}
