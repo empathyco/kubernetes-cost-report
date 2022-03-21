@@ -11,7 +11,8 @@ on:
     branches: [ main ]
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: ubuntu-18.04
+
     steps:
       - uses: actions/checkout@v2
       - name: Set up Docker Context for Buildx

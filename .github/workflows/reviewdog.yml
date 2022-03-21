@@ -2,7 +2,7 @@ name: reviewdog
 on: ["pull_request"]
 jobs:
   reviewdog:
-    runs-on: self-hosted
+    runs-on: ubuntu-18.04
     strategy:
       fail-fast: false
       matrix:

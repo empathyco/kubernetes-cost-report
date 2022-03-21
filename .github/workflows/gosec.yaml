@@ -9,7 +9,9 @@ on:
 
 jobs:
   tests:
-    runs-on: self-hosted
+    runs-on: ubuntu-18.04
+
+
     env:
       GO111MODULE: on
     steps:
