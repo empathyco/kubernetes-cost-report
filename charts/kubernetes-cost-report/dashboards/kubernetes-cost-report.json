@@ -643,10 +643,7 @@
           "refId": "A"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${promdatasource}"
-          },
+          "datasource": "${DS_PROMETHEUS}",
           "exemplar": false,
           "expr": "sum(sum by (persistentvolumeclaim) (kubelet_volume_stats_capacity_bytes/1024/1024/1024) * $pvcost)",
           "format": "table",
@@ -1138,10 +1135,7 @@
           "refId": "A"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${promdatasource}"
-          },
+          "datasource": "${DS_PROMETHEUS}",
           "exemplar": true,
           "expr": "sum (\n  sum_over_time(\n    (\n      zone_capacity_instance_node_resource:kube_node_status_allocatable_idle_instance_cpu_price:spot_idle_cpu_cost\n      OR\n      capacity_instance_node_resource:kube_node_status_allocatable_idle_instance_cpu_price:on_demand_idle_cpu_cost\n      OR\n      zone_capacity_instance_node_resource:kube_node_status_allocatable_idle_instance_mem_price:spot_idle_mem_cost\n      OR\n      capacity_instance_node_resource:kube_node_status_allocatable_idle_instance_mem_price:on_demand_idle_mem_cost\n    )\n  [1d:1h])\n)",
           "hide": false,
@@ -2123,10 +2117,7 @@
           "pluginVersion": "8.3.1",
           "targets": [
             {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${promdatasource}"
-              },
+              "datasource": "${DS_PROMETHEUS}",
               "exemplar": false,
               "expr": "sort_desc(\n\tsum_over_time(\n\t\tsum by (namespace) (\n\n\t\t\tzone_capacity_instance_namespace_node_pod:pod_cpu_usage_instance_cpu_price:spot_pod_cpu_usage_cost\n\t\t\tOR\n\t\t\tcapacity_instance_namespace_node_pod:pod_cpu_usage_instance_cpu_price:on_demand_pod_cpu_usage_cost\n\n\t\t)\n\t[1d:1h])\n)",
               "format": "table",
@@ -4579,7 +4570,7 @@
         "includeAll": false,
         "label": "Prometheus Datasource",
         "multi": false,
-        "name": "promdatasource",
+        "name": "DS_PROMETHEUS",
         "options": [],
         "query": "prometheus",
         "refresh": 1,
@@ -4600,9 +4591,7 @@
           "text": "velero",
           "value": "velero"
         },
-        "datasource": {
-          "uid": "${promdatasource}"
-        },
+        "datasource": "${DS_PROMETHEUS}",
         "definition": "label_values(kube_pod_info, namespace)",
         "hide": 0,
         "includeAll": false,
