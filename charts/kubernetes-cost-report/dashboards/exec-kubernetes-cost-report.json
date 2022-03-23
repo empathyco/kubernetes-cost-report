@@ -1,22 +1,13 @@
 {
   "__inputs": [
     {
-      "name": "datasource",
+      "name": "DS_PROMETHEUS",
       "label": "Prometheus",
       "description": "",
       "type": "datasource",
       "pluginId": "prometheus",
       "pluginName": "Prometheus"
-    },
-    {
-      "name": "datasource",
-      "label": "cloudwatch",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "cloudwatch",
-      "pluginName": "CloudWatch"
     }
-    
   ],
   "__requires": [
     {
@@ -129,10 +120,7 @@
       "pluginVersion": "8.3.1",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
+          "datasource": "${DS_PROMETHEUS}",
           "exemplar": false,
           "expr": "sum(\n  sum_over_time(\n    (\n    capacity_instance:spot_instance_cost:cost \n    OR \n    capacity_instance:on_demand_instance_cost:cost\n    )\n  [1d:1h])\n)",
           "format": "table",
@@ -201,10 +189,7 @@
       "pluginVersion": "8.3.1",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
+          "datasource": "${DS_PROMETHEUS}",
           "exemplar": false,
           "expr": "sum(\n  sum_over_time(\n    (\n    capacity_instance:spot_instance_cost:cost \n    OR \n    capacity_instance:on_demand_instance_cost:cost\n    )\n  [3d:1h])\n)*10",
           "instant": true,
@@ -299,10 +284,7 @@
       },
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
+          "datasource": "${DS_PROMETHEUS}",
           "exemplar": false,
           "expr": "topk(6,\n  sum_over_time(\n      sum by (namespace) (\n          # See description for label_replace\n          label_replace(\n            zone_capacity_instance_namespace_node_pod:pod_cpu_requests_instance_cpu_price:spot_pod_cpu_requests_cost\n            OR\n            capacity_instance_namespace_node_pod:pod_cpu_requests_instance_cpu_price:on_demand_pod_cpu_requests_cost\n          , \"resource\", \"CPU\", \"\",\"\")\n          \n          OR \n          \n          label_replace(\n            zone_capacity_instance_namespace_node_pod:pod_memory_requests_instance_mem_price:spot_pod_mem_requests_cost\n            OR\n            capacity_instance_namespace_node_pod:pod_memory_requests_instance_mem_price:on_demand_pod_mem_requests_cost\n          , \"resource\", \"memory\", \"\",\"\")\n\n    )\n  [1d:1h])\n)",
           "format": "table",
@@ -407,10 +389,7 @@
       },
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
+          "datasource": "${DS_PROMETHEUS}",
           "exemplar": false,
           "expr": "topk(6,\n  sum_over_time(\n      sum by (namespace) (\n        zone_capacity_instance_namespace_node_pod:pod_cpu_requests_instance_cpu_price:spot_pod_cpu_requests_cost\n        OR\n        capacity_instance_namespace_node_pod:pod_cpu_requests_instance_cpu_price:on_demand_pod_cpu_requests_cost\n    )\n  [1d:1h])\n)",
           "format": "table",
@@ -515,10 +494,7 @@
       },
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
+          "datasource": "${DS_PROMETHEUS}",
           "exemplar": false,
           "expr": "topk(6,\n  sum_over_time(\n      sum by (namespace) (        \n        zone_capacity_instance_namespace_node_pod:pod_memory_requests_instance_mem_price:spot_pod_mem_requests_cost\n        OR\n        capacity_instance_namespace_node_pod:pod_memory_requests_instance_mem_price:on_demand_pod_mem_requests_cost\n    )\n  [1d:1h])\n)",
           "format": "table",
@@ -623,10 +599,7 @@
       },
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
+          "datasource": "${DS_PROMETHEUS}",
           "exemplar": false,
           "expr": "topk(10,\nsum_over_time(\n    sum by (pod) (\n        # See description for label_replace\n        label_replace(\n\t\t    zone_capacity_instance_namespace_node_pod:pod_cpu_requests_instance_cpu_price:spot_pod_cpu_requests_cost\n            OR\n            capacity_instance_namespace_node_pod:pod_cpu_requests_instance_cpu_price:on_demand_pod_cpu_requests_cost\n        , \"resource\", \"CPU\", \"\",\"\")\n        \n        OR \n        \n        label_replace(\n\t\t    zone_capacity_instance_namespace_node_pod:pod_memory_requests_instance_mem_price:spot_pod_mem_requests_cost\n            OR\n            capacity_instance_namespace_node_pod:pod_memory_requests_instance_mem_price:on_demand_pod_mem_requests_cost\n        , \"resource\", \"memory\", \"\",\"\")\n\n\t)\n[1d:1h])\n)",
           "format": "table",
@@ -736,10 +709,7 @@
       },
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
+          "datasource": "${DS_PROMETHEUS}",
           "exemplar": false,
           "expr": "topk(6,sum by (namespace) (sum by (persistentvolumeclaim,namespace) (kubelet_volume_stats_capacity_bytes/1024/1024/1024) * 0.089))",
           "format": "table",
@@ -853,10 +823,7 @@
           },
           "targets": [
             {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "PBFA97CFB590B2093"
-              },
+              "datasource": "${DS_PROMETHEUS}",
               "exemplar": false,
               "expr": "topk(6,\n  sum_over_time(\n      sum by (namespace) (\n          # See description for label_replace\n          label_replace(\n          zone_capacity_instance_namespace_node_pod:pod_cpu_usage_instance_cpu_price:spot_pod_cpu_usage_cost\n              OR\n              capacity_instance_namespace_node_pod:pod_cpu_usage_instance_cpu_price:on_demand_pod_cpu_usage_cost\n          , \"resource\", \"CPU\", \"\",\"\")\n          \n          OR \n          \n          label_replace(\n          zone_capacity_instance_namespace_node_pod:pod_memory_usage_instance_mem_price:spot_pod_mem_usage_cost\n              OR\n              capacity_instance_namespace_node_pod:pod_memory_usage_instance_mem_price:on_demand_pod_mem_usage_cost\n          , \"resource\", \"memory\", \"\",\"\")\n\n    )\n  [1d:1h])\n)",
               "format": "table",
@@ -960,10 +927,7 @@
           },
           "targets": [
             {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "PBFA97CFB590B2093"
-              },
+              "datasource": "${DS_PROMETHEUS}",
               "exemplar": false,
               "expr": "topk(6,\n  sum_over_time(\n      sum by (namespace) (\n          zone_capacity_instance_namespace_node_pod:pod_cpu_usage_instance_cpu_price:spot_pod_cpu_usage_cost\n          OR\n          capacity_instance_namespace_node_pod:pod_cpu_usage_instance_cpu_price:on_demand_pod_cpu_usage_cost\n    )\n  [1d:1h])\n)",
               "format": "table",
@@ -1067,10 +1031,7 @@
           },
           "targets": [
             {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "PBFA97CFB590B2093"
-              },
+              "datasource": "${DS_PROMETHEUS}",
               "exemplar": false,
               "expr": "topk(6,\n  sum_over_time(\n      sum by (namespace) (\n          zone_capacity_instance_namespace_node_pod:pod_memory_usage_instance_mem_price:spot_pod_mem_usage_cost\n          OR\n          capacity_instance_namespace_node_pod:pod_memory_usage_instance_mem_price:on_demand_pod_mem_usage_cost\n    )\n  [1d:1h])\n)",
               "format": "table",
@@ -1175,10 +1136,7 @@
           },
           "targets": [
             {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "PBFA97CFB590B2093"
-              },
+              "datasource": "${DS_PROMETHEUS}",
               "exemplar": false,
               "expr": "topk(10,\n  sum_over_time(\n      sum by (pod) (\n          # See description for label_replace\n          label_replace(\n          zone_capacity_instance_namespace_node_pod:pod_cpu_usage_instance_cpu_price:spot_pod_cpu_usage_cost\n              OR\n              capacity_instance_namespace_node_pod:pod_cpu_usage_instance_cpu_price:on_demand_pod_cpu_usage_cost\n          , \"resource\", \"CPU\", \"\",\"\")\n          \n          OR \n          \n          label_replace(\n          zone_capacity_instance_namespace_node_pod:pod_memory_usage_instance_mem_price:spot_pod_mem_usage_cost\n              OR\n              capacity_instance_namespace_node_pod:pod_memory_usage_instance_mem_price:on_demand_pod_mem_usage_cost\n          , \"resource\", \"memory\", \"\",\"\")\n\n    )\n  [1d:1h])\n)",
               "format": "table",
