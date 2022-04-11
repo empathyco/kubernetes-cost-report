@@ -4,8 +4,7 @@ on:
 jobs:
   tfsec:
     name: tfsec PR commenter
-    runs-on: self-hosted
-
+    runs-on: ubuntu-18.04
     steps:
       - name: Clone repo
         uses: actions/checkout@master

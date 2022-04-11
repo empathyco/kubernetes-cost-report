@@ -39,6 +39,8 @@ func main() {
 			fmt.Println("Error: %w", err)
 			writter.WriteHeader(http.StatusInternalServerError)
 			fmt.Fprintf(writter, "{\"error\":\"%v\"}", err)
+
+			return
 		}
 		writter.WriteHeader(http.StatusOK)
 		fmt.Fprintf(writter, "{\"message\":\"Pricing updated\"}")
