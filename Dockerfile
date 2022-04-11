@@ -3,7 +3,7 @@ ENV CI=docker
 RUN apk add --no-cache "git>2.32.0" "ca-certificates>20211220" && \
     addgroup -S scratchuser && adduser -S scratchuser -G scratchuser
 
-USER scratchuser
+# USER scratchuser
 # Set the Current Working Directory inside the container
 WORKDIR /tmp/cost-report
 
