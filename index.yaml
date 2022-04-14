@@ -14,6 +14,16 @@ entries:
   kubernetes-cost-report:
   - apiVersion: v2
     appVersion: 0.0.12
+    created: "2022-04-14T10:10:04.368223998Z"
+    description: A Helm chart for Kubernetes
+    digest: d87c538dc8eb1b8512c121dadc9407725dfd35f23988e87c34b2a66407454927
+    name: kubernetes-cost-report
+    type: application
+    urls:
+    - https://github.com/empathyco/kubernetes-cost-report/releases/download/helm-chart-0.0.4/kubernetes-cost-report-0.0.4.tgz
+    version: 0.0.4
+  - apiVersion: v2
+    appVersion: 0.0.12
     created: "2022-03-23T11:40:49.777495478Z"
     description: A Helm chart for Kubernetes
     digest: f1cdf225e536c6fe31d07b5caab5df3e5907160b2716b5ebc8b7384c207019d8
@@ -42,4 +52,4 @@ entries:
     urls:
     - https://github.com/empathyco/kubernetes-cost-report/releases/download/helm-chart-0.0.1/kubernetes-cost-report-0.0.1.tgz
     version: 0.0.1
-generated: "2022-03-23T11:40:49.777510479Z"
+generated: "2022-04-14T10:10:04.368241299Z"
