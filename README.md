@@ -3,6 +3,8 @@
 [![Docker](https://github.com/empathyco/platform-cost-report/actions/workflows/docker.yml/badge.svg)](https://github.com/empathyco/platform-cost-report/actions/workflows/docker.yml)
 [![Gosec](https://github.com/empathyco/platform-cost-report/actions/workflows/gosec.yaml/badge.svg)](https://github.com/empathyco/platform-cost-report/actions/workflows/gosec.yaml)
 [![Reviewdog](https://github.com/empathyco/platform-cost-report/actions/workflows/reviewdog.yml/badge.svg)](https://github.com/empathyco/platform-cost-report/actions/workflows/reviewdog.yml)
+## Deep Dive Explanation
+[Kubernetes Cost Report](https://medium.com/empathyco/cloud-finops-part-4-kubernetes-cost-report-b4964be02dc3)
 ## Architecture
 ![](docs/diagram.png)
 ## Requirements
