@@ -154,14 +154,14 @@
         }
       ],
       "updated": 1642667519760,
-      "text": "instance_mem_price{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1a\",region=\"eu-west-1\",unit=\"Hrs\"} 0.0019893973214285716\ninstance_mem_price{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1b\",region=\"eu-west-1\",unit=\"Hrs\"} 0.0023477678571428573\ninstance_mem_price{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1c\",region=\"eu-west-1\",unit=\"Hrs\"} 0.0017373511904761904",
+      "text": "instance_mem_price{label_node_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1a\",region=\"eu-west-1\",unit=\"Hrs\"} 0.0019893973214285716\ninstance_mem_price{label_node_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1b\",region=\"eu-west-1\",unit=\"Hrs\"} 0.0023477678571428573\ninstance_mem_price{label_node_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1c\",region=\"eu-west-1\",unit=\"Hrs\"} 0.0017373511904761904",
       "fontSize": 20,
       "fontFamily": 3,
       "textAlign": "left",
       "verticalAlign": "top",
       "baseline": 67,
       "containerId": null,
-      "originalText": "instance_mem_price{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1a\",region=\"eu-west-1\",unit=\"Hrs\"} 0.0019893973214285716\ninstance_mem_price{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1b\",region=\"eu-west-1\",unit=\"Hrs\"} 0.0023477678571428573\ninstance_mem_price{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1c\",region=\"eu-west-1\",unit=\"Hrs\"} 0.0017373511904761904"
+      "originalText": "instance_mem_price{label_node_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1a\",region=\"eu-west-1\",unit=\"Hrs\"} 0.0019893973214285716\ninstance_mem_price{label_node_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1b\",region=\"eu-west-1\",unit=\"Hrs\"} 0.0023477678571428573\ninstance_mem_price{label_node_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1c\",region=\"eu-west-1\",unit=\"Hrs\"} 0.0017373511904761904"
     },
     {
       "id": "yGyZsE3-jVvo98yBwyXeD",
@@ -191,14 +191,14 @@
         }
       ],
       "updated": 1642667524267,
-      "text": "instance_cpu_price{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1a\",region=\"eu-west-1\",unit=\"Hrs\"} 0.014323660714285716\ninstance_cpu_price{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1b\",region=\"eu-west-1\",unit=\"Hrs\"} 0.016903928571428573\ninstance_cpu_price{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1c\",region=\"eu-west-1\",unit=\"Hrs\"} 0.012508928571428572",
+      "text": "instance_cpu_price{label_node_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1a\",region=\"eu-west-1\",unit=\"Hrs\"} 0.014323660714285716\ninstance_cpu_price{label_node_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1b\",region=\"eu-west-1\",unit=\"Hrs\"} 0.016903928571428573\ninstance_cpu_price{label_node_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1c\",region=\"eu-west-1\",unit=\"Hrs\"} 0.012508928571428572",
       "fontSize": 20,
       "fontFamily": 3,
       "textAlign": "left",
       "verticalAlign": "top",
       "baseline": 67,
       "containerId": null,
-      "originalText": "instance_cpu_price{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1a\",region=\"eu-west-1\",unit=\"Hrs\"} 0.014323660714285716\ninstance_cpu_price{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1b\",region=\"eu-west-1\",unit=\"Hrs\"} 0.016903928571428573\ninstance_cpu_price{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1c\",region=\"eu-west-1\",unit=\"Hrs\"} 0.012508928571428572"
+      "originalText": "instance_cpu_price{label_node_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1a\",region=\"eu-west-1\",unit=\"Hrs\"} 0.014323660714285716\ninstance_cpu_price{label_node_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1b\",region=\"eu-west-1\",unit=\"Hrs\"} 0.016903928571428573\ninstance_cpu_price{label_node_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1c\",region=\"eu-west-1\",unit=\"Hrs\"} 0.012508928571428572"
     },
     {
       "id": "zA3gYJnDKCQWEDGVY7OfX",
@@ -228,14 +228,14 @@
         }
       ],
       "updated": 1642667528891,
-      "text": "instance_cost{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1a\",memory=\"16 GiB\",region=\"eu-west-1\",unit=\"Hrs\",vcpu=\"4\"} 0.089125\ninstance_cost{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1b\",memory=\"16 GiB\",region=\"eu-west-1\",unit=\"Hrs\",vcpu=\"4\"} 0.10518000000000001\ninstance_cost{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1c\",memory=\"16 GiB\",region=\"eu-west-1\",unit=\"Hrs\",vcpu=\"4\"} 0.07783333333333332",
+      "text": "instance_cost{label_node_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1a\",memory=\"16 GiB\",region=\"eu-west-1\",unit=\"Hrs\",vcpu=\"4\"} 0.089125\ninstance_cost{label_node_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1b\",memory=\"16 GiB\",region=\"eu-west-1\",unit=\"Hrs\",vcpu=\"4\"} 0.10518000000000001\ninstance_cost{label_node_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1c\",memory=\"16 GiB\",region=\"eu-west-1\",unit=\"Hrs\",vcpu=\"4\"} 0.07783333333333332",
       "fontSize": 20,
       "fontFamily": 3,
       "textAlign": "left",
       "verticalAlign": "top",
       "baseline": 67,
       "containerId": null,
-      "originalText": "instance_cost{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1a\",memory=\"16 GiB\",region=\"eu-west-1\",unit=\"Hrs\",vcpu=\"4\"} 0.089125\ninstance_cost{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1b\",memory=\"16 GiB\",region=\"eu-west-1\",unit=\"Hrs\",vcpu=\"4\"} 0.10518000000000001\ninstance_cost{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1c\",memory=\"16 GiB\",region=\"eu-west-1\",unit=\"Hrs\",vcpu=\"4\"} 0.07783333333333332"
+      "originalText": "instance_cost{label_node_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1a\",memory=\"16 GiB\",region=\"eu-west-1\",unit=\"Hrs\",vcpu=\"4\"} 0.089125\ninstance_cost{label_node_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1b\",memory=\"16 GiB\",region=\"eu-west-1\",unit=\"Hrs\",vcpu=\"4\"} 0.10518000000000001\ninstance_cost{label_node_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"SPOT\",label_topology_kubernetes_io_zone=\"eu-west-1c\",memory=\"16 GiB\",region=\"eu-west-1\",unit=\"Hrs\",vcpu=\"4\"} 0.07783333333333332"
     },
     {
       "id": "FyDKRH4Q32xi7Uq_jMBAQ",
@@ -265,14 +265,14 @@
         }
       ],
       "updated": 1642667526359,
-      "text": "instance_cost{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"ON_DEMAND\",label_topology_kubernetes_io_zone=\"\",memory=\"16 GiB\",region=\"eu-west-1\",unit=\"Hrs\",vcpu=\"4\"} 0.214",
+      "text": "instance_cost{label_node_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"ON_DEMAND\",label_topology_kubernetes_io_zone=\"\",memory=\"16 GiB\",region=\"eu-west-1\",unit=\"Hrs\",vcpu=\"4\"} 0.214",
       "fontSize": 20,
       "fontFamily": 3,
       "textAlign": "left",
       "verticalAlign": "top",
       "baseline": 19,
       "containerId": null,
-      "originalText": "instance_cost{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"ON_DEMAND\",label_topology_kubernetes_io_zone=\"\",memory=\"16 GiB\",region=\"eu-west-1\",unit=\"Hrs\",vcpu=\"4\"} 0.214"
+      "originalText": "instance_cost{label_node_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"ON_DEMAND\",label_topology_kubernetes_io_zone=\"\",memory=\"16 GiB\",region=\"eu-west-1\",unit=\"Hrs\",vcpu=\"4\"} 0.214"
     },
     {
       "id": "l_7B4zABkYsYpSAKOZjQE",
@@ -302,14 +302,14 @@
         }
       ],
       "updated": 1642667522029,
-      "text": "instance_cpu_price{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"ON_DEMAND\",label_topology_kubernetes_io_zone=\"\",region=\"eu-west-1\",unit=\"Hrs\"} 0.03439285714285714",
+      "text": "instance_cpu_price{label_node_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"ON_DEMAND\",label_topology_kubernetes_io_zone=\"\",region=\"eu-west-1\",unit=\"Hrs\"} 0.03439285714285714",
       "fontSize": 20,
       "fontFamily": 3,
       "textAlign": "left",
       "verticalAlign": "top",
       "baseline": 19,
       "containerId": null,
-      "originalText": "instance_cpu_price{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"ON_DEMAND\",label_topology_kubernetes_io_zone=\"\",region=\"eu-west-1\",unit=\"Hrs\"} 0.03439285714285714"
+      "originalText": "instance_cpu_price{label_node_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"ON_DEMAND\",label_topology_kubernetes_io_zone=\"\",region=\"eu-west-1\",unit=\"Hrs\"} 0.03439285714285714"
     },
     {
       "id": "XNyab4hZmXNep4ZL8zCcS",
@@ -334,14 +334,14 @@
       "isDeleted": false,
       "boundElements": null,
       "updated": 1642667494985,
-      "text": "instance_mem_price{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"ON_DEMAND\",label_topology_kubernetes_io_zone=\"\",region=\"eu-west-1\",unit=\"Hrs\"} 0.004776785714285714",
+      "text": "instance_mem_price{label_node_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"ON_DEMAND\",label_topology_kubernetes_io_zone=\"\",region=\"eu-west-1\",unit=\"Hrs\"} 0.004776785714285714",
       "fontSize": 20,
       "fontFamily": 3,
       "textAlign": "left",
       "verticalAlign": "top",
       "baseline": 19,
       "containerId": null,
-      "originalText": "instance_mem_price{label_beta_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"ON_DEMAND\",label_topology_kubernetes_io_zone=\"\",region=\"eu-west-1\",unit=\"Hrs\"} 0.004776785714285714"
+      "originalText": "instance_mem_price{label_node_kubernetes_io_instance_type=\"m6i.xlarge\",label_eks_amazonaws_com_capacity_type=\"ON_DEMAND\",label_topology_kubernetes_io_zone=\"\",region=\"eu-west-1\",unit=\"Hrs\"} 0.004776785714285714"
     },
     {
       "id": "X5EEdO3lxyk4ladCNZRQ1",

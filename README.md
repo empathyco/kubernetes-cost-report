@@ -1,12 +1,18 @@
 # Kubernetes Cost Report
+
 <a href='https://github.com/jpoles1/gopherbadger' target='_blank'>![gopherbadger-tag-do-not-edit](https://img.shields.io/badge/Go%20Coverage-76%25-brightgreen.svg?longCache=true&style=flat)</a>
 [![Docker](https://github.com/empathyco/platform-cost-report/actions/workflows/docker.yml/badge.svg)](https://github.com/empathyco/platform-cost-report/actions/workflows/docker.yml)
 [![Gosec](https://github.com/empathyco/platform-cost-report/actions/workflows/gosec.yaml/badge.svg)](https://github.com/empathyco/platform-cost-report/actions/workflows/gosec.yaml)
 [![Reviewdog](https://github.com/empathyco/platform-cost-report/actions/workflows/reviewdog.yml/badge.svg)](https://github.com/empathyco/platform-cost-report/actions/workflows/reviewdog.yml)
+
 ## Deep Dive Explanation
+
 [Kubernetes Cost Report](https://medium.com/empathyco/cloud-finops-part-4-kubernetes-cost-report-b4964be02dc3)
+
 ## Architecture
+
 ![](docs/diagram.png)
+
 ## Requirements
 
 ```sh
@@ -40,6 +46,7 @@ To be able to query for prices you should have the following permissions:
     ]
 }
 ```
+
 You could run the terraform code to create it.
 
 set the following variables to be able to run the code:
@@ -62,6 +69,7 @@ make build
 ## Docker
 make docker
 ```
+
 For those who wants keep it simple and avoid install a lot of things:
 
 ```sh
@@ -87,7 +95,7 @@ go run main.go
 
 | Name                                   | Description       |
 |----------------------------------------|-------------------|
-| label_beta_kubernetes_io_instance_type | machine type      |
+| label_node_kubernetes_io_instance_type | machine type      |
 | label_eks_amazonaws_com_capacity_type  | instance type     |
 | vcpu                                   | virtual cpu       |
 | memory                                 | memory            |
@@ -100,7 +108,7 @@ go run main.go
 
 | Name                                   | Description       |
 |----------------------------------------|-------------------|
-| label_beta_kubernetes_io_instance_type | machine type      |
+| label_node_kubernetes_io_instance_type | machine type      |
 | label_eks_amazonaws_com_capacity_type  | instance type     |
 | vcpu                                   | virtual cpu       |
 | memory                                 | memory            |
@@ -108,20 +116,22 @@ go run main.go
 | Description                            | description       |
 | label_topology_kubernetes_io_zone      | availability zone |
 | region                                 | region            |
+
 ### instance_mem_price
 
 | Name                                   | Description       |
 |----------------------------------------|-------------------|
-| label_beta_kubernetes_io_instance_type | machine type      |
+| label_node_kubernetes_io_instance_type | machine type      |
 | label_eks_amazonaws_com_capacity_type  | instance type     |
 | unit                                   | unit              |
 | label_topology_kubernetes_io_zone      | availability zone |
 | region                                 | region            |
 
 ### instance_cpu_price
+
 | Name                                   | Description       |
 |----------------------------------------|-------------------|
-| label_beta_kubernetes_io_instance_type | machine type      |
+| label_node_kubernetes_io_instance_type | machine type      |
 | label_eks_amazonaws_com_capacity_type  | instance type     |
 | unit                                   | unit              |
 | label_topology_kubernetes_io_zone      | availability zone |
@@ -131,7 +141,7 @@ go run main.go
 
 | Name                                   | Description       |
 |----------------------------------------|-------------------|
-| label_beta_kubernetes_io_instance_type | machine type      |
+| label_node_kubernetes_io_instance_type | machine type      |
 | label_eks_amazonaws_com_capacity_type  | instance type     |
 | unit                                   | unit              |
 | label_topology_kubernetes_io_zone      | availability zone |
@@ -141,7 +151,7 @@ go run main.go
 
 | Name                                   | Description       |
 |----------------------------------------|-------------------|
-| label_beta_kubernetes_io_instance_type | machine type      |
+| label_node_kubernetes_io_instance_type | machine type      |
 | label_eks_amazonaws_com_capacity_type  | instance type     |
 | unit                                   | unit              |
 | label_topology_kubernetes_io_zone      | availability zone |

@@ -156,7 +156,7 @@
           {
             "datasource": "${DS_PROMETHEUS}",
             "exemplar": true,
-            "expr": "sort_desc (\n  sum by (label_beta_kubernetes_io_instance_type) (kube_node_labels{label_eks_amazonaws_com_capacity_type=\"ON_DEMAND\"})\n)",
+            "expr": "sort_desc (\n  sum by (label_node_kubernetes_io_instance_type) (kube_node_labels{label_eks_amazonaws_com_capacity_type=\"ON_DEMAND\"})\n)",
             "instant": false,
             "interval": "",
             "legendFormat": "",
@@ -168,7 +168,7 @@
           {
             "id": "labelsToFields",
             "options": {
-              "valueLabel": "label_beta_kubernetes_io_instance_type"
+              "valueLabel": "label_node_kubernetes_io_instance_type"
             }
           }
         ],
@@ -250,7 +250,7 @@
           {
             "datasource": "${DS_PROMETHEUS}",
             "exemplar": true,
-            "expr": "sort_desc (\n  sum by (label_beta_kubernetes_io_instance_type) (kube_node_labels{label_eks_amazonaws_com_capacity_type=\"SPOT\"})\n)",
+            "expr": "sort_desc (\n  sum by (label_node_kubernetes_io_instance_type) (kube_node_labels{label_eks_amazonaws_com_capacity_type=\"SPOT\"})\n)",
             "instant": false,
             "interval": "",
             "legendFormat": "",
@@ -262,7 +262,7 @@
           {
             "id": "labelsToFields",
             "options": {
-              "valueLabel": "label_beta_kubernetes_io_instance_type"
+              "valueLabel": "label_node_kubernetes_io_instance_type"
             }
           }
         ],
@@ -882,7 +882,7 @@
             "format": "time_series",
             "instant": true,
             "interval": "",
-            "legendFormat": "{{label_beta_kubernetes_io_instance_type}}-{{label_eks_amazonaws_com_capacity_type}}",
+            "legendFormat": "{{label_node_kubernetes_io_instance_type}}-{{label_eks_amazonaws_com_capacity_type}}",
             "refId": "A"
           }
         ],
@@ -974,7 +974,7 @@
             "hide": false,
             "instant": false,
             "interval": "",
-            "legendFormat": "{{label_beta_kubernetes_io_instance_type}}-{{label_eks_amazonaws_com_capacity_type}}",
+            "legendFormat": "{{label_node_kubernetes_io_instance_type}}-{{label_eks_amazonaws_com_capacity_type}}",
             "refId": "A"
           },
           {
@@ -1039,11 +1039,11 @@
           {
             "datasource": "${DS_PROMETHEUS}",
             "exemplar": false,
-            "expr": "sort_desc(\n  sum by (label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (\n    sum_over_time(\n      (\n        zone_capacity_instance_node_resource:kube_node_status_allocatable_idle_instance_cpu_price:spot_idle_cpu_cost\n        OR\n        capacity_instance_node_resource:kube_node_status_allocatable_idle_instance_cpu_price:on_demand_idle_cpu_cost\n        OR\n        zone_capacity_instance_node_resource:kube_node_status_allocatable_idle_instance_mem_price:spot_idle_mem_cost\n        OR\n        capacity_instance_node_resource:kube_node_status_allocatable_idle_instance_mem_price:on_demand_idle_mem_cost\n      )\n    [1d:1h])\n)\n)",
+            "expr": "sort_desc(\n  sum by (label_eks_amazonaws_com_capacity_type, label_node_kubernetes_io_instance_type) (\n    sum_over_time(\n      (\n        zone_capacity_instance_node_resource:kube_node_status_allocatable_idle_instance_cpu_price:spot_idle_cpu_cost\n        OR\n        capacity_instance_node_resource:kube_node_status_allocatable_idle_instance_cpu_price:on_demand_idle_cpu_cost\n        OR\n        zone_capacity_instance_node_resource:kube_node_status_allocatable_idle_instance_mem_price:spot_idle_mem_cost\n        OR\n        capacity_instance_node_resource:kube_node_status_allocatable_idle_instance_mem_price:on_demand_idle_mem_cost\n      )\n    [1d:1h])\n)\n)",
             "format": "time_series",
             "instant": true,
             "interval": "",
-            "legendFormat": "{{label_beta_kubernetes_io_instance_type}}-{{label_eks_amazonaws_com_capacity_type}}",
+            "legendFormat": "{{label_node_kubernetes_io_instance_type}}-{{label_eks_amazonaws_com_capacity_type}}",
             "refId": "A"
           }
         ],
@@ -1131,11 +1131,11 @@
           {
             "datasource": "${DS_PROMETHEUS}",
             "exemplar": true,
-            "expr": "sum by (label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (\n  sum_over_time(\n    (\n      zone_capacity_instance_node_resource:kube_node_status_allocatable_idle_instance_cpu_price:spot_idle_cpu_cost\n      OR\n      capacity_instance_node_resource:kube_node_status_allocatable_idle_instance_cpu_price:on_demand_idle_cpu_cost\n      OR\n      zone_capacity_instance_node_resource:kube_node_status_allocatable_idle_instance_mem_price:spot_idle_mem_cost\n      OR\n      capacity_instance_node_resource:kube_node_status_allocatable_idle_instance_mem_price:on_demand_idle_mem_cost\n    )\n  [1d:1h])\n)",
+            "expr": "sum by (label_eks_amazonaws_com_capacity_type, label_node_kubernetes_io_instance_type) (\n  sum_over_time(\n    (\n      zone_capacity_instance_node_resource:kube_node_status_allocatable_idle_instance_cpu_price:spot_idle_cpu_cost\n      OR\n      capacity_instance_node_resource:kube_node_status_allocatable_idle_instance_cpu_price:on_demand_idle_cpu_cost\n      OR\n      zone_capacity_instance_node_resource:kube_node_status_allocatable_idle_instance_mem_price:spot_idle_mem_cost\n      OR\n      capacity_instance_node_resource:kube_node_status_allocatable_idle_instance_mem_price:on_demand_idle_mem_cost\n    )\n  [1d:1h])\n)",
             "hide": false,
             "instant": false,
             "interval": "",
-            "legendFormat": "{{label_beta_kubernetes_io_instance_type}}-{{label_eks_amazonaws_com_capacity_type}}",
+            "legendFormat": "{{label_node_kubernetes_io_instance_type}}-{{label_eks_amazonaws_com_capacity_type}}",
             "refId": "A"
           },
           {
@@ -1201,11 +1201,11 @@
           {
             "datasource": "${DS_PROMETHEUS}",
             "exemplar": false,
-            "expr": "sort_desc (\n  sum_over_time(\n      sum by (label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (\n      \n\t      # See description for label_replace\n\t      label_replace(\n\t          ((\n\t              zone_capacity_instance_namespace_node_pod:pod_cpu_requests_instance_cpu_price:spot_pod_cpu_requests_cost\n\t              - \n\t              zone_capacity_instance_namespace_node_pod:pod_cpu_usage_instance_cpu_price:spot_pod_cpu_usage_cost\n\t          ) > 0)\n\t          OR\n\t          ((\n\t              capacity_instance_namespace_node_pod:pod_cpu_requests_instance_cpu_price:on_demand_pod_cpu_requests_cost\n\t              -\n\t              capacity_instance_namespace_node_pod:pod_cpu_usage_instance_cpu_price:on_demand_pod_cpu_usage_cost\n\t          ) > 0)\n\t      , \"resource\", \"CPU\", \"\",\"\")\n\t      \n\t      OR \n\t      \n\t      label_replace(\n\t          ((\n\t              zone_capacity_instance_namespace_node_pod:pod_memory_requests_instance_mem_price:spot_pod_mem_requests_cost\n\t              -\n\t              zone_capacity_instance_namespace_node_pod:pod_memory_usage_instance_mem_price:spot_pod_mem_usage_cost\n\t          ) > 0)\n\t          OR\n\t          ((\n\t              capacity_instance_namespace_node_pod:pod_memory_requests_instance_mem_price:on_demand_pod_mem_requests_cost\n\t              -\n\t              capacity_instance_namespace_node_pod:pod_memory_requests_instance_mem_price:on_demand_pod_mem_requests_cost\n\t          ) > 0)\n\t      , \"resource\", \"memory\", \"\",\"\")\n\n    )\n  [1d:1h])\n)",
+            "expr": "sort_desc (\n  sum_over_time(\n      sum by (label_eks_amazonaws_com_capacity_type, label_node_kubernetes_io_instance_type) (\n      \n\t      # See description for label_replace\n\t      label_replace(\n\t          ((\n\t              zone_capacity_instance_namespace_node_pod:pod_cpu_requests_instance_cpu_price:spot_pod_cpu_requests_cost\n\t              - \n\t              zone_capacity_instance_namespace_node_pod:pod_cpu_usage_instance_cpu_price:spot_pod_cpu_usage_cost\n\t          ) > 0)\n\t          OR\n\t          ((\n\t              capacity_instance_namespace_node_pod:pod_cpu_requests_instance_cpu_price:on_demand_pod_cpu_requests_cost\n\t              -\n\t              capacity_instance_namespace_node_pod:pod_cpu_usage_instance_cpu_price:on_demand_pod_cpu_usage_cost\n\t          ) > 0)\n\t      , \"resource\", \"CPU\", \"\",\"\")\n\t      \n\t      OR \n\t      \n\t      label_replace(\n\t          ((\n\t              zone_capacity_instance_namespace_node_pod:pod_memory_requests_instance_mem_price:spot_pod_mem_requests_cost\n\t              -\n\t              zone_capacity_instance_namespace_node_pod:pod_memory_usage_instance_mem_price:spot_pod_mem_usage_cost\n\t          ) > 0)\n\t          OR\n\t          ((\n\t              capacity_instance_namespace_node_pod:pod_memory_requests_instance_mem_price:on_demand_pod_mem_requests_cost\n\t              -\n\t              capacity_instance_namespace_node_pod:pod_memory_requests_instance_mem_price:on_demand_pod_mem_requests_cost\n\t          ) > 0)\n\t      , \"resource\", \"memory\", \"\",\"\")\n\n    )\n  [1d:1h])\n)",
             "format": "time_series",
             "instant": true,
             "interval": "",
-            "legendFormat": "{{label_beta_kubernetes_io_instance_type}}-{{label_eks_amazonaws_com_capacity_type}}",
+            "legendFormat": "{{label_node_kubernetes_io_instance_type}}-{{label_eks_amazonaws_com_capacity_type}}",
             "refId": "A"
           }
         ],
@@ -1293,11 +1293,11 @@
           {
             "datasource": "${DS_PROMETHEUS}",
             "exemplar": true,
-            "expr": "sum_over_time(\n  sum by (label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (\n  \n      # See description for label_replace\n      label_replace(\n          ((\n              zone_capacity_instance_namespace_node_pod:pod_cpu_requests_instance_cpu_price:spot_pod_cpu_requests_cost\n              - \n              zone_capacity_instance_namespace_node_pod:pod_cpu_usage_instance_cpu_price:spot_pod_cpu_usage_cost\n          ) > 0)\n          OR\n          ((\n              capacity_instance_namespace_node_pod:pod_cpu_requests_instance_cpu_price:on_demand_pod_cpu_requests_cost\n              -\n              capacity_instance_namespace_node_pod:pod_cpu_usage_instance_cpu_price:on_demand_pod_cpu_usage_cost\n          ) > 0)\n      , \"resource\", \"CPU\", \"\",\"\")\n      \n      OR \n      \n      label_replace(\n          ((\n              zone_capacity_instance_namespace_node_pod:pod_memory_requests_instance_mem_price:spot_pod_mem_requests_cost\n              -\n              zone_capacity_instance_namespace_node_pod:pod_memory_usage_instance_mem_price:spot_pod_mem_usage_cost\n          ) > 0)\n          OR\n          ((\n              capacity_instance_namespace_node_pod:pod_memory_requests_instance_mem_price:on_demand_pod_mem_requests_cost\n              -\n              capacity_instance_namespace_node_pod:pod_memory_requests_instance_mem_price:on_demand_pod_mem_requests_cost\n          ) > 0)\n      , \"resource\", \"memory\", \"\",\"\")\n\n)\n[1d:1h])",
+            "expr": "sum_over_time(\n  sum by (label_eks_amazonaws_com_capacity_type, label_node_kubernetes_io_instance_type) (\n  \n      # See description for label_replace\n      label_replace(\n          ((\n              zone_capacity_instance_namespace_node_pod:pod_cpu_requests_instance_cpu_price:spot_pod_cpu_requests_cost\n              - \n              zone_capacity_instance_namespace_node_pod:pod_cpu_usage_instance_cpu_price:spot_pod_cpu_usage_cost\n          ) > 0)\n          OR\n          ((\n              capacity_instance_namespace_node_pod:pod_cpu_requests_instance_cpu_price:on_demand_pod_cpu_requests_cost\n              -\n              capacity_instance_namespace_node_pod:pod_cpu_usage_instance_cpu_price:on_demand_pod_cpu_usage_cost\n          ) > 0)\n      , \"resource\", \"CPU\", \"\",\"\")\n      \n      OR \n      \n      label_replace(\n          ((\n              zone_capacity_instance_namespace_node_pod:pod_memory_requests_instance_mem_price:spot_pod_mem_requests_cost\n              -\n              zone_capacity_instance_namespace_node_pod:pod_memory_usage_instance_mem_price:spot_pod_mem_usage_cost\n          ) > 0)\n          OR\n          ((\n              capacity_instance_namespace_node_pod:pod_memory_requests_instance_mem_price:on_demand_pod_mem_requests_cost\n              -\n              capacity_instance_namespace_node_pod:pod_memory_requests_instance_mem_price:on_demand_pod_mem_requests_cost\n          ) > 0)\n      , \"resource\", \"memory\", \"\",\"\")\n\n)\n[1d:1h])",
             "format": "time_series",
             "instant": false,
             "interval": "",
-            "legendFormat": "{{label_beta_kubernetes_io_instance_type}}-{{label_eks_amazonaws_com_capacity_type}}",
+            "legendFormat": "{{label_node_kubernetes_io_instance_type}}-{{label_eks_amazonaws_com_capacity_type}}",
             "refId": "A"
           },
           {
@@ -1362,11 +1362,11 @@
           {
             "datasource": "${DS_PROMETHEUS}",
             "exemplar": false,
-            "expr": "sort_desc(\n  sum by (label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (\n    sum_over_time(\n      (\n            zone_capacity_instance_node_resource:kube_node_status_shared_instance_cpu_price:spot_shared_cpu_cost\n            OR\n            capacity_instance_node_resource:kube_node_status_shared_instance_cpu_price:on_demand_shared_cpu_cost\n            OR\n            zone_capacity_instance_node_resource:kube_node_status_shared_instance_mem_price:spot_shared_mem_cost\n            OR\n            capacity_instance_node_resource:kube_node_status_shared_instance_mem_price:on_demand_shared_mem_cost\n      )\n    [1d:1h])\n  )\n)",
+            "expr": "sort_desc(\n  sum by (label_eks_amazonaws_com_capacity_type, label_node_kubernetes_io_instance_type) (\n    sum_over_time(\n      (\n            zone_capacity_instance_node_resource:kube_node_status_shared_instance_cpu_price:spot_shared_cpu_cost\n            OR\n            capacity_instance_node_resource:kube_node_status_shared_instance_cpu_price:on_demand_shared_cpu_cost\n            OR\n            zone_capacity_instance_node_resource:kube_node_status_shared_instance_mem_price:spot_shared_mem_cost\n            OR\n            capacity_instance_node_resource:kube_node_status_shared_instance_mem_price:on_demand_shared_mem_cost\n      )\n    [1d:1h])\n  )\n)",
             "format": "time_series",
             "instant": true,
             "interval": "",
-            "legendFormat": "{{label_beta_kubernetes_io_instance_type}}-{{label_eks_amazonaws_com_capacity_type}}",
+            "legendFormat": "{{label_node_kubernetes_io_instance_type}}-{{label_eks_amazonaws_com_capacity_type}}",
             "refId": "A"
           }
         ],
@@ -1454,11 +1454,11 @@
           {
             "datasource": "${DS_PROMETHEUS}",
             "exemplar": true,
-            "expr": "sum by (label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) (\n  sum_over_time(\n    (\n          zone_capacity_instance_node_resource:kube_node_status_shared_instance_cpu_price:spot_shared_cpu_cost\n          OR\n          capacity_instance_node_resource:kube_node_status_shared_instance_cpu_price:on_demand_shared_cpu_cost\n          OR\n          zone_capacity_instance_node_resource:kube_node_status_shared_instance_mem_price:spot_shared_mem_cost\n          OR\n          capacity_instance_node_resource:kube_node_status_shared_instance_mem_price:on_demand_shared_mem_cost\n    )\n  [1d:1h])\n)",
+            "expr": "sum by (label_eks_amazonaws_com_capacity_type, label_node_kubernetes_io_instance_type) (\n  sum_over_time(\n    (\n          zone_capacity_instance_node_resource:kube_node_status_shared_instance_cpu_price:spot_shared_cpu_cost\n          OR\n          capacity_instance_node_resource:kube_node_status_shared_instance_cpu_price:on_demand_shared_cpu_cost\n          OR\n          zone_capacity_instance_node_resource:kube_node_status_shared_instance_mem_price:spot_shared_mem_cost\n          OR\n          capacity_instance_node_resource:kube_node_status_shared_instance_mem_price:on_demand_shared_mem_cost\n    )\n  [1d:1h])\n)",
             "hide": false,
             "instant": false,
             "interval": "",
-            "legendFormat": "{{label_beta_kubernetes_io_instance_type}}-{{label_eks_amazonaws_com_capacity_type}}",
+            "legendFormat": "{{label_node_kubernetes_io_instance_type}}-{{label_eks_amazonaws_com_capacity_type}}",
             "refId": "A"
           },
           {
@@ -3103,7 +3103,7 @@
               {
                 "datasource": "${DS_PROMETHEUS}",
                 "exemplar": false,
-                "expr": "sort_desc(\n  sum_over_time(\n\tsum by (label_beta_kubernetes_io_instance_type, label_eks_amazonaws_com_capacity_type, pod) (\n      label_replace(((\n          (zone_capacity_instance_namespace_node_pod:pod_cpu_requests_instance_cpu_price:spot_pod_cpu_requests_cost{namespace=\"$namespace\"})\n          -\n          (zone_capacity_instance_namespace_node_pod:pod_cpu_usage_instance_cpu_price:spot_pod_cpu_usage_cost{namespace=\"$namespace\"})\n      ) > 0), \"cap\", \"SPOT\", \"\",\"\")\n      OR\n      label_replace(((\n          (capacity_instance_namespace_node_pod:pod_cpu_requests_instance_cpu_price:on_demand_pod_cpu_requests_cost{namespace=\"$namespace\"})\n          -\n          (capacity_instance_namespace_node_pod:pod_cpu_usage_instance_cpu_price:on_demand_pod_cpu_usage_cost{namespace=\"$namespace\"})\n      ) > 0), \"cap\", \"ON_DEMAND\", \"\",\"\")\n  )[1d:1h])\n)",
+                "expr": "sort_desc(\n  sum_over_time(\n\tsum by (label_node_kubernetes_io_instance_type, label_eks_amazonaws_com_capacity_type, pod) (\n      label_replace(((\n          (zone_capacity_instance_namespace_node_pod:pod_cpu_requests_instance_cpu_price:spot_pod_cpu_requests_cost{namespace=\"$namespace\"})\n          -\n          (zone_capacity_instance_namespace_node_pod:pod_cpu_usage_instance_cpu_price:spot_pod_cpu_usage_cost{namespace=\"$namespace\"})\n      ) > 0), \"cap\", \"SPOT\", \"\",\"\")\n      OR\n      label_replace(((\n          (capacity_instance_namespace_node_pod:pod_cpu_requests_instance_cpu_price:on_demand_pod_cpu_requests_cost{namespace=\"$namespace\"})\n          -\n          (capacity_instance_namespace_node_pod:pod_cpu_usage_instance_cpu_price:on_demand_pod_cpu_usage_cost{namespace=\"$namespace\"})\n      ) > 0), \"cap\", \"ON_DEMAND\", \"\",\"\")\n  )[1d:1h])\n)",
                 "format": "table",
                 "instant": true,
                 "interval": "",
@@ -3118,7 +3118,7 @@
                 "options": {
                   "excludeByName": {
                     "Time": true,
-                    "label_beta_kubernetes_io_instance_type": true,
+                    "label_node_kubernetes_io_instance_type": true,
                     "label_eks_amazonaws_com_capacity_type": true
                   },
                   "indexByName": {},
@@ -3182,11 +3182,11 @@
               {
                 "datasource": "${DS_PROMETHEUS}",
                 "exemplar": false,
-                "expr": "sort_desc(\n    sum_over_time(\n\tsum by (label_beta_kubernetes_io_instance_type, label_eks_amazonaws_com_capacity_type, pod) (\n\n\t\tzone_capacity_instance_namespace_node_pod:pod_cpu_requests_instance_cpu_price:spot_pod_cpu_requests_cost{namespace=\"$namespace\"}\n\t\tOR\n\t\tcapacity_instance_namespace_node_pod:pod_cpu_requests_instance_cpu_price:on_demand_pod_cpu_requests_cost{namespace=\"$namespace\"}\n\n\t)\n[1d:1h])\n)",
+                "expr": "sort_desc(\n    sum_over_time(\n\tsum by (label_node_kubernetes_io_instance_type, label_eks_amazonaws_com_capacity_type, pod) (\n\n\t\tzone_capacity_instance_namespace_node_pod:pod_cpu_requests_instance_cpu_price:spot_pod_cpu_requests_cost{namespace=\"$namespace\"}\n\t\tOR\n\t\tcapacity_instance_namespace_node_pod:pod_cpu_requests_instance_cpu_price:on_demand_pod_cpu_requests_cost{namespace=\"$namespace\"}\n\n\t)\n[1d:1h])\n)",
                 "format": "table",
                 "instant": true,
                 "interval": "",
-                "legendFormat": "{{label_beta_kubernetes_io_instance_type}} - {{label_eks_amazonaws_com_capacity_type}} - {{pod}}",
+                "legendFormat": "{{label_node_kubernetes_io_instance_type}} - {{label_eks_amazonaws_com_capacity_type}} - {{pod}}",
                 "refId": "A"
               }
             ],
@@ -3197,7 +3197,7 @@
                 "options": {
                   "excludeByName": {
                     "Time": true,
-                    "label_beta_kubernetes_io_instance_type": true,
+                    "label_node_kubernetes_io_instance_type": true,
                     "label_eks_amazonaws_com_capacity_type": true
                   },
                   "indexByName": {},
@@ -3261,11 +3261,11 @@
               {
                 "datasource": "${DS_PROMETHEUS}",
                 "exemplar": false,
-                "expr": "sort_desc(\n    sum_over_time(\n\tsum by (label_beta_kubernetes_io_instance_type, label_eks_amazonaws_com_capacity_type, pod) (\n\n\t\tzone_capacity_instance_namespace_node_pod:pod_cpu_usage_instance_cpu_price:spot_pod_cpu_usage_cost{namespace=\"$namespace\"}\n\t\tOR\n\t\tcapacity_instance_namespace_node_pod:pod_cpu_usage_instance_cpu_price:on_demand_pod_cpu_usage_cost{namespace=\"$namespace\"}\n\n\t)\n[1d:1h])\n)",
+                "expr": "sort_desc(\n    sum_over_time(\n\tsum by (label_node_kubernetes_io_instance_type, label_eks_amazonaws_com_capacity_type, pod) (\n\n\t\tzone_capacity_instance_namespace_node_pod:pod_cpu_usage_instance_cpu_price:spot_pod_cpu_usage_cost{namespace=\"$namespace\"}\n\t\tOR\n\t\tcapacity_instance_namespace_node_pod:pod_cpu_usage_instance_cpu_price:on_demand_pod_cpu_usage_cost{namespace=\"$namespace\"}\n\n\t)\n[1d:1h])\n)",
                 "format": "table",
                 "instant": true,
                 "interval": "",
-                "legendFormat": "{{label_beta_kubernetes_io_instance_type}} - {{label_eks_amazonaws_com_capacity_type}} - {{pod}}",
+                "legendFormat": "{{label_node_kubernetes_io_instance_type}} - {{label_eks_amazonaws_com_capacity_type}} - {{pod}}",
                 "refId": "A"
               }
             ],
@@ -3276,7 +3276,7 @@
                 "options": {
                   "excludeByName": {
                     "Time": true,
-                    "label_beta_kubernetes_io_instance_type": true,
+                    "label_node_kubernetes_io_instance_type": true,
                     "label_eks_amazonaws_com_capacity_type": true
                   },
                   "indexByName": {},
@@ -3341,7 +3341,7 @@
               {
                 "datasource": "${DS_PROMETHEUS}",
                 "exemplar": false,
-                "expr": "sort_desc(\n  sum_over_time(\n\tsum by (label_beta_kubernetes_io_instance_type, label_eks_amazonaws_com_capacity_type, pod) (\n      label_replace(((\n          (zone_capacity_instance_namespace_node_pod:pod_memory_requests_instance_mem_price:spot_pod_mem_requests_cost{namespace=\"$namespace\"})\n          -\n          (zone_capacity_instance_namespace_node_pod:pod_memory_usage_instance_mem_price:spot_pod_mem_usage_cost{namespace=\"$namespace\"})\n      ) > 0), \"cap\", \"SPOT\", \"\",\"\")\n      OR\n      label_replace(((\n          (capacity_instance_namespace_node_pod:pod_memory_requests_instance_mem_price:on_demand_pod_mem_requests_cost{namespace=\"$namespace\"})\n          -\n          (capacity_instance_namespace_node_pod:pod_memory_usage_instance_mem_price:on_demand_pod_mem_usage_cost{namespace=\"$namespace\"})\n      ) > 0), \"cap\", \"ON_DEMAND\", \"\",\"\")\n  )[1d:1h])\n)",
+                "expr": "sort_desc(\n  sum_over_time(\n\tsum by (label_node_kubernetes_io_instance_type, label_eks_amazonaws_com_capacity_type, pod) (\n      label_replace(((\n          (zone_capacity_instance_namespace_node_pod:pod_memory_requests_instance_mem_price:spot_pod_mem_requests_cost{namespace=\"$namespace\"})\n          -\n          (zone_capacity_instance_namespace_node_pod:pod_memory_usage_instance_mem_price:spot_pod_mem_usage_cost{namespace=\"$namespace\"})\n      ) > 0), \"cap\", \"SPOT\", \"\",\"\")\n      OR\n      label_replace(((\n          (capacity_instance_namespace_node_pod:pod_memory_requests_instance_mem_price:on_demand_pod_mem_requests_cost{namespace=\"$namespace\"})\n          -\n          (capacity_instance_namespace_node_pod:pod_memory_usage_instance_mem_price:on_demand_pod_mem_usage_cost{namespace=\"$namespace\"})\n      ) > 0), \"cap\", \"ON_DEMAND\", \"\",\"\")\n  )[1d:1h])\n)",
                 "format": "table",
                 "instant": true,
                 "interval": "",
@@ -3356,7 +3356,7 @@
                 "options": {
                   "excludeByName": {
                     "Time": true,
-                    "label_beta_kubernetes_io_instance_type": true,
+                    "label_node_kubernetes_io_instance_type": true,
                     "label_eks_amazonaws_com_capacity_type": true
                   },
                   "indexByName": {},
@@ -3420,11 +3420,11 @@
               {
                 "datasource": "${DS_PROMETHEUS}",
                 "exemplar": false,
-                "expr": "sort_desc(\nsum_over_time(\n\tsum by (label_beta_kubernetes_io_instance_type, label_eks_amazonaws_com_capacity_type, pod) (\n\n\t\tzone_capacity_instance_namespace_node_pod:pod_memory_requests_instance_mem_price:spot_pod_mem_requests_cost{namespace=\"$namespace\"}\n\t\tOR\n\t\tcapacity_instance_namespace_node_pod:pod_memory_requests_instance_mem_price:on_demand_pod_mem_requests_cost{namespace=\"$namespace\"}\n\n\t)\n[1d:1h])\n)",
+                "expr": "sort_desc(\nsum_over_time(\n\tsum by (label_node_kubernetes_io_instance_type, label_eks_amazonaws_com_capacity_type, pod) (\n\n\t\tzone_capacity_instance_namespace_node_pod:pod_memory_requests_instance_mem_price:spot_pod_mem_requests_cost{namespace=\"$namespace\"}\n\t\tOR\n\t\tcapacity_instance_namespace_node_pod:pod_memory_requests_instance_mem_price:on_demand_pod_mem_requests_cost{namespace=\"$namespace\"}\n\n\t)\n[1d:1h])\n)",
                 "format": "table",
                 "instant": true,
                 "interval": "",
-                "legendFormat": "{{label_beta_kubernetes_io_instance_type}} - {{label_eks_amazonaws_com_capacity_type}} - {{pod}} ",
+                "legendFormat": "{{label_node_kubernetes_io_instance_type}} - {{label_eks_amazonaws_com_capacity_type}} - {{pod}} ",
                 "refId": "A"
               }
             ],
@@ -3435,7 +3435,7 @@
                 "options": {
                   "excludeByName": {
                     "Time": true,
-                    "label_beta_kubernetes_io_instance_type": true,
+                    "label_node_kubernetes_io_instance_type": true,
                     "label_eks_amazonaws_com_capacity_type": true
                   },
                   "indexByName": {},
@@ -3499,11 +3499,11 @@
               {
                 "datasource": "${DS_PROMETHEUS}",
                 "exemplar": false,
-                "expr": "sort_desc(\nsum_over_time(\n\tsum by (label_beta_kubernetes_io_instance_type, label_eks_amazonaws_com_capacity_type, pod) (\n\n\t\tzone_capacity_instance_namespace_node_pod:pod_memory_usage_instance_mem_price:spot_pod_mem_usage_cost{namespace=\"$namespace\"}\n\t\tOR\n\t\tcapacity_instance_namespace_node_pod:pod_memory_usage_instance_mem_price:on_demand_pod_mem_usage_cost{namespace=\"$namespace\"}\n\n\t)\n[1d:1h])\n)",
+                "expr": "sort_desc(\nsum_over_time(\n\tsum by (label_node_kubernetes_io_instance_type, label_eks_amazonaws_com_capacity_type, pod) (\n\n\t\tzone_capacity_instance_namespace_node_pod:pod_memory_usage_instance_mem_price:spot_pod_mem_usage_cost{namespace=\"$namespace\"}\n\t\tOR\n\t\tcapacity_instance_namespace_node_pod:pod_memory_usage_instance_mem_price:on_demand_pod_mem_usage_cost{namespace=\"$namespace\"}\n\n\t)\n[1d:1h])\n)",
                 "format": "table",
                 "instant": true,
                 "interval": "",
-                "legendFormat": "{{label_beta_kubernetes_io_instance_type}} - {{label_eks_amazonaws_com_capacity_type}} - {{pod}} ",
+                "legendFormat": "{{label_node_kubernetes_io_instance_type}} - {{label_eks_amazonaws_com_capacity_type}} - {{pod}} ",
                 "refId": "A"
               }
             ],
@@ -3514,7 +3514,7 @@
                 "options": {
                   "excludeByName": {
                     "Time": true,
-                    "label_beta_kubernetes_io_instance_type": true,
+                    "label_node_kubernetes_io_instance_type": true,
                     "label_eks_amazonaws_com_capacity_type": true
                   },
                   "indexByName": {},
@@ -3600,7 +3600,7 @@
               {
                 "datasource": "${DS_PROMETHEUS}",
                 "exemplar": true,
-                "expr": "sum by (label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type, pod) (\n    sum by (pod, node) (node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{namespace=~\"$namespace\", pod=~\"$pod\"})\n    * on (node) group_left(label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) \n    sum by (label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type, node) (kube_node_labels{job=\"kube-state-metrics\"})\n)",
+                "expr": "sum by (label_eks_amazonaws_com_capacity_type, label_node_kubernetes_io_instance_type, pod) (\n    sum by (pod, node) (node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{namespace=~\"$namespace\", pod=~\"$pod\"})\n    * on (node) group_left(label_eks_amazonaws_com_capacity_type, label_node_kubernetes_io_instance_type) \n    sum by (label_eks_amazonaws_com_capacity_type, label_node_kubernetes_io_instance_type, node) (kube_node_labels{job=\"kube-state-metrics\"})\n)",
                 "instant": false,
                 "interval": "",
                 "legendFormat": "CPU Usage - {{pod}}",
@@ -3609,7 +3609,7 @@
               {
                 "datasource": "${DS_PROMETHEUS}",
                 "exemplar": true,
-                "expr": "sum by (label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type, pod) (\n    cluster:namespace:pod_cpu:active:kube_pod_container_resource_requests{namespace=~\"$namespace\", pod=~\"$pod\"}\n    * on (node) group_left(label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) \n    sum by (label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type, node) (kube_node_labels{job=\"kube-state-metrics\"})\n)",
+                "expr": "sum by (label_eks_amazonaws_com_capacity_type, label_node_kubernetes_io_instance_type, pod) (\n    cluster:namespace:pod_cpu:active:kube_pod_container_resource_requests{namespace=~\"$namespace\", pod=~\"$pod\"}\n    * on (node) group_left(label_eks_amazonaws_com_capacity_type, label_node_kubernetes_io_instance_type) \n    sum by (label_eks_amazonaws_com_capacity_type, label_node_kubernetes_io_instance_type, node) (kube_node_labels{job=\"kube-state-metrics\"})\n)",
                 "hide": false,
                 "interval": "",
                 "legendFormat": "CPU Requests - {{pod}}",
@@ -3693,7 +3693,7 @@
               {
                 "datasource": "${DS_PROMETHEUS}",
                 "exemplar": true,
-                "expr": "sum by (label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type, pod) (\n  sum by (pod, node) (container_memory_working_set_bytes{namespace=\"$namespace\", pod=~\"$pod\", name!=\"\"})\n  * on (node) group_left(label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) \n  sum by (label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type, node) (kube_node_labels{job=\"kube-state-metrics\"})\n)",
+                "expr": "sum by (label_eks_amazonaws_com_capacity_type, label_node_kubernetes_io_instance_type, pod) (\n  sum by (pod, node) (container_memory_working_set_bytes{namespace=\"$namespace\", pod=~\"$pod\", name!=\"\"})\n  * on (node) group_left(label_eks_amazonaws_com_capacity_type, label_node_kubernetes_io_instance_type) \n  sum by (label_eks_amazonaws_com_capacity_type, label_node_kubernetes_io_instance_type, node) (kube_node_labels{job=\"kube-state-metrics\"})\n)",
                 "instant": false,
                 "interval": "",
                 "legendFormat": "Memory Usage - {{pod}} ",
@@ -3702,7 +3702,7 @@
               {
                 "datasource": "${DS_PROMETHEUS}",
                 "exemplar": true,
-                "expr": "sum by (label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type, pod) (\n    cluster:namespace:pod_memory:active:kube_pod_container_resource_requests{namespace=~\"$namespace\", pod=~\"$pod\"}\n    * on (node) group_left(label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type) \n    sum by (label_eks_amazonaws_com_capacity_type, label_beta_kubernetes_io_instance_type, node) (kube_node_labels{job=\"kube-state-metrics\"})\n)",
+                "expr": "sum by (label_eks_amazonaws_com_capacity_type, label_node_kubernetes_io_instance_type, pod) (\n    cluster:namespace:pod_memory:active:kube_pod_container_resource_requests{namespace=~\"$namespace\", pod=~\"$pod\"}\n    * on (node) group_left(label_eks_amazonaws_com_capacity_type, label_node_kubernetes_io_instance_type) \n    sum by (label_eks_amazonaws_com_capacity_type, label_node_kubernetes_io_instance_type, node) (kube_node_labels{job=\"kube-state-metrics\"})\n)",
                 "hide": false,
                 "interval": "",
                 "legendFormat": "Memory Requests - {{pod}} ",
@@ -3786,9 +3786,9 @@
               {
                 "datasource": "${DS_PROMETHEUS}",
                 "exemplar": true,
-                "expr": "sort_desc(\n  sum_over_time(\n\tsum by (label_beta_kubernetes_io_instance_type, label_eks_amazonaws_com_capacity_type, pod) (\n      label_replace(((\n          (zone_capacity_instance_namespace_node_pod:pod_cpu_requests_instance_cpu_price:spot_pod_cpu_requests_cost{namespace=\"$namespace\", pod=~\"$pod\"})\n          -\n          (zone_capacity_instance_namespace_node_pod:pod_cpu_usage_instance_cpu_price:spot_pod_cpu_usage_cost{namespace=\"$namespace\", pod=~\"$pod\"})\n      ) > 0), \"cap\", \"SPOT\", \"\",\"\")\n      OR\n      label_replace(((\n          (capacity_instance_namespace_node_pod:pod_cpu_requests_instance_cpu_price:on_demand_pod_cpu_requests_cost{namespace=\"$namespace\", pod=~\"$pod\"})\n          -\n          (capacity_instance_namespace_node_pod:pod_cpu_usage_instance_cpu_price:on_demand_pod_cpu_usage_cost{namespace=\"$namespace\", pod=~\"$pod\"})\n      ) > 0), \"cap\", \"ON_DEMAND\", \"\",\"\")\n  )[1d:1h])\n)",
+                "expr": "sort_desc(\n  sum_over_time(\n\tsum by (label_node_kubernetes_io_instance_type, label_eks_amazonaws_com_capacity_type, pod) (\n      label_replace(((\n          (zone_capacity_instance_namespace_node_pod:pod_cpu_requests_instance_cpu_price:spot_pod_cpu_requests_cost{namespace=\"$namespace\", pod=~\"$pod\"})\n          -\n          (zone_capacity_instance_namespace_node_pod:pod_cpu_usage_instance_cpu_price:spot_pod_cpu_usage_cost{namespace=\"$namespace\", pod=~\"$pod\"})\n      ) > 0), \"cap\", \"SPOT\", \"\",\"\")\n      OR\n      label_replace(((\n          (capacity_instance_namespace_node_pod:pod_cpu_requests_instance_cpu_price:on_demand_pod_cpu_requests_cost{namespace=\"$namespace\", pod=~\"$pod\"})\n          -\n          (capacity_instance_namespace_node_pod:pod_cpu_usage_instance_cpu_price:on_demand_pod_cpu_usage_cost{namespace=\"$namespace\", pod=~\"$pod\"})\n      ) > 0), \"cap\", \"ON_DEMAND\", \"\",\"\")\n  )[1d:1h])\n)",
                 "interval": "",
-                "legendFormat": "{{label_beta_kubernetes_io_instance_type}} - {{label_eks_amazonaws_com_capacity_type}} - {{pod}}",
+                "legendFormat": "{{label_node_kubernetes_io_instance_type}} - {{label_eks_amazonaws_com_capacity_type}} - {{pod}}",
                 "refId": "A"
               },
               {
@@ -3877,9 +3877,9 @@
               {
                 "datasource": "${DS_PROMETHEUS}",
                 "exemplar": true,
-                "expr": "sort_desc(\n  sum_over_time(\n\tsum by (label_beta_kubernetes_io_instance_type, label_eks_amazonaws_com_capacity_type, pod) (\n      label_replace(((\n          (zone_capacity_instance_namespace_node_pod:pod_memory_requests_instance_mem_price:spot_pod_mem_requests_cost{namespace=\"$namespace\", pod=~\"$pod\"})\n          -\n          (zone_capacity_instance_namespace_node_pod:pod_memory_usage_instance_mem_price:spot_pod_mem_usage_cost{namespace=\"$namespace\", pod=~\"$pod\"})\n      ) > 0), \"cap\", \"SPOT\", \"\",\"\")\n      OR\n      label_replace(((\n          (capacity_instance_namespace_node_pod:pod_memory_requests_instance_mem_price:on_demand_pod_mem_requests_cost{namespace=\"$namespace\", pod=~\"$pod\"})\n          -\n          (capacity_instance_namespace_node_pod:pod_memory_usage_instance_mem_price:on_demand_pod_mem_usage_cost{namespace=\"$namespace\", pod=~\"$pod\"})\n      ) > 0), \"cap\", \"ON_DEMAND\", \"\",\"\")\n  )[1d:1h])\n)",
+                "expr": "sort_desc(\n  sum_over_time(\n\tsum by (label_node_kubernetes_io_instance_type, label_eks_amazonaws_com_capacity_type, pod) (\n      label_replace(((\n          (zone_capacity_instance_namespace_node_pod:pod_memory_requests_instance_mem_price:spot_pod_mem_requests_cost{namespace=\"$namespace\", pod=~\"$pod\"})\n          -\n          (zone_capacity_instance_namespace_node_pod:pod_memory_usage_instance_mem_price:spot_pod_mem_usage_cost{namespace=\"$namespace\", pod=~\"$pod\"})\n      ) > 0), \"cap\", \"SPOT\", \"\",\"\")\n      OR\n      label_replace(((\n          (capacity_instance_namespace_node_pod:pod_memory_requests_instance_mem_price:on_demand_pod_mem_requests_cost{namespace=\"$namespace\", pod=~\"$pod\"})\n          -\n          (capacity_instance_namespace_node_pod:pod_memory_usage_instance_mem_price:on_demand_pod_mem_usage_cost{namespace=\"$namespace\", pod=~\"$pod\"})\n      ) > 0), \"cap\", \"ON_DEMAND\", \"\",\"\")\n  )[1d:1h])\n)",
                 "interval": "",
-                "legendFormat": "{{label_beta_kubernetes_io_instance_type}} - {{label_eks_amazonaws_com_capacity_type}} - {{pod}}",
+                "legendFormat": "{{label_node_kubernetes_io_instance_type}} - {{label_eks_amazonaws_com_capacity_type}} - {{pod}}",
                 "refId": "A"
               },
               {
@@ -3968,9 +3968,9 @@
               {
                 "datasource": "${DS_PROMETHEUS}",
                 "exemplar": true,
-                "expr": "sum_over_time(\n\tsum by (label_beta_kubernetes_io_instance_type, label_eks_amazonaws_com_capacity_type, pod) (\n\n\t\tzone_capacity_instance_namespace_node_pod:pod_cpu_requests_instance_cpu_price:spot_pod_cpu_requests_cost{namespace=\"$namespace\", pod=~\"$pod\"}\n\t\tOR\n\t\tcapacity_instance_namespace_node_pod:pod_cpu_requests_instance_cpu_price:on_demand_pod_cpu_requests_cost{namespace=\"$namespace\", pod=~\"$pod\"}\n\n\t)\n[1d:1h])",
+                "expr": "sum_over_time(\n\tsum by (label_node_kubernetes_io_instance_type, label_eks_amazonaws_com_capacity_type, pod) (\n\n\t\tzone_capacity_instance_namespace_node_pod:pod_cpu_requests_instance_cpu_price:spot_pod_cpu_requests_cost{namespace=\"$namespace\", pod=~\"$pod\"}\n\t\tOR\n\t\tcapacity_instance_namespace_node_pod:pod_cpu_requests_instance_cpu_price:on_demand_pod_cpu_requests_cost{namespace=\"$namespace\", pod=~\"$pod\"}\n\n\t)\n[1d:1h])",
                 "interval": "",
-                "legendFormat": "{{label_beta_kubernetes_io_instance_type}} - {{label_eks_amazonaws_com_capacity_type}} - {{pod}}",
+                "legendFormat": "{{label_node_kubernetes_io_instance_type}} - {{label_eks_amazonaws_com_capacity_type}} - {{pod}}",
                 "refId": "A"
               },
               {
@@ -4059,9 +4059,9 @@
               {
                 "datasource": "${DS_PROMETHEUS}",
                 "exemplar": true,
-                "expr": "sum_over_time(\n\tsum by (label_beta_kubernetes_io_instance_type, label_eks_amazonaws_com_capacity_type, pod) (\n\n\t\tzone_capacity_instance_namespace_node_pod:pod_memory_requests_instance_mem_price:spot_pod_mem_requests_cost{namespace=\"$namespace\", pod=~\"$pod\"}\n\t\tOR\n\t\tcapacity_instance_namespace_node_pod:pod_memory_requests_instance_mem_price:on_demand_pod_mem_requests_cost{namespace=\"$namespace\", pod=~\"$pod\"}\n\n\t)\n[1d:1h])",
+                "expr": "sum_over_time(\n\tsum by (label_node_kubernetes_io_instance_type, label_eks_amazonaws_com_capacity_type, pod) (\n\n\t\tzone_capacity_instance_namespace_node_pod:pod_memory_requests_instance_mem_price:spot_pod_mem_requests_cost{namespace=\"$namespace\", pod=~\"$pod\"}\n\t\tOR\n\t\tcapacity_instance_namespace_node_pod:pod_memory_requests_instance_mem_price:on_demand_pod_mem_requests_cost{namespace=\"$namespace\", pod=~\"$pod\"}\n\n\t)\n[1d:1h])",
                 "interval": "",
-                "legendFormat": "{{label_beta_kubernetes_io_instance_type}} - {{label_eks_amazonaws_com_capacity_type}} - {{pod}}",
+                "legendFormat": "{{label_node_kubernetes_io_instance_type}} - {{label_eks_amazonaws_com_capacity_type}} - {{pod}}",
                 "refId": "A"
               },
               {
@@ -4150,9 +4150,9 @@
               {
                 "datasource": "${DS_PROMETHEUS}",
                 "exemplar": true,
-                "expr": "sum_over_time(\n\tsum by (label_beta_kubernetes_io_instance_type, label_eks_amazonaws_com_capacity_type, pod) (\n\n\t\tzone_capacity_instance_namespace_node_pod:pod_cpu_usage_instance_cpu_price:spot_pod_cpu_usage_cost{namespace=\"$namespace\", pod=~\"$pod\"}\n\t\tOR\n\t\tcapacity_instance_namespace_node_pod:pod_cpu_usage_instance_cpu_price:on_demand_pod_cpu_usage_cost{namespace=\"$namespace\", pod=~\"$pod\"}\n\n\t)\n[1d:1h])",
+                "expr": "sum_over_time(\n\tsum by (label_node_kubernetes_io_instance_type, label_eks_amazonaws_com_capacity_type, pod) (\n\n\t\tzone_capacity_instance_namespace_node_pod:pod_cpu_usage_instance_cpu_price:spot_pod_cpu_usage_cost{namespace=\"$namespace\", pod=~\"$pod\"}\n\t\tOR\n\t\tcapacity_instance_namespace_node_pod:pod_cpu_usage_instance_cpu_price:on_demand_pod_cpu_usage_cost{namespace=\"$namespace\", pod=~\"$pod\"}\n\n\t)\n[1d:1h])",
                 "interval": "",
-                "legendFormat": "{{label_beta_kubernetes_io_instance_type}} - {{label_eks_amazonaws_com_capacity_type}} - {{pod}}",
+                "legendFormat": "{{label_node_kubernetes_io_instance_type}} - {{label_eks_amazonaws_com_capacity_type}} - {{pod}}",
                 "refId": "A"
               },
               {
@@ -4241,9 +4241,9 @@
               {
                 "datasource": "${DS_PROMETHEUS}",
                 "exemplar": true,
-                "expr": "sum_over_time(\n\tsum by (label_beta_kubernetes_io_instance_type, label_eks_amazonaws_com_capacity_type, pod) (\n\n\t\tzone_capacity_instance_namespace_node_pod:pod_memory_usage_instance_mem_price:spot_pod_mem_usage_cost{namespace=\"$namespace\", pod=~\"$pod\"}\n\t\tOR\n\t\tcapacity_instance_namespace_node_pod:pod_memory_usage_instance_mem_price:on_demand_pod_mem_usage_cost{namespace=\"$namespace\", pod=~\"$pod\"}\n\n\t)\n[1d:1h])",
+                "expr": "sum_over_time(\n\tsum by (label_node_kubernetes_io_instance_type, label_eks_amazonaws_com_capacity_type, pod) (\n\n\t\tzone_capacity_instance_namespace_node_pod:pod_memory_usage_instance_mem_price:spot_pod_mem_usage_cost{namespace=\"$namespace\", pod=~\"$pod\"}\n\t\tOR\n\t\tcapacity_instance_namespace_node_pod:pod_memory_usage_instance_mem_price:on_demand_pod_mem_usage_cost{namespace=\"$namespace\", pod=~\"$pod\"}\n\n\t)\n[1d:1h])",
                 "interval": "",
-                "legendFormat": "{{label_beta_kubernetes_io_instance_type}} - {{label_eks_amazonaws_com_capacity_type}} - {{pod}}",
+                "legendFormat": "{{label_node_kubernetes_io_instance_type}} - {{label_eks_amazonaws_com_capacity_type}} - {{pod}}",
                 "refId": "A"
               },
               {

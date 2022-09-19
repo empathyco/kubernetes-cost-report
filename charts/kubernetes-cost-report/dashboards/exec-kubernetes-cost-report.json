@@ -700,7 +700,7 @@
             "id": "organize",
             "options": {
               "excludeByName": {
-                "label_beta_kubernetes_io_instance_type": true,
+                "label_node_kubernetes_io_instance_type": true,
                 "label_eks_amazonaws_com_capacity_type": true
               },
               "indexByName": {},
@@ -1309,7 +1309,7 @@
             "id": "organize",
             "options": {
               "excludeByName": {
-                "label_beta_kubernetes_io_instance_type": true,
+                "label_node_kubernetes_io_instance_type": true,
                 "label_eks_amazonaws_com_capacity_type": true
               },
               "indexByName": {},
