@@ -1,6 +1,6 @@
 module platform-cost-report
 
-go 1.17
+go 1.19
 
 require (
 	github.com/aws/aws-sdk-go v1.42.20 // direct
