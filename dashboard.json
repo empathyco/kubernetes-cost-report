@@ -3,7 +3,10 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -21,13 +24,17 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 84,
-  "iteration": 1639663374971,
+  "id": 875,
+  "iteration": 1663753809845,
   "links": [],
   "liveNow": false,
   "panels": [
     {
       "collapsed": false,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -36,11 +43,21 @@
       },
       "id": 19,
       "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "refId": "A"
+        }
+      ],
       "title": "Cluster",
       "type": "row"
     },
     {
       "datasource": {
+        "type": "prometheus",
         "uid": "${promdatasource}"
       },
       "fieldConfig": {
@@ -81,8 +98,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -107,17 +123,33 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "targets": [
         {
+          "datasource": {
+            "uid": "${promdatasource}"
+          },
           "exemplar": true,
           "expr": "sum(kube_node_labels{label_eks_amazonaws_com_capacity_type=\"SPOT\"}) by (label_beta_kubernetes_io_instance_type)",
           "instant": false,
           "interval": "",
           "legendFormat": "",
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promdatasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(kube_node_labels{label_eks_amazonaws_com_capacity_type=\"SPOT\"}) by (label_node_kubernetes_io_instance_type)",
+          "hide": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "B"
         }
       ],
       "title": "Instance Type",
@@ -174,8 +206,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -201,7 +232,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.2.3",
@@ -230,6 +262,24 @@
           "interval": "",
           "legendFormat": "Total",
           "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promdatasource}"
+          },
+          "expr": "sum_over_time((\n    \n    sum by (label_node_kubernetes_io_instance_type) (sum by (label_topology_kubernetes_io_zone, label_eks_amazonaws_com_capacity_type, label_node_kubernetes_io_instance_type) (kube_node_labels{job=\"kube-state-metrics\"}) * on (label_topology_kubernetes_io_zone, label_eks_amazonaws_com_capacity_type, label_node_kubernetes_io_instance_type) sum by (label_topology_kubernetes_io_zone, label_eks_amazonaws_com_capacity_type, label_node_kubernetes_io_instance_type) (instance_cost))\n\n)[1d:1h])",
+          "hide": false,
+          "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promdatasource}"
+          },
+          "expr": "sum(\n    sum_over_time((sum by (label_node_kubernetes_io_instance_type) (sum by (label_topology_kubernetes_io_zone, label_eks_amazonaws_com_capacity_type, label_node_kubernetes_io_instance_type) (kube_node_labels{job=\"kube-state-metrics\"}) * on (label_topology_kubernetes_io_zone, label_eks_amazonaws_com_capacity_type, label_node_kubernetes_io_instance_type) sum by (label_topology_kubernetes_io_zone, label_eks_amazonaws_com_capacity_type, label_node_kubernetes_io_instance_type) (instance_cost))\n)[1d:1h])\n)",
+          "hide": false,
+          "refId": "D"
         }
       ],
       "title": "Cluster Cost per Day",
@@ -278,8 +328,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -305,11 +354,15 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "targets": [
         {
+          "datasource": {
+            "uid": "${promdatasource}"
+          },
           "exemplar": true,
           "expr": "sum(irate(container_network_transmit_bytes_total[30m]))/(1024*1024*1024)",
           "instant": false,
@@ -325,6 +378,7 @@
     },
     {
       "datasource": {
+        "type": "prometheus",
         "uid": "${promdatasource}"
       },
       "fieldConfig": {
@@ -337,8 +391,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -372,9 +425,12 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.3.1",
+      "pluginVersion": "9.0.2",
       "targets": [
         {
+          "datasource": {
+            "uid": "${promdatasource}"
+          },
           "exemplar": true,
           "expr": "sum_over_time(sum(irate(container_network_transmit_bytes_total[30m]))[$__range:])/(1024*1024*1024)*0.07",
           "format": "time_series",
@@ -400,15 +456,15 @@
           },
           "custom": {
             "align": "auto",
-            "displayMode": "auto"
+            "displayMode": "auto",
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -492,9 +548,12 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "8.3.1",
+      "pluginVersion": "9.0.2",
       "targets": [
         {
+          "datasource": {
+            "uid": "${promdatasource}"
+          },
           "exemplar": true,
           "expr": "sum (sum by (persistentvolumeclaim) (kubelet_volume_stats_capacity_bytes/1024/1024/1024))",
           "format": "table",
@@ -505,6 +564,9 @@
           "refId": "A"
         },
         {
+          "datasource": {
+            "uid": "${promdatasource}"
+          },
           "exemplar": true,
           "expr": "sum(sum by (persistentvolumeclaim) (kubelet_volume_stats_capacity_bytes/1024/1024/1024) * 0.089)",
           "format": "table",
@@ -542,6 +604,10 @@
     },
     {
       "collapsed": false,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -550,11 +616,21 @@
       },
       "id": 7,
       "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "refId": "A"
+        }
+      ],
       "title": "Namespace",
       "type": "row"
     },
     {
       "datasource": {
+        "type": "prometheus",
         "uid": "${promdatasource}"
       },
       "fieldConfig": {
@@ -595,8 +671,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -621,17 +696,31 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "targets": [
         {
+          "datasource": {
+            "uid": "${promdatasource}"
+          },
           "exemplar": true,
           "expr": "sum ((sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{namespace=\"$namespace\"}) by (node)) * on (node ) group_left(label_beta_kubernetes_io_instance_type,label_topology_kubernetes_io_zone) sum(kube_node_labels) by (label_beta_kubernetes_io_instance_type,node, label_topology_kubernetes_io_zone))by (label_beta_kubernetes_io_instance_type,node,label_topology_kubernetes_io_zone)",
+          "hide": false,
           "instant": false,
           "interval": "",
           "legendFormat": "{{label_beta_kubernetes_io_instance_type}} - {{label_topology_kubernetes_io_zone}} - {{node}}",
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promdatasource}"
+          },
+          "expr": "sum ((sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{namespace=\"$namespace\"}) by (node)) * on (node ) group_left(label_node_kubernetes_io_instance_type,label_topology_kubernetes_io_zone) sum(kube_node_labels) by (label_node_kubernetes_io_instance_type,node, label_topology_kubernetes_io_zone))by (label_node_kubernetes_io_instance_type,node,label_topology_kubernetes_io_zone)",
+          "hide": false,
+          "refId": "B"
         }
       ],
       "title": "CPU Usage",
@@ -639,6 +728,10 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -649,8 +742,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -684,14 +776,28 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.3.1",
+      "pluginVersion": "9.0.2",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "exemplar": true,
           "expr": "sum ((sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{namespace=\"$namespace\"}) by (node)) * on (node ) group_left(label_beta_kubernetes_io_instance_type) sum(kube_node_labels) by (label_beta_kubernetes_io_instance_type,node))by (label_beta_kubernetes_io_instance_type,node) * ${cpu_cost}",
+          "hide": false,
           "interval": "",
           "legendFormat": "",
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum ((sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{namespace=\"$namespace\"}) by (node)) * on (node ) group_left(label_node_kubernetes_io_instance_type) sum(kube_node_labels) by (label_node_kubernetes_io_instance_type,node))by (label_node_kubernetes_io_instance_type,node) * ${cpu_cost}",
+          "hide": false,
+          "refId": "B"
         }
       ],
       "title": "CPU Usage Cost",
@@ -699,6 +805,7 @@
     },
     {
       "datasource": {
+        "type": "prometheus",
         "uid": "${promdatasource}"
       },
       "fieldConfig": {
@@ -739,8 +846,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -766,17 +872,30 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "targets": [
         {
+          "datasource": {
+            "uid": "${promdatasource}"
+          },
           "exemplar": true,
           "expr": "sum ((sum(container_memory_working_set_bytes{namespace=~\"$namespace\", name!=\"\"}) by (node) ) * on (node ) group_left(label_beta_kubernetes_io_instance_type) sum(kube_node_labels) by (label_beta_kubernetes_io_instance_type,node))by (label_beta_kubernetes_io_instance_type,node)",
           "instant": false,
           "interval": "",
           "legendFormat": "{{label_beta_kubernetes_io_instance_type}} - {{node}} ",
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promdatasource}"
+          },
+          "expr": "sum ((sum(container_memory_working_set_bytes{namespace=~\"$namespace\", name!=\"\"}) by (node) ) * on (node ) group_left(label_node_kubernetes_io_instance_type) sum(kube_node_labels) by (label_node_kubernetes_io_instance_type,node))by (label_node_kubernetes_io_instance_type,node)",
+          "hide": false,
+          "refId": "B"
         }
       ],
       "title": "Memory Usage",
@@ -785,6 +904,7 @@
     },
     {
       "datasource": {
+        "type": "prometheus",
         "uid": "${promdatasource}"
       },
       "fieldConfig": {
@@ -797,8 +917,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -832,15 +951,28 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.3.1",
+      "pluginVersion": "9.0.2",
       "targets": [
         {
+          "datasource": {
+            "uid": "${promdatasource}"
+          },
           "exemplar": true,
           "expr": "sum ((sum(container_memory_working_set_bytes{namespace=~\"$namespace\", name!=\"\"}) by (node) ) * on (node ) group_left(label_beta_kubernetes_io_instance_type) sum(kube_node_labels) by (label_beta_kubernetes_io_instance_type,node))by (label_beta_kubernetes_io_instance_type,node)* ${memory_cost}",
+          "hide": false,
           "instant": false,
           "interval": "",
           "legendFormat": "{{label_beta_kubernetes_io_instance_type}} - {{node}} ",
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promdatasource}"
+          },
+          "expr": "sum ((sum(container_memory_working_set_bytes{namespace=~\"$namespace\", name!=\"\"}) by (node) ) * on (node ) group_left(label_node_kubernetes_io_instance_type) sum(kube_node_labels) by (label_node_kubernetes_io_instance_type,node))by (label_node_kubernetes_io_instance_type,node)* ${memory_cost}",
+          "hide": false,
+          "refId": "B"
         }
       ],
       "title": "Memory Cost Usage",
@@ -849,6 +981,7 @@
     },
     {
       "datasource": {
+        "type": "prometheus",
         "uid": "${promdatasource}"
       },
       "fieldConfig": {
@@ -889,8 +1022,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -916,18 +1048,32 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "targets": [
         {
+          "datasource": {
+            "uid": "${promdatasource}"
+          },
           "exemplar": true,
           "expr": "sum ((sum(irate(container_network_transmit_bytes_total{namespace=~\"argo\"}[30m])) by (node)  ) * on (node ) group_left(label_beta_kubernetes_io_instance_type) sum(kube_node_labels) by (label_beta_kubernetes_io_instance_type,node))by (label_beta_kubernetes_io_instance_type,node)",
+          "hide": false,
           "instant": false,
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "{{label_beta_kubernetes_io_instance_type}} - {{node}}  ",
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promdatasource}"
+          },
+          "expr": "sum ((sum(irate(container_network_transmit_bytes_total{namespace=~\"argo\"}[30m])) by (node)  ) * on (node ) group_left(label_node_kubernetes_io_instance_type) sum(kube_node_labels) by (label_node_kubernetes_io_instance_type,node))by (label_node_kubernetes_io_instance_type,node)",
+          "hide": false,
+          "refId": "B"
         }
       ],
       "title": "Transmit Bandwidth",
@@ -945,15 +1091,15 @@
           },
           "custom": {
             "align": "auto",
-            "displayMode": "auto"
+            "displayMode": "auto",
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1037,9 +1183,12 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "8.3.1",
+      "pluginVersion": "9.0.2",
       "targets": [
         {
+          "datasource": {
+            "uid": "${promdatasource}"
+          },
           "exemplar": true,
           "expr": "sum (sum by (persistentvolumeclaim) (kubelet_volume_stats_capacity_bytes{namespace=~\"${namespace}\"}/1024/1024/1024))",
           "format": "table",
@@ -1050,6 +1199,9 @@
           "refId": "A"
         },
         {
+          "datasource": {
+            "uid": "${promdatasource}"
+          },
           "exemplar": true,
           "expr": "sum(sum by (persistentvolumeclaim) (kubelet_volume_stats_capacity_bytes{namespace=~\"${namespace}\"}/1024/1024/1024) * 0.089)",
           "format": "table",
@@ -1087,6 +1239,10 @@
     },
     {
       "collapsed": false,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -1095,11 +1251,21 @@
       },
       "id": 10,
       "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "refId": "A"
+        }
+      ],
       "title": "Workloads",
       "type": "row"
     },
     {
       "datasource": {
+        "type": "prometheus",
         "uid": "${promdatasource}"
       },
       "fieldConfig": {
@@ -1140,8 +1306,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1166,17 +1331,31 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "targets": [
         {
+          "datasource": {
+            "uid": "${promdatasource}"
+          },
           "exemplar": true,
           "expr": "sum (sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{namespace=~\"argo\"}) by (pod,node) * on (node ) group_left(label_beta_kubernetes_io_instance_type) sum(kube_node_labels) by (label_beta_kubernetes_io_instance_type,node))by (label_beta_kubernetes_io_instance_type,pod)",
+          "hide": false,
           "instant": false,
           "interval": "",
           "legendFormat": "{{label_beta_kubernetes_io_instance_type}} - {{pod}}",
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promdatasource}"
+          },
+          "expr": "sum (sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{namespace=~\"argo\"}) by (pod,node) * on (node ) group_left(label_node_kubernetes_io_instance_type) sum(kube_node_labels) by (label_node_kubernetes_io_instance_type,node))by (label_node_kubernetes_io_instance_type,pod)",
+          "hide": false,
+          "refId": "B"
         }
       ],
       "title": "CPU Usage",
@@ -1185,6 +1364,7 @@
     },
     {
       "datasource": {
+        "type": "prometheus",
         "uid": "${promdatasource}"
       },
       "fieldConfig": {
@@ -1225,8 +1405,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1252,17 +1431,31 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "targets": [
         {
+          "datasource": {
+            "uid": "${promdatasource}"
+          },
           "exemplar": true,
           "expr": "sum ((sum(container_memory_working_set_bytes{namespace=\"$namespace\", name!=\"\"}) by (pod,node) ) * on (node ) group_left(label_beta_kubernetes_io_instance_type) sum(kube_node_labels) by (label_beta_kubernetes_io_instance_type,node))by (label_beta_kubernetes_io_instance_type,node,pod)",
+          "hide": false,
           "instant": false,
           "interval": "",
           "legendFormat": "{{label_beta_kubernetes_io_instance_type}} - {{pod}} ",
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promdatasource}"
+          },
+          "expr": "sum ((sum(container_memory_working_set_bytes{namespace=\"$namespace\", name!=\"\"}) by (pod,node) ) * on (node ) group_left(label_node_kubernetes_io_instance_type) sum(kube_node_labels) by (label_node_kubernetes_io_instance_type,node))by (label_node_kubernetes_io_instance_type,node,pod)",
+          "hide": false,
+          "refId": "B"
         }
       ],
       "title": "Memory Usage",
@@ -1271,6 +1464,7 @@
     },
     {
       "datasource": {
+        "type": "prometheus",
         "uid": "${promdatasource}"
       },
       "fieldConfig": {
@@ -1311,8 +1505,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1338,18 +1531,32 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "targets": [
         {
+          "datasource": {
+            "uid": "${promdatasource}"
+          },
           "exemplar": true,
           "expr": "sum ((sum(irate(container_network_transmit_bytes_total{namespace=~\"$namespace\"}[30m])) by (pod,node)  ) * on (node ) group_left(label_beta_kubernetes_io_instance_type) sum(kube_node_labels) by (label_beta_kubernetes_io_instance_type,node))by (label_beta_kubernetes_io_instance_type,node,pod)",
+          "hide": false,
           "instant": false,
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "{{label_beta_kubernetes_io_instance_type}} - {{pod}}  ",
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${promdatasource}"
+          },
+          "expr": "sum ((sum(irate(container_network_transmit_bytes_total{namespace=~\"$namespace\"}[30m])) by (pod,node)  ) * on (node ) group_left(label_node_kubernetes_io_instance_type) sum(kube_node_labels) by (label_node_kubernetes_io_instance_type,node))by (label_node_kubernetes_io_instance_type,node,pod)",
+          "hide": false,
+          "refId": "B"
         }
       ],
       "title": "Transmit Bandwidth",
@@ -1367,15 +1574,15 @@
           },
           "custom": {
             "align": "auto",
-            "displayMode": "auto"
+            "displayMode": "auto",
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1443,9 +1650,12 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "8.3.1",
+      "pluginVersion": "9.0.2",
       "targets": [
         {
+          "datasource": {
+            "uid": "${promdatasource}"
+          },
           "exemplar": true,
           "expr": "sum by (persistentvolumeclaim) (kubelet_volume_stats_capacity_bytes{namespace=~\"${namespace}\"}/1024/1024/1024)",
           "format": "table",
@@ -1456,6 +1666,9 @@
           "refId": "A"
         },
         {
+          "datasource": {
+            "uid": "${promdatasource}"
+          },
           "exemplar": true,
           "expr": "sum by (persistentvolumeclaim) (kubelet_volume_stats_capacity_bytes{namespace=~\"${namespace}\"}/1024/1024/1024) * 0.089",
           "format": "table",
@@ -1508,7 +1721,7 @@
     }
   ],
   "refresh": false,
-  "schemaVersion": 33,
+  "schemaVersion": 36,
   "style": "dark",
   "tags": [],
   "templating": {
@@ -1534,8 +1747,8 @@
       {
         "current": {
           "selected": false,
-          "text": "CloudWatch Test",
-          "value": "CloudWatch Test"
+          "text": "Master AWS CloudWatch",
+          "value": "Master AWS CloudWatch"
         },
         "hide": 0,
         "includeAll": false,
@@ -1559,10 +1772,9 @@
       },
       {
         "current": {
-          "isNone": true,
           "selected": false,
-          "text": "None",
-          "value": ""
+          "text": "kube-system",
+          "value": "kube-system"
         },
         "datasource": {
           "uid": "${promdatasource}"
@@ -1585,10 +1797,9 @@
       },
       {
         "current": {
-          "isNone": true,
           "selected": false,
-          "text": "None",
-          "value": ""
+          "text": "aws-node-rbgww",
+          "value": "aws-node-rbgww"
         },
         "datasource": {
           "uid": "${promdatasource}"
@@ -1613,10 +1824,13 @@
       {
         "allValue": "all",
         "current": {
-          "isNone": true,
           "selected": false,
-          "text": "None",
-          "value": ""
+          "text": "ip-10-203-100-74.eu-west-1.compute.internal",
+          "value": "ip-10-203-100-74.eu-west-1.compute.internal"
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
         },
         "definition": "label_values(kube_pod_info{created_by_name!=\"<none>\", namespace=\"$namespace\", pod=\"$pod\"}, node)",
         "hide": 0,
@@ -1637,10 +1851,13 @@
       },
       {
         "current": {
-          "isNone": true,
           "selected": false,
-          "text": "None",
-          "value": ""
+          "text": "m4.xlarge",
+          "value": "m4.xlarge"
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
         },
         "definition": "label_values(kube_node_labels, label_beta_kubernetes_io_instance_type) ",
         "hide": 0,

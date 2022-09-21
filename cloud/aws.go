@@ -52,7 +52,7 @@ type SpotUnitPrice struct {
 }
 
 const (
-	instanceType   = "label_beta_kubernetes_io_instance_type"
+	instanceType   = "label_node_kubernetes_io_instance_type"
 	instanceOption = "label_eks_amazonaws_com_capacity_type"
 	// CPU label.
 	CPU = "vcpu"
