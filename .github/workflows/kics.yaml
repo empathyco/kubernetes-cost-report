@@ -7,14 +7,14 @@ on:
 
 jobs:
   kics-scan:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Run KICS Scan
         uses: checkmarx/kics-action@v1.5
         with:
-          token: ${{ secrets.SUPPORT_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           path: "."
           ignore_on_exit: results
           exclude_queries: "b03a748a-542d-44f4-bb86-9199ab4fd2d5,e592a0c5-5bdb-414c-9066-5dba7cdea370"
