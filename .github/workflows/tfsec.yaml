@@ -12,4 +12,4 @@ jobs:
         uses: aquasecurity/tfsec-pr-commenter-action@v1.0.3
         with:
           working_directory: terraform
-          github_token: ${{ secrets.SUPPORT_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
