@@ -10,7 +10,7 @@ jobs:
     steps:
       - name: Checkout Source
         uses: actions/checkout@v2
-      - uses: WillAbides/setup-go-faster@v1.7.0
+      - uses: WillAbides/setup-go-faster@v1.14.0
         with:
           go-version: ${{ matrix.go }}
       - uses: reviewdog/action-setup@v1
