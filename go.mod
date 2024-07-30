@@ -3,7 +3,7 @@ module platform-cost-report
 go 1.19
 
 require (
-	github.com/aws/aws-sdk-go v1.44.110 // direct
+	github.com/aws/aws-sdk-go v1.55.5 // direct
 	github.com/prometheus/client_golang v1.12.2 // direct
 	github.com/robfig/cron/v3 v3.0.1 // direct
 	github.com/tidwall/gjson v1.12.1 // direct
