@@ -1,6 +1,6 @@
 module "cost_report_iam_eks_role" {
   source      = "terraform-aws-modules/iam/aws//modules/iam-eks-role"
-  version     = "4.24.1"
+  version     = "5.46.0"
   create_role = true
   role_name   = var.role_name
 
