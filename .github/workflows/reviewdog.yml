@@ -9,22 +9,22 @@ jobs:
         go: ["1.17.x"]
     steps:
       - name: Checkout Source
-        uses: actions/checkout@v2
-      - uses: WillAbides/setup-go-faster@v1.7.0
+        uses: actions/checkout@0717577d45739eb3c851188b29f50ed6c0b2194e # v2
+      - uses: WillAbides/setup-go-faster@8af5eb44e6d2676b48dfd4730ee3902f41d59584 # v1.7.0
         with:
           go-version: ${{ matrix.go }}
-      - uses: reviewdog/action-setup@v1
+      - uses: reviewdog/action-setup@d8a7baabd7f3e8544ee4dbde3ee41d0011c3a93f # v1
         with:
           reviewdog_version: latest
       - name: golangci-lint-check
-        uses: reviewdog/action-golangci-lint@v2
+        uses: reviewdog/action-golangci-lint@c76cceaaab89abe74e649d2e34c6c9adc26662d2 # v2
         with:
           golangci_lint_flags: "--tests=false --exclude-use-default=false --enable-all  -D gci -D scopelint -D exhaustivestruct  -D wsl -D gomnd -D gochecknoglobals -D lll -D golint -D forbidigo -D ireturn"
           level: "warning"
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-pr-check
       - name: golangci-lint-pr-preview
-        uses: reviewdog/action-golangci-lint@v2
+        uses: reviewdog/action-golangci-lint@c76cceaaab89abe74e649d2e34c6c9adc26662d2 # v2
         with:
           golangci_lint_flags: "--tests=false --exclude-use-default=false --enable-all  -D gci -D scopelint -D exhaustivestruct  -D wsl -D gomnd -D gochecknoglobals -D lll -D golint -D forbidigo -D ireturn"
           level: "warning"          
