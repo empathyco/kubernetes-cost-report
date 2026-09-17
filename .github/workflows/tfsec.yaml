@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - name: Clone repo
-        uses: actions/checkout@master
+        uses: actions/checkout@61b9e3751b92087fd0b06925ba6dd6314e06f089 # master
       - name: tfsec
         uses: aquasecurity/tfsec-pr-commenter-action@v1.0.3
         with:
