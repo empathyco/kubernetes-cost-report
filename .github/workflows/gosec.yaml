@@ -16,9 +16,9 @@ jobs:
       GO111MODULE: on
     steps:
       - name: Checkout Source
-        uses: actions/checkout@v2
+        uses: actions/checkout@0717577d45739eb3c851188b29f50ed6c0b2194e # v2
       - name: Run Gosec Security Scanner
-        uses: securego/gosec@master
+        uses: securego/gosec@4504603eddc5a91a7b7713932d6d1d3792126103 # master
         with:
           args: '-no-fail -fmt sarif -out results.sarif ./...'
       # - name: Upload SARIF file
