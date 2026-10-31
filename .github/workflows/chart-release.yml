@@ -32,7 +32,7 @@ jobs:
           version: "${{ env.HELM_VERSION }}"
 
       - name: "Run chart-releaser"
-        uses: helm/chart-releaser-action@v1.2.1
+        uses: helm/chart-releaser-action@92c6b97fa9f664492a2592e0d1d80bc6bf378957 # v1.9.0
         with:
           charts_dir: charts
           charts_repo_url: https://empathyco.github.io/kubernetes-cost-report/
