@@ -1,12 +1,12 @@
 module platform-cost-report
 
-go 1.19
+go 1.23
 
 require (
 	github.com/aws/aws-sdk-go v1.44.110 // direct
 	github.com/prometheus/client_golang v1.12.2 // direct
 	github.com/robfig/cron/v3 v3.0.1 // direct
-	github.com/tidwall/gjson v1.12.1 // direct
+	github.com/tidwall/gjson v1.20.3 // direct
 )
 
 require (
@@ -19,7 +19,7 @@ require (
 	github.com/prometheus/common v0.32.1 // indirect
 	github.com/prometheus/procfs v0.7.3 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
-	github.com/tidwall/pretty v1.2.0 // indirect
+	github.com/tidwall/pretty v1.3.0 // indirect
 	github.com/yuin/goldmark v1.4.4 // indirect
 	golang.org/x/mod v0.5.1 // indirect
 	golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd // indirect
